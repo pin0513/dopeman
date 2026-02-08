@@ -317,7 +317,7 @@ class RealDataScanner:
 
     def scan_commands(self):
         """掃描 Commands（從 SKILL.md 動態提取）"""
-        # 遞迴掃描所有 SKILL.md，提取命令表格
+        # 遞迴掃描所有 SKILL.md
         for skill_path in CLAUDE_DIR.rglob("SKILL.md"):
             if "node_modules" in str(skill_path):
                 continue
@@ -325,8 +325,22 @@ class RealDataScanner:
             skill_name = skill_path.parent.name
             content = skill_path.read_text(encoding='utf-8')
 
-            # 解析 Markdown 表格中的命令
-            # 尋找「可用命令」或「命令」表格
+            # 提取 description（從 YAML frontmatter 或第一個標題）
+            description = self._extract_skill_description(content, skill_name)
+
+            # 1. 先加入 skill 本身作為基礎命令
+            base_cmd = {
+                "name": skill_name,
+                "full_command": f"/{skill_name}",
+                "entry_skill": skill_name,
+                "description": description,
+                "aliases": [],
+                "is_base_command": True
+            }
+            self.data["categories"]["commands"]["items"].append(base_cmd)
+            self.data["layers"]["entry"]["commands"].append(base_cmd["full_command"])
+
+            # 2. 檢查是否有子命令表格（如 dopeman 的多個子命令）
             lines = content.split('\n')
             in_command_table = False
 
@@ -368,7 +382,8 @@ class RealDataScanner:
                                     "full_command": f"/{skill_name} {cmd_name}",
                                     "entry_skill": skill_name,
                                     "description": cmd_desc,
-                                    "aliases": aliases
+                                    "aliases": aliases,
+                                    "is_subcommand": True
                                 }
 
                                 self.data["categories"]["commands"]["items"].append(cmd_info)
@@ -383,6 +398,45 @@ class RealDataScanner:
         self.data["categories"]["commands"]["count"] = len(
             self.data["categories"]["commands"]["items"]
         )
+
+    def _extract_skill_description(self, content: str, skill_name: str) -> str:
+        """從 SKILL.md 提取簡短描述"""
+        lines = content.split('\n')
+
+        # 嘗試從 YAML frontmatter 提取 description
+        if lines[0].strip() == '---':
+            in_frontmatter = True
+            for i, line in enumerate(lines[1:], 1):
+                if line.strip() == '---':
+                    break
+                if line.startswith('description:'):
+                    # 可能是多行 description
+                    desc_lines = [line.split('description:', 1)[1].strip()]
+                    # 檢查後續行是否為縮排的延續
+                    for j in range(i+1, len(lines)):
+                        if lines[j].startswith('  ') or lines[j].startswith('\t'):
+                            desc_lines.append(lines[j].strip())
+                        elif lines[j].strip() == '---':
+                            break
+                        else:
+                            break
+                    description = ' '.join(desc_lines).replace('|', '').strip()
+                    # 只取第一句話
+                    if '。' in description:
+                        description = description.split('。')[0] + '。'
+                    elif '.' in description and len(description) > 100:
+                        description = description.split('.')[0] + '.'
+                    return description[:150]  # 最多 150 字元
+
+        # 如果沒有 frontmatter，嘗試從第一個段落提取
+        for line in lines:
+            line = line.strip()
+            if line and not line.startswith('#') and not line.startswith('---'):
+                if '。' in line:
+                    return line.split('。')[0] + '。'
+                return line[:100]
+
+        return f"執行 {skill_name}"
 
     def scan_dev_projects(self):
         """掃描開發專案"""
