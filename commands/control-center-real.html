@@ -742,39 +742,51 @@
             let html = '';
 
             // 全域 Skills
-            html += `<div class="tree-item">
-                <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
-                    <span>🌍 全域 Skills</span>
-                    <span class="badge">${globalSkills.length}</span>
+            html += `
+                <div class="tree-item">
+                    <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                        <span>🌍 全域 Skills</span>
+                        <span class="badge">${globalSkills.length}</span>
+                    </div>
                 </div>
-            </div>`;
+                <div class="tree-children">
+            `;
 
             globalSkills.slice(0, 20).forEach(skill => {
                 const type = skill.type === 'team' ? 'team' : 'single';
-                html += `<div class="tree-item tree-indent">
-                    <div class="tree-node">
-                        <span class="status-dot status-${type}"></span>
-                        <span>${skill.name}</span>
-                        <span class="badge ${type}">${skill.type}</span>
+                html += `
+                    <div class="tree-item tree-indent">
+                        <div class="tree-node">
+                            <span class="status-dot status-${type}"></span>
+                            <span>${skill.name}</span>
+                            <span class="badge ${type}">${skill.type}</span>
+                        </div>
                     </div>
-                </div>`;
+                `;
             });
 
             if (globalSkills.length > 20) {
-                html += `<div class="tree-item tree-indent">
-                    <div class="tree-node" style="color: #999;">
-                        ... 還有 ${globalSkills.length - 20} 個
+                html += `
+                    <div class="tree-item tree-indent">
+                        <div class="tree-node" style="color: #999;">
+                            ... 還有 ${globalSkills.length - 20} 個
+                        </div>
                     </div>
-                </div>`;
+                `;
             }
 
+            html += `</div>`;
+
             // 專案 Skills
-            html += `<div class="tree-item" style="margin-top: 20px;">
-                <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
-                    <span>📁 專案 Skills</span>
-                    <span class="badge">${projectSkills.length}</span>
+            html += `
+                <div class="tree-item" style="margin-top: 20px;">
+                    <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                        <span>📁 專案 Skills</span>
+                        <span class="badge">${projectSkills.length}</span>
+                    </div>
                 </div>
-            </div>`;
+                <div class="tree-children">
+            `;
 
             const projectGroups = {};
             projectSkills.forEach(skill => {
@@ -785,42 +797,58 @@
             });
 
             Object.entries(projectGroups).slice(0, 5).forEach(([project, skills]) => {
-                html += `<div class="tree-item tree-indent">
-                    <div class="tree-node expandable" onclick="toggleExpand(this)">
-                        <span>📂 ${project}</span>
-                        <span class="badge">${skills.length}</span>
+                html += `
+                    <div class="tree-item tree-indent">
+                        <div class="tree-node expandable" onclick="toggleExpand(this)">
+                            <span>📂 ${project}</span>
+                            <span class="badge">${skills.length}</span>
+                        </div>
                     </div>
-                </div>`;
+                    <div class="tree-children" style="display: none;">
+                `;
 
                 skills.forEach(skill => {
-                    html += `<div class="tree-item collapsed" style="margin-left: 48px;">
-                        <div class="tree-node">
-                            <span class="status-dot status-single"></span>
-                            <span>${skill.skill_name}</span>
-                            ${skill.is_duplicate ? '<span class="badge" style="background: #ef4444;">重複</span>' : ''}
+                    html += `
+                        <div class="tree-item" style="margin-left: 48px;">
+                            <div class="tree-node">
+                                <span class="status-dot status-single"></span>
+                                <span>${skill.skill_name}</span>
+                                ${skill.is_duplicate ? '<span class="badge" style="background: #ef4444;">重複</span>' : ''}
+                            </div>
                         </div>
-                    </div>`;
+                    `;
                 });
+
+                html += `</div>`;
             });
+
+            html += `</div>`;
 
             // 開發中 Skills
             if (devSkills.length > 0) {
-                html += `<div class="tree-item" style="margin-top: 20px;">
-                    <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
-                        <span>🔨 開發中 Skills</span>
-                        <span class="badge">${devSkills.length}</span>
+                html += `
+                    <div class="tree-item" style="margin-top: 20px;">
+                        <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                            <span>🔨 開發中 Skills</span>
+                            <span class="badge">${devSkills.length}</span>
+                        </div>
                     </div>
-                </div>`;
+                    <div class="tree-children">
+                `;
 
                 devSkills.forEach(skill => {
-                    html += `<div class="tree-item tree-indent">
-                        <div class="tree-node">
-                            <span class="status-dot status-team"></span>
-                            <span>${skill.name}</span>
-                            ${skill.dirty ? '<span class="badge" style="background: #f59e0b;">未提交</span>' : ''}
+                    html += `
+                        <div class="tree-item tree-indent">
+                            <div class="tree-node">
+                                <span class="status-dot status-team"></span>
+                                <span>${skill.name}</span>
+                                ${skill.dirty ? '<span class="badge" style="background: #f59e0b;">未提交</span>' : ''}
+                            </div>
                         </div>
-                    </div>`;
+                    `;
                 });
+
+                html += `</div>`;
             }
 
             tree.innerHTML = html;
@@ -837,32 +865,42 @@
             let html = '';
 
             // Coordinators
-            html += `<div class="tree-item">
-                <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
-                    <span>🎯 Coordinators</span>
-                    <span class="badge coordinator">${coordinators.length}</span>
+            html += `
+                <div class="tree-item">
+                    <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                        <span>🎯 Coordinators</span>
+                        <span class="badge coordinator">${coordinators.length}</span>
+                    </div>
                 </div>
-            </div>`;
+                <div class="tree-children">
+            `;
 
             coordinators.forEach(coord => {
-                html += `<div class="tree-item tree-indent">
-                    <div class="tree-node">
-                        <span class="status-dot status-coordinator"></span>
-                        <span>${coord.name}</span>
-                        <span style="color: #999; font-size: 0.85em; margin-left: 8px;">
-                            → ${coord.belongs_to_project}
-                        </span>
+                html += `
+                    <div class="tree-item tree-indent">
+                        <div class="tree-node">
+                            <span class="status-dot status-coordinator"></span>
+                            <span>${coord.name}</span>
+                            <span style="color: #999; font-size: 0.85em; margin-left: 8px;">
+                                → ${coord.belongs_to_project}
+                            </span>
+                        </div>
                     </div>
-                </div>`;
+                `;
             });
 
+            html += `</div>`;
+
             // Workers
-            html += `<div class="tree-item" style="margin-top: 20px;">
-                <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
-                    <span>👷 Workers</span>
-                    <span class="badge worker">${workers.length}</span>
+            html += `
+                <div class="tree-item" style="margin-top: 20px;">
+                    <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                        <span>👷 Workers</span>
+                        <span class="badge worker">${workers.length}</span>
+                    </div>
                 </div>
-            </div>`;
+                <div class="tree-children">
+            `;
 
             const workerGroups = {};
             workers.forEach(worker => {
@@ -873,22 +911,31 @@
             });
 
             Object.entries(workerGroups).forEach(([group, groupWorkers]) => {
-                html += `<div class="tree-item tree-indent">
-                    <div class="tree-node expandable" onclick="toggleExpand(this)">
-                        <span>📁 ${group}</span>
-                        <span class="badge">${groupWorkers.length}</span>
+                html += `
+                    <div class="tree-item tree-indent">
+                        <div class="tree-node expandable" onclick="toggleExpand(this)">
+                            <span>📁 ${group}</span>
+                            <span class="badge">${groupWorkers.length}</span>
+                        </div>
                     </div>
-                </div>`;
+                    <div class="tree-children" style="display: none;">
+                `;
 
                 groupWorkers.forEach(worker => {
-                    html += `<div class="tree-item collapsed" style="margin-left: 48px;">
-                        <div class="tree-node">
-                            <span class="status-dot status-worker"></span>
-                            <span>${worker.name}</span>
+                    html += `
+                        <div class="tree-item" style="margin-left: 48px;">
+                            <div class="tree-node">
+                                <span class="status-dot status-worker"></span>
+                                <span>${worker.name}</span>
+                            </div>
                         </div>
-                    </div>`;
+                    `;
                 });
+
+                html += `</div>`;
             });
+
+            html += `</div>`;
 
             tree.innerHTML = html;
         }
@@ -902,32 +949,42 @@
             let html = '';
 
             // 全域 Rules
-            html += `<div class="tree-item">
-                <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
-                    <span>🌍 全域 Rules</span>
-                    <span class="badge">${globalRules.length}</span>
+            html += `
+                <div class="tree-item">
+                    <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                        <span>🌍 全域 Rules</span>
+                        <span class="badge">${globalRules.length}</span>
+                    </div>
                 </div>
-            </div>`;
+                <div class="tree-children">
+            `;
 
             globalRules.forEach(rule => {
-                html += `<div class="tree-item tree-indent">
-                    <div class="tree-node">
-                        <span>📋 ${rule.name}</span>
-                        ${rule.applicability.length > 0 ?
-                            `<span style="color: #999; font-size: 0.85em; margin-left: 8px;">
-                                → ${rule.applicability.join(', ')}
-                            </span>` : ''}
+                html += `
+                    <div class="tree-item tree-indent">
+                        <div class="tree-node">
+                            <span>📋 ${rule.name}</span>
+                            ${rule.applicability.length > 0 ?
+                                `<span style="color: #999; font-size: 0.85em; margin-left: 8px;">
+                                    → ${rule.applicability.join(', ')}
+                                </span>` : ''}
+                        </div>
                     </div>
-                </div>`;
+                `;
             });
 
+            html += `</div>`;
+
             // 專案 Rules
-            html += `<div class="tree-item" style="margin-top: 20px;">
-                <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
-                    <span>📁 專案 Rules</span>
-                    <span class="badge">${projectRules.length}</span>
+            html += `
+                <div class="tree-item" style="margin-top: 20px;">
+                    <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                        <span>📁 專案 Rules</span>
+                        <span class="badge">${projectRules.length}</span>
+                    </div>
                 </div>
-            </div>`;
+                <div class="tree-children">
+            `;
 
             const ruleGroups = {};
             projectRules.forEach(rule => {
@@ -938,21 +995,30 @@
             });
 
             Object.entries(ruleGroups).forEach(([project, rules]) => {
-                html += `<div class="tree-item tree-indent">
-                    <div class="tree-node expandable" onclick="toggleExpand(this)">
-                        <span>📂 ${project}</span>
-                        <span class="badge">${rules.length}</span>
+                html += `
+                    <div class="tree-item tree-indent">
+                        <div class="tree-node expandable" onclick="toggleExpand(this)">
+                            <span>📂 ${project}</span>
+                            <span class="badge">${rules.length}</span>
+                        </div>
                     </div>
-                </div>`;
+                    <div class="tree-children" style="display: none;">
+                `;
 
                 rules.forEach(rule => {
-                    html += `<div class="tree-item collapsed" style="margin-left: 48px;">
-                        <div class="tree-node">
-                            <span>📋 ${rule.name}</span>
+                    html += `
+                        <div class="tree-item" style="margin-left: 48px;">
+                            <div class="tree-node">
+                                <span>📋 ${rule.name}</span>
+                            </div>
                         </div>
-                    </div>`;
+                    `;
                 });
+
+                html += `</div>`;
             });
+
+            html += `</div>`;
 
             tree.innerHTML = html;
         }
