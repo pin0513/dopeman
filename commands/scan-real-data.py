@@ -261,8 +261,8 @@ class RealDataScanner:
         )
 
     def scan_agents(self):
-        """掃描 Agents"""
-        # 掃描專案中的 agents
+        """掃描 Agents（遞迴掃描所有層級）"""
+        # 遞迴掃描所有 .claude/agents 目錄
         for claude_dir in DEV_DIR.rglob(".claude"):
             if "node_modules" in str(claude_dir) or str(claude_dir) == str(CLAUDE_DIR):
                 continue
@@ -273,70 +273,112 @@ class RealDataScanner:
             if not agents_dir.exists():
                 continue
 
-            # 找出 coordinator (在 agents 根目錄的 .md)
-            for agent_path in agents_dir.glob("*.md"):
-                agent_info = {
-                    "name": agent_path.stem,
-                    "path": str(agent_path.relative_to(HOME)),
-                    "type": "coordinator",
-                    "belongs_to_project": str(project_path.relative_to(HOME)),
-                    "delegates_to": []
-                }
-
-                self.data["categories"]["agents"]["items"].append(agent_info)
-                self.data["layers"]["coordination"]["coordinators"].append(agent_path.stem)
-
-            # 找出 workers (在子目錄的 .md)
+            # 遞迴掃描所有 .md 檔案（支援多層巢狀）
             for agent_path in agents_dir.rglob("*.md"):
-                # 跳過已處理的 coordinator
-                if agent_path.parent == agents_dir:
-                    continue
+                # 計算相對於 agents_dir 的深度
+                relative_path = agent_path.relative_to(agents_dir)
+                depth = len(relative_path.parts) - 1  # 減去檔案本身
+
+                # 根據深度和位置判斷類型
+                if depth == 0:
+                    # agents/ 根目錄 → coordinator
+                    agent_type = "coordinator"
+                    group = None
+                    layer = "coordination"
+                else:
+                    # 子目錄 → worker
+                    agent_type = "worker"
+                    # 支援多層巢狀，使用完整路徑作為群組名稱
+                    group = str(relative_path.parent).replace('/', ' > ')
+                    layer = "execution"
 
                 agent_info = {
                     "name": agent_path.stem,
                     "path": str(agent_path.relative_to(HOME)),
-                    "type": "worker",
-                    "group": agent_path.parent.name,
-                    "belongs_to_project": str(project_path.relative_to(HOME))
+                    "type": agent_type,
+                    "group": group,
+                    "depth": depth,
+                    "belongs_to_project": str(project_path.relative_to(HOME)),
                 }
 
                 self.data["categories"]["agents"]["items"].append(agent_info)
-                self.data["layers"]["execution"]["workers"].append(agent_path.stem)
+
+                # 加入對應的層級
+                if layer == "coordination":
+                    if agent_path.stem not in self.data["layers"]["coordination"]["coordinators"]:
+                        self.data["layers"]["coordination"]["coordinators"].append(agent_path.stem)
+                else:
+                    if agent_path.stem not in self.data["layers"]["execution"]["workers"]:
+                        self.data["layers"]["execution"]["workers"].append(agent_path.stem)
 
         self.data["categories"]["agents"]["count"] = len(
             self.data["categories"]["agents"]["items"]
         )
 
     def scan_commands(self):
-        """掃描 Commands（從 SKILL.md 提取）"""
-        # 簡化版：從 dopeman SKILL.md 提取
-        dopeman_skill = CLAUDE_DIR / "skills" / "dopeman" / "SKILL.md"
+        """掃描 Commands（從 SKILL.md 動態提取）"""
+        # 遞迴掃描所有 SKILL.md，提取命令表格
+        for skill_path in CLAUDE_DIR.rglob("SKILL.md"):
+            if "node_modules" in str(skill_path):
+                continue
 
-        if dopeman_skill.exists():
-            content = dopeman_skill.read_text(encoding='utf-8')
+            skill_name = skill_path.parent.name
+            content = skill_path.read_text(encoding='utf-8')
 
-            # 提取命令表格
-            commands = [
-                {"name": "check-updates", "description": "檢查 skills 更新"},
-                {"name": "organize", "description": "整理指定目錄"},
-                {"name": "export-config", "description": "匯出環境配置"},
-                {"name": "import-config", "description": "匯入環境配置"},
-                {"name": "usage-report", "description": "產生使用報告"},
-                {"name": "discover-skills", "description": "搜尋推薦的新 skills"},
-                {"name": "health-check", "description": "完整環境健檢"},
-                {"name": "control-center", "description": "Skills 總控台"}
-            ]
+            # 解析 Markdown 表格中的命令
+            # 尋找「可用命令」或「命令」表格
+            lines = content.split('\n')
+            in_command_table = False
 
-            for cmd in commands:
-                cmd_info = {
-                    "name": cmd["name"],
-                    "full_command": f"/dopeman {cmd['name']}",
-                    "entry_skill": "dopeman",
-                    "description": cmd["description"]
-                }
+            for i, line in enumerate(lines):
+                # 檢查是否進入命令表格區域
+                if '可用命令' in line or ('命令' in line and '說明' in line):
+                    # 找到表格開始（下一行或下兩行應該是表格）
+                    for j in range(i, min(i+5, len(lines))):
+                        if '|' in lines[j] and ('---' in lines[j+1] if j+1 < len(lines) else False):
+                            in_command_table = True
+                            table_start = j + 2  # 跳過標題和分隔線
+                            break
 
-                self.data["categories"]["commands"]["items"].append(cmd_info)
-                self.data["layers"]["entry"]["commands"].append(cmd_info["full_command"])
+                    if in_command_table:
+                        # 解析表格內容
+                        for k in range(table_start, len(lines)):
+                            line = lines[k].strip()
+
+                            # 表格結束
+                            if not line or not line.startswith('|'):
+                                break
+
+                            # 解析表格行
+                            parts = [p.strip() for p in line.split('|')]
+                            if len(parts) >= 4:  # | 命令 | 說明 | 範例 |
+                                # 清理命令名稱：移除所有 backticks 和參數
+                                cmd_text = parts[1].replace('`', '').strip()
+
+                                # 檢查是否有別名（在移除 backticks 之前）
+                                alias_match = re.search(r'\(別名:\s*`?(.+?)`?\)', parts[1])
+                                aliases = [a.strip() for a in alias_match.group(1).split(',')] if alias_match else []
+
+                                # 移除別名部分，只保留命令名稱
+                                cmd_name = re.sub(r'\s*\(別名:.*?\)', '', cmd_text).split()[0]
+                                cmd_desc = parts[2]
+
+                                cmd_info = {
+                                    "name": cmd_name,
+                                    "full_command": f"/{skill_name} {cmd_name}",
+                                    "entry_skill": skill_name,
+                                    "description": cmd_desc,
+                                    "aliases": aliases
+                                }
+
+                                self.data["categories"]["commands"]["items"].append(cmd_info)
+                                self.data["layers"]["entry"]["commands"].append(cmd_info["full_command"])
+
+                                # 也加入別名
+                                for alias in aliases:
+                                    self.data["layers"]["entry"]["commands"].append(f"/{skill_name} {alias}")
+
+                        break  # 找到並處理完表格後跳出
 
         self.data["categories"]["commands"]["count"] = len(
             self.data["categories"]["commands"]["items"]
