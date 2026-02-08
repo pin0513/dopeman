@@ -103,33 +103,46 @@ class RealDataScanner:
                 self.data["user_preferences"] = {}
 
     def scan_global_skills(self):
-        """掃描全域 Skills"""
+        """掃描全域 Skills（支援 symlinks）"""
         skills_dir = CLAUDE_DIR / "skills"
         if not skills_dir.exists():
             return
 
-        for skill_path in skills_dir.rglob("SKILL.md"):
-            # 排除 node_modules
-            if "node_modules" in str(skill_path):
+        # 遍歷 skills 目錄下的所有項目（包含 symlinks）
+        for item in skills_dir.iterdir():
+            # 跳過非目錄且非 symlink 的項目
+            if not item.is_dir() and not item.is_symlink():
                 continue
 
-            skill_name = skill_path.parent.name
+            # 如果是 symlink，解析到實際路徑
+            real_path = item.resolve() if item.is_symlink() else item
+
+            # 檢查是否有 SKILL.md
+            skill_md_path = real_path / "SKILL.md"
+            if not skill_md_path.exists():
+                continue
+
+            # 排除 node_modules
+            if "node_modules" in str(real_path):
+                continue
+
+            skill_name = real_path.name
 
             # 讀取 YAML frontmatter
-            content = skill_path.read_text(encoding='utf-8')
+            content = skill_md_path.read_text(encoding='utf-8')
             frontmatter = self.extract_frontmatter(content)
 
             # 判斷是否為 team skill (有 .claude/agents/)
-            has_agents = (skill_path.parent / ".claude" / "agents").exists()
+            has_agents = (real_path / ".claude" / "agents").exists()
 
             skill_info = {
                 "name": skill_name,
-                "path": str(skill_path.parent.relative_to(HOME)),
+                "path": str(real_path.relative_to(HOME)),
                 "type": "team" if has_agents else "single",
                 "description": frontmatter.get("description", ""),
                 "source": "local",
                 "has_agents": has_agents,
-                "has_git": (skill_path.parent / ".git").exists()
+                "has_git": (real_path / ".git").exists()
             }
 
             self.data["categories"]["global_skills"]["items"].append(skill_info)

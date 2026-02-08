@@ -15,7 +15,7 @@ NC='\033[0m' # No Color
 
 # 路徑定義
 GLOBAL_SKILL="$HOME/.claude/skills/dopeman/SKILL.md"
-PROJECT_SKILL="$HOME/DEV/projects/dopeman/.claude/skills/dopeman/SKILL.md"
+PROJECT_SKILL="$HOME/AgentProjects/dopeman/.claude/skills/dopeman/SKILL.md"
 
 echo ""
 echo "🔄 DopeMAN - Global Skill Sync"
