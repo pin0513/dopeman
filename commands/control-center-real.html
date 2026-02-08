@@ -674,54 +674,62 @@
                     icon: '🌍',
                     title: '全域 Skills',
                     count: data.categories.global_skills.count,
-                    label: '已安裝的全域技能'
+                    label: '已安裝的全域技能',
+                    tab: 'skills'
                 },
                 {
                     icon: '📁',
                     title: '專案 Skills',
                     count: data.categories.project_skills.count,
-                    label: '專案特定技能'
+                    label: '專案特定技能',
+                    tab: 'skills'
                 },
                 {
                     icon: '🔨',
                     title: '開發中 Skills',
                     count: data.categories.dev_skills.count,
-                    label: '有 Git Repo 的技能'
+                    label: '有 Git Repo 的技能',
+                    tab: 'skills'
                 },
                 {
                     icon: '📋',
                     title: '全域 Rules',
                     count: data.categories.global_rules.count,
-                    label: '全域規則'
+                    label: '全域規則',
+                    tab: 'rules'
                 },
                 {
                     icon: '📂',
                     title: '專案 Rules',
                     count: data.categories.project_rules.count,
-                    label: '專案規則'
+                    label: '專案規則',
+                    tab: 'rules'
                 },
                 {
                     icon: '🤖',
                     title: 'Agents',
                     count: data.categories.agents.count,
-                    label: 'Coordinators & Workers'
+                    label: 'Coordinators & Workers',
+                    tab: 'agents'
                 },
                 {
                     icon: '⌨️',
                     title: 'Commands',
                     count: data.categories.commands.count,
-                    label: '可用指令'
+                    label: '可用指令',
+                    tab: 'commands'
                 },
                 {
                     icon: '💻',
                     title: 'Dev Projects',
                     count: data.categories.dev_projects.count,
-                    label: '開發專案'
+                    label: '開發專案',
+                    tab: 'dev-projects'
                 }
             ];
 
             dashboard.innerHTML = cards.map(card => `
-                <div class="card">
+                <div class="card" data-tab="${card.tab}" onclick="switchToTab('${card.tab}')">
                     <div class="card-header">
                         <div class="card-icon">${card.icon}</div>
                         <div class="card-title">${card.title}</div>
@@ -1445,17 +1453,29 @@
             }
         }
 
+        // 切換到指定 Tab 的函數
+        function switchToTab(tabId) {
+            // 移除所有 active
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            // 啟用目標 tab
+            const targetTab = document.querySelector(`.tab[data-tab="${tabId}"]`);
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+
+            const targetContent = document.getElementById(tabId);
+            if (targetContent) {
+                targetContent.classList.add('active');
+            }
+        }
+
         // 標籤頁切換
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', () => {
-                // 移除所有 active
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-                // 啟用當前標籤
-                tab.classList.add('active');
                 const tabId = tab.getAttribute('data-tab');
-                document.getElementById(tabId).classList.add('active');
+                switchToTab(tabId);
             });
         });
 
