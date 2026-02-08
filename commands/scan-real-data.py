@@ -25,6 +25,7 @@ class RealDataScanner:
                 "global_skills": {"count": 0, "items": []},
                 "project_skills": {"count": 0, "items": []},
                 "dev_skills": {"count": 0, "items": []},
+                "dev_projects": {"count": 0, "items": []},
                 "global_rules": {"count": 0, "items": []},
                 "project_rules": {"count": 0, "items": []},
                 "agents": {"count": 0, "items": []},
@@ -283,6 +284,177 @@ class RealDataScanner:
             self.data["categories"]["commands"]["items"]
         )
 
+    def scan_dev_projects(self):
+        """掃描開發專案"""
+        import subprocess
+
+        # 掃描 ~/DEV 下所有有 .git 的專案（maxdepth 2）
+        for git_dir in sorted(DEV_DIR.glob("*/.git")):
+            project_dir = git_dir.parent
+            project_name = project_dir.name
+
+            # 取得 Git remote URL
+            remote_url = ""
+            try:
+                result = subprocess.run(
+                    ["git", "remote", "get-url", "origin"],
+                    cwd=project_dir,
+                    capture_output=True,
+                    text=True,
+                    timeout=5
+                )
+                if result.returncode == 0:
+                    remote_url = result.stdout.strip()
+            except:
+                pass
+
+            # 分類專案類型
+            project_type = self.classify_project(remote_url, project_name)
+
+            # 取得最後 commit 資訊
+            last_commit_date = ""
+            last_commit_message = ""
+            try:
+                result = subprocess.run(
+                    ["git", "log", "-1", "--format=%ci|||%s"],
+                    cwd=project_dir,
+                    capture_output=True,
+                    text=True,
+                    timeout=5
+                )
+                if result.returncode == 0:
+                    parts = result.stdout.strip().split("|||")
+                    if len(parts) == 2:
+                        last_commit_date = parts[0]
+                        last_commit_message = parts[1]
+            except:
+                pass
+
+            # 檢測技術棧
+            tech_stack = self.detect_tech_stack(project_dir)
+
+            # 讀取 README 第一行作為摘要
+            summary = self.extract_readme_summary(project_dir)
+
+            # 檢查是否有 AI agent 團隊
+            has_claude_team = (project_dir / "CLAUDE.md").exists() or \
+                             (project_dir / ".claude" / "agents").exists()
+
+            # 檢查是否有未 commit 變更
+            is_dirty = self.check_git_dirty(project_dir)
+
+            project_info = {
+                "name": project_name,
+                "path": str(project_dir.relative_to(HOME)),
+                "type": project_type,
+                "remote_url": remote_url,
+                "tech_stack": tech_stack,
+                "summary": summary,
+                "has_claude_team": has_claude_team,
+                "last_commit_date": last_commit_date,
+                "last_commit_message": last_commit_message,
+                "is_dirty": is_dirty
+            }
+
+            self.data["categories"]["dev_projects"]["items"].append(project_info)
+
+        self.data["categories"]["dev_projects"]["count"] = len(
+            self.data["categories"]["dev_projects"]["items"]
+        )
+
+    def classify_project(self, remote_url: str, project_name: str) -> str:
+        """分類專案類型"""
+        if not remote_url:
+            return "own-dev"  # 自有開發（無 remote）
+
+        # 公司專案判斷
+        company_keywords = ["mayohr", "apollo", "mayo"]
+        if any(keyword in remote_url.lower() for keyword in company_keywords):
+            return "work"  # 工作專案
+
+        # GitHub 參考專案
+        if "github.com" in remote_url:
+            # 檢查是否為自己的 repo（假設用戶名為 paul 或 paulhuang）
+            user_keywords = ["paul"]
+            if any(keyword in remote_url.lower() for keyword in user_keywords):
+                return "own-dev"
+            else:
+                return "github-ref"  # GitHub 參考
+
+        return "other"  # 其他下載
+
+    def detect_tech_stack(self, project_dir: Path) -> List[str]:
+        """檢測技術棧"""
+        stack = []
+
+        # .NET / C#（遞迴搜尋，但限制深度）
+        if list(project_dir.glob("*.sln")) or \
+           list(project_dir.glob("**/*.sln")) or \
+           list(project_dir.glob("*.csproj")) or \
+           list(project_dir.glob("**/*.csproj"))[:1]:  # 至少找到一個
+            stack.append(".NET/C#")
+
+        # Node.js
+        if (project_dir / "package.json").exists():
+            stack.append("Node.js")
+
+            # 檢查是否有 React
+            try:
+                with open(project_dir / "package.json", encoding='utf-8') as f:
+                    content = f.read()
+                    if "react" in content.lower():
+                        stack.append("React")
+                    if "next" in content.lower():
+                        stack.append("Next.js")
+                    if "vue" in content.lower():
+                        stack.append("Vue")
+            except:
+                pass
+
+        # Python
+        if (project_dir / "requirements.txt").exists() or \
+           (project_dir / "pyproject.toml").exists() or \
+           (project_dir / "setup.py").exists():
+            stack.append("Python")
+
+        # Go
+        if (project_dir / "go.mod").exists():
+            stack.append("Go")
+
+        # Rust
+        if (project_dir / "Cargo.toml").exists():
+            stack.append("Rust")
+
+        # 資料庫 scripts
+        if (project_dir / "migrations").exists() or \
+           list(project_dir.glob("*.sql")):
+            stack.append("SQL")
+
+        return stack
+
+    def extract_readme_summary(self, project_dir: Path) -> str:
+        """提取 README 第一行作為摘要"""
+        readme_files = ["README.md", "README.txt", "README"]
+
+        for readme_name in readme_files:
+            readme_path = project_dir / readme_name
+            if readme_path.exists():
+                try:
+                    with open(readme_path, encoding='utf-8') as f:
+                        lines = f.readlines()
+                        # 跳過 # 標題，找第一行有內容的
+                        for line in lines:
+                            line = line.strip()
+                            if line and not line.startswith('#'):
+                                return line[:200]  # 限制長度
+                            # 或者如果是 # 標題，移除 # 號
+                            if line.startswith('#'):
+                                return line.lstrip('#').strip()[:200]
+                except:
+                    pass
+
+        return ""
+
     # Helper methods
     def extract_frontmatter(self, content: str) -> Dict[str, str]:
         """提取 YAML frontmatter"""
@@ -340,6 +512,9 @@ class RealDataScanner:
         print("  → 掃描開發中 Skills...")
         self.scan_dev_skills()
 
+        print("  → 掃描開發專案...")
+        self.scan_dev_projects()
+
         print("  → 掃描全域 Rules...")
         self.scan_global_rules()
 
@@ -371,11 +546,26 @@ class RealDataScanner:
         print(f"全域 Skills:     {self.data['categories']['global_skills']['count']}")
         print(f"專案 Skills:     {self.data['categories']['project_skills']['count']}")
         print(f"開發中 Skills:   {self.data['categories']['dev_skills']['count']}")
+        print(f"開發專案:        {self.data['categories']['dev_projects']['count']}")
         print(f"全域 Rules:      {self.data['categories']['global_rules']['count']}")
         print(f"專案 Rules:      {self.data['categories']['project_rules']['count']}")
         print(f"Agents:          {self.data['categories']['agents']['count']}")
         print(f"Commands:        {self.data['categories']['commands']['count']}")
         print("="*60)
+
+        # Dev Projects 分類統計
+        if self.data['categories']['dev_projects']['count'] > 0:
+            projects = self.data['categories']['dev_projects']['items']
+            work_count = sum(1 for p in projects if p['type'] == 'work')
+            own_count = sum(1 for p in projects if p['type'] == 'own-dev')
+            github_count = sum(1 for p in projects if p['type'] == 'github-ref')
+            other_count = sum(1 for p in projects if p['type'] == 'other')
+
+            print("\n📁 專案分類:")
+            print(f"  工作專案:      {work_count}")
+            print(f"  自有開發:      {own_count}")
+            print(f"  GitHub 參考:   {github_count}")
+            print(f"  其他下載:      {other_count}")
 
         print("\n📍 分層統計:")
         print(f"  Entry Layer:")
