@@ -186,8 +186,9 @@ class RealDataScanner:
             if not git_dir.exists():
                 continue
 
-            # 檢查是否有 SKILL.md 或 .claude/
-            has_skill = (project_dir / "SKILL.md").exists() or (project_dir / ".claude").exists()
+            # 檢查是否有 SKILL.md（只有 SKILL.md 才算是開發中的 skill）
+            # .claude/ 目錄只是 Claude Code 專案設定，不代表是 skill
+            has_skill = (project_dir / "SKILL.md").exists()
 
             if has_skill:
                 dev_info = {
