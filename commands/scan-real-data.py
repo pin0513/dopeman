@@ -288,8 +288,44 @@ class RealDataScanner:
         """掃描開發專案"""
         import subprocess
 
-        # 掃描 ~/DEV 下所有有 .git 的專案（maxdepth 2）
-        for git_dir in sorted(DEV_DIR.glob("*/.git")):
+        # 掃描 ~/DEV 下所有有 .git 的專案（遞迴搜尋）
+        # 過濾掉不需要的子專案（node_modules, .venv, vendor 等）
+        exclude_patterns = ["node_modules", ".venv", "venv", "vendor", ".git/modules"]
+
+        all_git_dirs = []
+        for git_dir in DEV_DIR.rglob(".git"):
+            # 跳過非目錄的 .git 檔案
+            if not git_dir.is_dir():
+                continue
+
+            # 檢查路徑是否包含排除的模式
+            path_str = str(git_dir.relative_to(DEV_DIR))
+            if any(exclude in path_str for exclude in exclude_patterns):
+                continue
+
+            all_git_dirs.append(git_dir)
+
+        # 過濾掉巢狀的 git 專案（只保留最上層）
+        top_level_git_dirs = []
+        for git_dir in sorted(all_git_dirs):
+            project_dir = git_dir.parent
+
+            # 檢查是否為其他已加入專案的子專案
+            is_nested = False
+            for other_git_dir in all_git_dirs:
+                if git_dir == other_git_dir:
+                    continue
+                other_project_dir = other_git_dir.parent
+                # 如果此專案在另一個專案目錄內，則為巢狀專案
+                if project_dir != other_project_dir and str(project_dir).startswith(str(other_project_dir) + "/"):
+                    is_nested = True
+                    break
+
+            if not is_nested:
+                top_level_git_dirs.append(git_dir)
+
+        # 掃描所有最上層 git 專案
+        for git_dir in top_level_git_dirs:
             project_dir = git_dir.parent
             project_name = project_dir.name
 
