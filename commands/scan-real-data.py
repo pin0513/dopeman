@@ -15,6 +15,7 @@ from datetime import datetime
 HOME = Path.home()
 CLAUDE_DIR = HOME / ".claude"
 DEV_DIR = HOME / "DEV"
+MEMORY_DIR = CLAUDE_DIR / "memory" / "dopeman"
 
 class RealDataScanner:
     def __init__(self):
@@ -41,8 +42,65 @@ class RealDataScanner:
                 "entry": {"skills": [], "commands": []},
                 "coordination": {"coordinators": []},
                 "execution": {"workers": [], "sub_skills": []},
-            }
+            },
+            "user_preferences": {}
         }
+        # 載入用戶設定
+        self.load_user_preferences()
+
+    def load_user_preferences(self):
+        """載入用戶設定檔"""
+        pref_file = MEMORY_DIR / "user-preferences.json"
+
+        # 如果設定檔不存在，建立預設設定
+        if not pref_file.exists():
+            default_prefs = {
+                "version": "1.0.0",
+                "last_updated": datetime.now().isoformat(),
+                "preferences": {
+                    "default_editor": "vscode",
+                    "editor_tools": [
+                        {
+                            "id": "vscode",
+                            "name": "Visual Studio Code",
+                            "protocol": "vscode://file",
+                            "enabled": True,
+                            "icon": "📂"
+                        },
+                        {
+                            "id": "cursor",
+                            "name": "Cursor",
+                            "protocol": "cursor://file",
+                            "enabled": True,
+                            "icon": "🔮"
+                        },
+                        {
+                            "id": "warp",
+                            "name": "Warp Terminal",
+                            "protocol": "warp://file",
+                            "enabled": True,
+                            "icon": "⚡"
+                        }
+                    ],
+                    "dashboard": {
+                        "theme": "light",
+                        "auto_refresh": False,
+                        "refresh_interval": 300
+                    }
+                }
+            }
+            # 確保目錄存在
+            MEMORY_DIR.mkdir(parents=True, exist_ok=True)
+            pref_file.write_text(json.dumps(default_prefs, indent=2, ensure_ascii=False), encoding='utf-8')
+            self.data["user_preferences"] = default_prefs["preferences"]
+        else:
+            # 讀取現有設定
+            try:
+                prefs = json.loads(pref_file.read_text(encoding='utf-8'))
+                self.data["user_preferences"] = prefs.get("preferences", {})
+            except Exception as e:
+                print(f"⚠️  無法讀取用戶設定: {e}")
+                self.data["user_preferences"] = {}
 
     def scan_global_skills(self):
         """掃描全域 Skills"""
