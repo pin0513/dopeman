@@ -294,6 +294,11 @@
             display: none;
         }
 
+        .tree-children {
+            display: block;
+            transition: all 0.2s ease-in-out;
+        }
+
         /* Dev Projects Styles */
         .project-card {
             background: white;
@@ -1251,72 +1256,102 @@
             let html = '';
 
             // Entry Layer
-            html += `<div class="tree-item">
-                <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
-                    <span>📍 Entry Layer (入口層)</span>
+            html += `
+                <div class="tree-item">
+                    <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                        <span>📍 Entry Layer (入口層)</span>
+                    </div>
                 </div>
-            </div>`;
-
-            html += `<div class="tree-item tree-indent">
-                <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
-                    <span>⌨️ Commands</span>
-                    <span class="badge">${layers.entry.commands.length}</span>
-                </div>
-            </div>`;
+                <div class="tree-children">
+                    <div class="tree-item tree-indent">
+                        <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                            <span>⌨️ Commands</span>
+                            <span class="badge">${layers.entry.commands.length}</span>
+                        </div>
+                    </div>
+                    <div class="tree-children">
+            `;
 
             layers.entry.commands.forEach(cmd => {
-                html += `<div class="tree-item" style="margin-left: 48px;">
-                    <div class="tree-node">
-                        <span>${cmd}</span>
+                html += `
+                    <div class="tree-item" style="margin-left: 48px;">
+                        <div class="tree-node">
+                            <span>${cmd}</span>
+                        </div>
                     </div>
-                </div>`;
+                `;
             });
+
+            html += `
+                    </div>
+                </div>
+            `;
 
             // Coordination Layer
-            html += `<div class="tree-item" style="margin-top: 20px;">
-                <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
-                    <span>📍 Coordination Layer (協調層)</span>
+            html += `
+                <div class="tree-item" style="margin-top: 20px;">
+                    <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                        <span>📍 Coordination Layer (協調層)</span>
+                    </div>
                 </div>
-            </div>`;
-
-            html += `<div class="tree-item tree-indent">
-                <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
-                    <span>🎯 Coordinators</span>
-                    <span class="badge coordinator">${layers.coordination.coordinators.length}</span>
-                </div>
-            </div>`;
+                <div class="tree-children">
+                    <div class="tree-item tree-indent">
+                        <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                            <span>🎯 Coordinators</span>
+                            <span class="badge coordinator">${layers.coordination.coordinators.length}</span>
+                        </div>
+                    </div>
+                    <div class="tree-children">
+            `;
 
             layers.coordination.coordinators.forEach(coord => {
-                html += `<div class="tree-item" style="margin-left: 48px;">
-                    <div class="tree-node">
-                        <span class="status-dot status-coordinator"></span>
-                        <span>${coord}</span>
+                html += `
+                    <div class="tree-item" style="margin-left: 48px;">
+                        <div class="tree-node">
+                            <span class="status-dot status-coordinator"></span>
+                            <span>${coord}</span>
+                        </div>
                     </div>
-                </div>`;
+                `;
             });
+
+            html += `
+                    </div>
+                </div>
+            `;
 
             // Execution Layer
-            html += `<div class="tree-item" style="margin-top: 20px;">
-                <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
-                    <span>📍 Execution Layer (執行層)</span>
+            html += `
+                <div class="tree-item" style="margin-top: 20px;">
+                    <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                        <span>📍 Execution Layer (執行層)</span>
+                    </div>
                 </div>
-            </div>`;
-
-            html += `<div class="tree-item tree-indent">
-                <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
-                    <span>👷 Workers</span>
-                    <span class="badge worker">${layers.execution.workers.length}</span>
-                </div>
-            </div>`;
+                <div class="tree-children">
+                    <div class="tree-item tree-indent">
+                        <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                            <span>👷 Workers</span>
+                            <span class="badge worker">${layers.execution.workers.length}</span>
+                        </div>
+                    </div>
+                    <div class="tree-children">
+            `;
 
             layers.execution.workers.forEach(worker => {
-                html += `<div class="tree-item" style="margin-left: 48px;">
-                    <div class="tree-node">
-                        <span class="status-dot status-worker"></span>
-                        <span>${worker}</span>
+                html += `
+                    <div class="tree-item" style="margin-left: 48px;">
+                        <div class="tree-node">
+                            <span class="status-dot status-worker"></span>
+                            <span>${worker}</span>
+                        </div>
                     </div>
-                </div>`;
+                `;
             });
+
+            html += `
+                    </div>
+                </div>
+            `;
 
             tree.innerHTML = html;
         }
@@ -1330,11 +1365,17 @@
         // 切換展開/摺疊
         function toggleExpand(element) {
             element.classList.toggle('expanded');
+
+            // 找到下一個 tree-children 容器
             let sibling = element.parentElement.nextElementSibling;
-            while (sibling && sibling.classList.contains('tree-indent') ||
-                   (sibling && sibling.classList.contains('collapsed'))) {
-                sibling.classList.toggle('collapsed');
-                sibling = sibling.nextElementSibling;
+
+            // 如果下一個元素是 tree-children，切換其顯示狀態
+            if (sibling && sibling.classList.contains('tree-children')) {
+                if (element.classList.contains('expanded')) {
+                    sibling.style.display = 'block';
+                } else {
+                    sibling.style.display = 'none';
+                }
             }
         }
 
