@@ -1,0 +1,28 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Logs
+*.log
+/tmp/
+
+# IDE
+.vscode/
+.idea/
+
+# Runtime
+*.pid
+*.swp
+*.swo
+
+# Cache
+github-cache.json
+
+# Generated files
+control-center-real-data.json

@@ -1,0 +1,400 @@
+#!/usr/bin/env python3
+"""
+Skills Control Center - Real Data Scanner
+掃描真實的 Skills, Agents, Rules, Commands 並生成資料結構
+"""
+
+import os
+import json
+import re
+from pathlib import Path
+from typing import Dict, List, Any
+from datetime import datetime
+
+# 路徑配置
+HOME = Path.home()
+CLAUDE_DIR = HOME / ".claude"
+DEV_DIR = HOME / "DEV"
+
+class RealDataScanner:
+    def __init__(self):
+        self.data = {
+            "version": "1.0.0",
+            "last_scan": datetime.now().isoformat(),
+            "categories": {
+                "global_skills": {"count": 0, "items": []},
+                "project_skills": {"count": 0, "items": []},
+                "dev_skills": {"count": 0, "items": []},
+                "global_rules": {"count": 0, "items": []},
+                "project_rules": {"count": 0, "items": []},
+                "agents": {"count": 0, "items": []},
+                "commands": {"count": 0, "items": []}
+            },
+            "relationships": {
+                "skill_to_agents": {},
+                "agent_to_skills": {},
+                "agent_to_rules": {},
+                "command_to_skill": {}
+            },
+            "layers": {
+                "entry": {"skills": [], "commands": []},
+                "coordination": {"coordinators": []},
+                "execution": {"workers": [], "sub_skills": []},
+            }
+        }
+
+    def scan_global_skills(self):
+        """掃描全域 Skills"""
+        skills_dir = CLAUDE_DIR / "skills"
+        if not skills_dir.exists():
+            return
+
+        for skill_path in skills_dir.rglob("SKILL.md"):
+            # 排除 node_modules
+            if "node_modules" in str(skill_path):
+                continue
+
+            skill_name = skill_path.parent.name
+
+            # 讀取 YAML frontmatter
+            content = skill_path.read_text(encoding='utf-8')
+            frontmatter = self.extract_frontmatter(content)
+
+            # 判斷是否為 team skill (有 .claude/agents/)
+            has_agents = (skill_path.parent / ".claude" / "agents").exists()
+
+            skill_info = {
+                "name": skill_name,
+                "path": str(skill_path.parent.relative_to(HOME)),
+                "type": "team" if has_agents else "single",
+                "description": frontmatter.get("description", ""),
+                "source": "local",
+                "has_agents": has_agents,
+                "has_git": (skill_path.parent / ".git").exists()
+            }
+
+            self.data["categories"]["global_skills"]["items"].append(skill_info)
+
+            # 如果是 team skill，加入 entry layer
+            if has_agents:
+                self.data["layers"]["entry"]["skills"].append(skill_name)
+
+        self.data["categories"]["global_skills"]["count"] = len(
+            self.data["categories"]["global_skills"]["items"]
+        )
+
+    def scan_project_skills(self):
+        """掃描專案 Skills"""
+        # 掃描 DEV 目錄下的專案
+        for claude_dir in DEV_DIR.rglob(".claude"):
+            # 排除 node_modules 和全域 .claude
+            if "node_modules" in str(claude_dir) or str(claude_dir) == str(CLAUDE_DIR):
+                continue
+
+            project_path = claude_dir.parent
+            skills_dir = claude_dir / "skills"
+
+            if not skills_dir.exists():
+                continue
+
+            for skill_path in skills_dir.rglob("SKILL.md"):
+                skill_name = skill_path.parent.name
+
+                project_info = {
+                    "project_path": str(project_path.relative_to(HOME)),
+                    "skill_name": skill_name,
+                    "skill_path": str(skill_path.parent.relative_to(project_path)),
+                    "is_duplicate": self.is_global_skill(skill_name)
+                }
+
+                self.data["categories"]["project_skills"]["items"].append(project_info)
+
+        self.data["categories"]["project_skills"]["count"] = len(
+            self.data["categories"]["project_skills"]["items"]
+        )
+
+    def scan_dev_skills(self):
+        """掃描開發中 Skills (有 .git 的)"""
+        projects_dir = DEV_DIR / "projects"
+        if not projects_dir.exists():
+            return
+
+        for project_dir in projects_dir.iterdir():
+            if not project_dir.is_dir():
+                continue
+
+            git_dir = project_dir / ".git"
+            if not git_dir.exists():
+                continue
+
+            # 檢查是否有 SKILL.md 或 .claude/
+            has_skill = (project_dir / "SKILL.md").exists() or (project_dir / ".claude").exists()
+
+            if has_skill:
+                dev_info = {
+                    "name": project_dir.name,
+                    "path": str(project_dir.relative_to(HOME)),
+                    "has_git": True,
+                    "dirty": self.check_git_dirty(project_dir)
+                }
+
+                self.data["categories"]["dev_skills"]["items"].append(dev_info)
+
+        self.data["categories"]["dev_skills"]["count"] = len(
+            self.data["categories"]["dev_skills"]["items"]
+        )
+
+    def scan_global_rules(self):
+        """掃描全域 Rules"""
+        rules_dir = CLAUDE_DIR / "rules"
+        if not rules_dir.exists():
+            return
+
+        for rule_path in rules_dir.glob("*.md"):
+            content = rule_path.read_text(encoding='utf-8')
+            frontmatter = self.extract_frontmatter(content)
+            applicability = self.extract_applicability(content)
+
+            rule_info = {
+                "name": rule_path.stem,
+                "path": str(rule_path.relative_to(HOME)),
+                "description": frontmatter.get("description", ""),
+                "applicability": applicability,
+                "scope": "global"
+            }
+
+            self.data["categories"]["global_rules"]["items"].append(rule_info)
+
+        self.data["categories"]["global_rules"]["count"] = len(
+            self.data["categories"]["global_rules"]["items"]
+        )
+
+    def scan_project_rules(self):
+        """掃描專案 Rules"""
+        for claude_dir in DEV_DIR.rglob(".claude"):
+            if "node_modules" in str(claude_dir) or str(claude_dir) == str(CLAUDE_DIR):
+                continue
+
+            project_path = claude_dir.parent
+            rules_dir = claude_dir / "rules"
+
+            if not rules_dir.exists():
+                continue
+
+            for rule_path in rules_dir.glob("*.md"):
+                content = rule_path.read_text(encoding='utf-8')
+                frontmatter = self.extract_frontmatter(content)
+                applicability = self.extract_applicability(content)
+
+                rule_info = {
+                    "project_path": str(project_path.relative_to(HOME)),
+                    "name": rule_path.stem,
+                    "rule_path": str(rule_path.relative_to(project_path)),
+                    "description": frontmatter.get("description", ""),
+                    "applicability": applicability,
+                    "scope": "project"
+                }
+
+                self.data["categories"]["project_rules"]["items"].append(rule_info)
+
+        self.data["categories"]["project_rules"]["count"] = len(
+            self.data["categories"]["project_rules"]["items"]
+        )
+
+    def scan_agents(self):
+        """掃描 Agents"""
+        # 掃描專案中的 agents
+        for claude_dir in DEV_DIR.rglob(".claude"):
+            if "node_modules" in str(claude_dir) or str(claude_dir) == str(CLAUDE_DIR):
+                continue
+
+            project_path = claude_dir.parent
+            agents_dir = claude_dir / "agents"
+
+            if not agents_dir.exists():
+                continue
+
+            # 找出 coordinator (在 agents 根目錄的 .md)
+            for agent_path in agents_dir.glob("*.md"):
+                agent_info = {
+                    "name": agent_path.stem,
+                    "path": str(agent_path.relative_to(HOME)),
+                    "type": "coordinator",
+                    "belongs_to_project": str(project_path.relative_to(HOME)),
+                    "delegates_to": []
+                }
+
+                self.data["categories"]["agents"]["items"].append(agent_info)
+                self.data["layers"]["coordination"]["coordinators"].append(agent_path.stem)
+
+            # 找出 workers (在子目錄的 .md)
+            for agent_path in agents_dir.rglob("*.md"):
+                # 跳過已處理的 coordinator
+                if agent_path.parent == agents_dir:
+                    continue
+
+                agent_info = {
+                    "name": agent_path.stem,
+                    "path": str(agent_path.relative_to(HOME)),
+                    "type": "worker",
+                    "group": agent_path.parent.name,
+                    "belongs_to_project": str(project_path.relative_to(HOME))
+                }
+
+                self.data["categories"]["agents"]["items"].append(agent_info)
+                self.data["layers"]["execution"]["workers"].append(agent_path.stem)
+
+        self.data["categories"]["agents"]["count"] = len(
+            self.data["categories"]["agents"]["items"]
+        )
+
+    def scan_commands(self):
+        """掃描 Commands（從 SKILL.md 提取）"""
+        # 簡化版：從 dopethingsman SKILL.md 提取
+        dopethingsman_skill = CLAUDE_DIR / "skills" / "dopethingsman" / "SKILL.md"
+
+        if dopethingsman_skill.exists():
+            content = dopethingsman_skill.read_text(encoding='utf-8')
+
+            # 提取命令表格
+            commands = [
+                {"name": "check-updates", "description": "檢查 skills 更新"},
+                {"name": "organize", "description": "整理指定目錄"},
+                {"name": "export-config", "description": "匯出環境配置"},
+                {"name": "import-config", "description": "匯入環境配置"},
+                {"name": "usage-report", "description": "產生使用報告"},
+                {"name": "discover-skills", "description": "搜尋推薦的新 skills"},
+                {"name": "health-check", "description": "完整環境健檢"},
+                {"name": "control-center", "description": "Skills 總控台"}
+            ]
+
+            for cmd in commands:
+                cmd_info = {
+                    "name": cmd["name"],
+                    "full_command": f"/dopethingsman {cmd['name']}",
+                    "entry_skill": "dopethingsman",
+                    "description": cmd["description"]
+                }
+
+                self.data["categories"]["commands"]["items"].append(cmd_info)
+                self.data["layers"]["entry"]["commands"].append(cmd_info["full_command"])
+
+        self.data["categories"]["commands"]["count"] = len(
+            self.data["categories"]["commands"]["items"]
+        )
+
+    # Helper methods
+    def extract_frontmatter(self, content: str) -> Dict[str, str]:
+        """提取 YAML frontmatter"""
+        match = re.search(r'^---\s*\n(.*?)\n---', content, re.DOTALL)
+        if not match:
+            return {}
+
+        frontmatter = {}
+        for line in match.group(1).split('\n'):
+            if ':' in line:
+                key, value = line.split(':', 1)
+                frontmatter[key.strip()] = value.strip()
+
+        return frontmatter
+
+    def extract_applicability(self, content: str) -> List[str]:
+        """提取 applicability"""
+        match = re.search(r'## Applicability\s*\n\s*- Applies to:\s*(.+)', content)
+        if not match:
+            return []
+
+        return [x.strip() for x in match.group(1).split(',')]
+
+    def is_global_skill(self, skill_name: str) -> bool:
+        """檢查是否為全域 skill"""
+        return any(
+            s["name"] == skill_name
+            for s in self.data["categories"]["global_skills"]["items"]
+        )
+
+    def check_git_dirty(self, repo_path: Path) -> bool:
+        """檢查 Git 是否有未 commit 變更"""
+        import subprocess
+        try:
+            result = subprocess.run(
+                ["git", "status", "--porcelain"],
+                cwd=repo_path,
+                capture_output=True,
+                text=True
+            )
+            return bool(result.stdout.strip())
+        except:
+            return False
+
+    def run_scan(self):
+        """執行完整掃描"""
+        print("🔍 開始掃描...")
+
+        print("  → 掃描全域 Skills...")
+        self.scan_global_skills()
+
+        print("  → 掃描專案 Skills...")
+        self.scan_project_skills()
+
+        print("  → 掃描開發中 Skills...")
+        self.scan_dev_skills()
+
+        print("  → 掃描全域 Rules...")
+        self.scan_global_rules()
+
+        print("  → 掃描專案 Rules...")
+        self.scan_project_rules()
+
+        print("  → 掃描 Agents...")
+        self.scan_agents()
+
+        print("  → 掃描 Commands...")
+        self.scan_commands()
+
+        print("✓ 掃描完成！")
+
+        return self.data
+
+    def save_to_file(self, output_path: str):
+        """儲存到 JSON 檔案"""
+        with open(output_path, 'w', encoding='utf-8') as f:
+            json.dump(self.data, f, indent=2, ensure_ascii=False)
+
+        print(f"💾 資料已儲存到: {output_path}")
+
+    def print_summary(self):
+        """印出摘要"""
+        print("\n" + "="*60)
+        print("📊 掃描摘要")
+        print("="*60)
+        print(f"全域 Skills:     {self.data['categories']['global_skills']['count']}")
+        print(f"專案 Skills:     {self.data['categories']['project_skills']['count']}")
+        print(f"開發中 Skills:   {self.data['categories']['dev_skills']['count']}")
+        print(f"全域 Rules:      {self.data['categories']['global_rules']['count']}")
+        print(f"專案 Rules:      {self.data['categories']['project_rules']['count']}")
+        print(f"Agents:          {self.data['categories']['agents']['count']}")
+        print(f"Commands:        {self.data['categories']['commands']['count']}")
+        print("="*60)
+
+        print("\n📍 分層統計:")
+        print(f"  Entry Layer:")
+        print(f"    - Skills:    {len(self.data['layers']['entry']['skills'])}")
+        print(f"    - Commands:  {len(self.data['layers']['entry']['commands'])}")
+        print(f"  Coordination Layer:")
+        print(f"    - Coordinators: {len(self.data['layers']['coordination']['coordinators'])}")
+        print(f"  Execution Layer:")
+        print(f"    - Workers:   {len(self.data['layers']['execution']['workers'])}")
+
+if __name__ == "__main__":
+    scanner = RealDataScanner()
+    data = scanner.run_scan()
+
+    # 儲存資料
+    output_file = Path(__file__).parent / "control-center-real-data.json"
+    scanner.save_to_file(str(output_file))
+
+    # 印出摘要
+    scanner.print_summary()
+
+    print(f"\n✨ 下一步: 使用此資料生成視覺化 HTML")

@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DopeThingsMan - Skills Control Center</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 48px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card-icon {
+            font-size: 2em;
+            margin-right: 12px;
+        }
+
+        .card-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .card-count {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .card-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .card-details {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #eee;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .detail-label {
+            color: #666;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .main-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .panel-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        .action-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .action-button-icon {
+            font-size: 1.5em;
+            margin-bottom: 8px;
+        }
+
+        .action-button-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .action-button-desc {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+
+        .hierarchy-view {
+            margin-top: 20px;
+        }
+
+        .tree-item {
+            margin-left: 20px;
+            padding: 8px;
+            border-left: 2px solid #eee;
+        }
+
+        .tree-item:hover {
+            background: #f9f9f9;
+            border-left-color: #667eea;
+        }
+
+        .tree-node {
+            display: flex;
+            align-items: center;
+            padding: 4px 0;
+        }
+
+        .tree-icon {
+            margin-right: 8px;
+        }
+
+        .tree-label {
+            font-weight: 500;
+        }
+
+        .tree-badge {
+            margin-left: 8px;
+            padding: 2px 8px;
+            background: #667eea;
+            color: white;
+            border-radius: 12px;
+            font-size: 0.75em;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .status-active { background: #10b981; }
+        .status-dev { background: #f59e0b; }
+        .status-candidate { background: #3b82f6; }
+        .status-deprecated { background: #ef4444; }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 30px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎛️ Skills Control Center</h1>
+            <p>智能技能管理總控台 - 掃描、分類、整合、優化</p>
+        </div>
+
+        <!-- 統計儀表板 -->
+        <div class="dashboard">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🌍</div>
+                    <div class="card-title">全域 Skills</div>
+                </div>
+                <div class="card-count">42</div>
+                <div class="card-label">已安裝的全域技能</div>
+                <div class="card-details">
+                    <div class="detail-item">
+                        <span class="detail-label">本地建立</span>
+                        <span class="detail-value">28</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Fork 自 Upstream</span>
+                        <span class="detail-value">10</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">有可用更新</span>
+                        <span class="detail-value">4</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📁</div>
+                    <div class="card-title">專案 Skills</div>
+                </div>
+                <div class="card-count">12</div>
+                <div class="card-label">專案特定技能</div>
+                <div class="card-details">
+                    <div class="detail-item">
+                        <span class="detail-label">活躍專案</span>
+                        <span class="detail-value">5</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">團隊 Skills</span>
+                        <span class="detail-value">8</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">重複定義</span>
+                        <span class="detail-value">2 ⚠️</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🔨</div>
+                    <div class="card-title">開發中 Skills</div>
+                </div>
+                <div class="card-count">3</div>
+                <div class="card-label">有 Git Repo 的技能</div>
+                <div class="card-details">
+                    <div class="detail-item">
+                        <span class="detail-label">未 commit 變更</span>
+                        <span class="detail-value">1</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">已發布版本</span>
+                        <span class="detail-value">2</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">GitHub Stars</span>
+                        <span class="detail-value">156 ⭐</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">💡</div>
+                    <div class="card-title">推薦 Skills</div>
+                </div>
+                <div class="card-count">5</div>
+                <div class="card-label">建議安裝的熱門技能</div>
+                <div class="card-details">
+                    <div class="detail-item">
+                        <span class="detail-label">高相關性</span>
+                        <span class="detail-value">3</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">社群推薦</span>
+                        <span class="detail-value">2</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">平均評分</span>
+                        <span class="detail-value">78/100</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 快速操作面板 -->
+        <div class="main-panel">
+            <div class="panel-title">🎯 快速操作</div>
+            <div class="action-grid">
+                <button class="action-button" onclick="scan()">
+                    <div class="action-button-icon">🔍</div>
+                    <div class="action-button-title">掃描所有 Skills</div>
+                    <div class="action-button-desc">深度掃描全域、專案、開發中的所有技能</div>
+                </button>
+
+                <button class="action-button" onclick="viewHierarchy()">
+                    <div class="action-button-icon">🌳</div>
+                    <div class="action-button-title">檢視分層結構</div>
+                    <div class="action-button-desc">以樹狀圖顯示技能來源與繼承關係</div>
+                </button>
+
+                <button class="action-button" onclick="checkDependencies()">
+                    <div class="action-button-icon">🔗</div>
+                    <div class="action-button-title">檢查依賴關係</div>
+                    <div class="action-button-desc">分析技能之間的依賴與使用關係</div>
+                </button>
+
+                <button class="action-button" onclick="consolidate()">
+                    <div class="action-button-icon">🔄</div>
+                    <div class="action-button-title">智能整合</div>
+                    <div class="action-button-desc">合併重複技能，清理無用檔案</div>
+                </button>
+
+                <button class="action-button" onclick="generateReport()">
+                    <div class="action-button-icon">📊</div>
+                    <div class="action-button-title">生成溯源報告</div>
+                    <div class="action-button-desc">產出完整的技能來源與使用報告</div>
+                </button>
+
+                <button class="action-button" onclick="safetyCheck()">
+                    <div class="action-button-icon">🛡️</div>
+                    <div class="action-button-title">安全檢查</div>
+                    <div class="action-button-desc">驗證操作安全性，避免破壞既有關聯</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- 分層結構視圖 -->
+        <div class="main-panel">
+            <div class="panel-title">🌳 Skills 分層結構</div>
+            <div class="hierarchy-view">
+                <div class="tree-node">
+                    <span class="tree-icon">🌍</span>
+                    <span class="tree-label">~/.claude/skills (全域)</span>
+                    <span class="tree-badge">42</span>
+                </div>
+                <div class="tree-item">
+                    <div class="tree-node">
+                        <span class="status-indicator status-active"></span>
+                        <span class="tree-label">team001</span>
+                        <span style="margin-left: 8px; color: #666; font-size: 0.85em;">→ 敏捷開發團隊</span>
+                    </div>
+                </div>
+                <div class="tree-item">
+                    <div class="tree-node">
+                        <span class="status-indicator status-active"></span>
+                        <span class="tree-label">slide-consult</span>
+                        <span style="margin-left: 8px; color: #666; font-size: 0.85em;">→ 投影片製作顧問</span>
+                    </div>
+                </div>
+
+                <div class="tree-node" style="margin-top: 20px;">
+                    <span class="tree-icon">📁</span>
+                    <span class="tree-label">專案 Skills</span>
+                    <span class="tree-badge">12</span>
+                </div>
+                <div class="tree-item">
+                    <div class="tree-node">
+                        <span class="status-indicator status-active"></span>
+                        <span class="tree-label">~/DEV/MAYO-Report-Master/.claude/skills</span>
+                    </div>
+                    <div class="tree-item">
+                        <div class="tree-node">
+                            <span class="tree-label">team001-mayo-coding-standard</span>
+                            <span style="margin-left: 8px; color: #f59e0b; font-size: 0.85em;">→ Fork from global</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tree-node" style="margin-top: 20px;">
+                    <span class="tree-icon">🔨</span>
+                    <span class="tree-label">開發中 Skills (有 Git Repo)</span>
+                    <span class="tree-badge">3</span>
+                </div>
+                <div class="tree-item">
+                    <div class="tree-node">
+                        <span class="status-indicator status-dev"></span>
+                        <span class="tree-label">dopethingsman</span>
+                        <span style="margin-left: 8px; color: #3b82f6; font-size: 0.85em;">→ github.com/user/dopethingsman</span>
+                    </div>
+                </div>
+
+                <div class="tree-node" style="margin-top: 20px;">
+                    <span class="tree-icon">💡</span>
+                    <span class="tree-label">推薦 Skills</span>
+                    <span class="tree-badge">5</span>
+                </div>
+                <div class="tree-item">
+                    <div class="tree-node">
+                        <span class="status-indicator status-candidate"></span>
+                        <span class="tree-label">playwright-helper</span>
+                        <span style="margin-left: 8px; color: #10b981; font-size: 0.85em;">→ 1.2k ⭐ | Score: 78/100</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>DopeThingsMan v1.0.0 | Skills Control Center</p>
+            <p style="font-size: 0.9em; margin-top: 8px;">智能環境管理秘書團隊</p>
+        </div>
+    </div>
+
+    <script>
+        function scan() {
+            alert('🔍 掃描所有 Skills...\n\n將執行：\n1. 掃描 ~/.claude/skills\n2. 掃描專案 .claude/skills\n3. 檢測 Git Repos\n4. 搜尋推薦 Skills');
+        }
+
+        function viewHierarchy() {
+            alert('🌳 檢視分層結構...\n\n將顯示：\n- 來源追蹤\n- 繼承關係\n- Fork 鏈\n- 使用關係');
+        }
+
+        function checkDependencies() {
+            alert('🔗 檢查依賴關係...\n\n將分析：\n- used_by 關係\n- depends_on 關係\n- Agent 使用狀況\n- 潛在衝突');
+        }
+
+        function consolidate() {
+            alert('🔄 智能整合...\n\n將執行：\n1. 偵測重複 Skills\n2. 建議合併方案\n3. 備份既有資料\n4. 安全整併');
+        }
+
+        function generateReport() {
+            alert('📊 生成溯源報告...\n\n將產出：\n- Skills 來源清單\n- 使用統計\n- 依賴圖譜\n- Markdown 報告');
+        }
+
+        function safetyCheck() {
+            alert('🛡️ 安全檢查...\n\n將驗證：\n✓ 不破壞專案關聯\n✓ 不破壞 Repo 關聯\n✓ 備份機制完整\n✓ 可回滾');
+        }
+    </script>
+</body>
+</html>

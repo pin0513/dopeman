@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DopeThingsMan - Skills Control Center (Real Data)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 48px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card-icon {
+            font-size: 2em;
+            margin-right: 12px;
+        }
+
+        .card-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .card-count {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .card-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .main-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .panel-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9em;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .filter-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .tree-view {
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .tree-item {
+            padding: 6px 12px;
+            margin: 2px 0;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .tree-item:hover {
+            background: #f5f5f5;
+        }
+
+        .tree-node {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tree-indent {
+            margin-left: 24px;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-team { background: #10b981; }
+        .status-single { background: #3b82f6; }
+        .status-coordinator { background: #f59e0b; }
+        .status-worker { background: #8b5cf6; }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #667eea;
+            color: white;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .badge.team { background: #10b981; }
+        .badge.single { background: #3b82f6; }
+        .badge.coordinator { background: #f59e0b; }
+        .badge.worker { background: #8b5cf6; }
+
+        .tab-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .tab:hover {
+            background: #f5f5f5;
+        }
+
+        .tab.active {
+            border-bottom-color: #667eea;
+            color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 30px;
+            opacity: 0.8;
+        }
+
+        .expandable {
+            cursor: pointer;
+        }
+
+        .expandable::before {
+            content: '▶ ';
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+
+        .expandable.expanded::before {
+            transform: rotate(90deg);
+        }
+
+        .collapsed {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎛️ Skills Control Center</h1>
+            <p>真實資料視覺化 - 完整環境掃描結果</p>
+        </div>
+
+        <!-- 統計儀表板 -->
+        <div class="dashboard" id="dashboard">
+            <!-- 動態生成 -->
+        </div>
+
+        <!-- 主面板 -->
+        <div class="main-panel">
+            <div class="panel-title">
+                <span>📊 詳細資訊</span>
+                <span style="font-size: 0.6em; font-weight: normal; color: #999;">
+                    最後掃描: <span id="lastScan"></span>
+                </span>
+            </div>
+
+            <!-- 搜尋框 -->
+            <div class="search-box">
+                <input type="text" class="search-input" id="searchInput" placeholder="搜尋 Skills, Agents, Rules, Commands...">
+            </div>
+
+            <!-- 過濾按鈕 -->
+            <div class="filter-buttons" id="filterButtons">
+                <!-- 動態生成 -->
+            </div>
+
+            <!-- 標籤頁 -->
+            <div class="tab-container">
+                <div class="tab active" data-tab="skills">Skills</div>
+                <div class="tab" data-tab="agents">Agents</div>
+                <div class="tab" data-tab="rules">Rules</div>
+                <div class="tab" data-tab="commands">Commands</div>
+                <div class="tab" data-tab="layers">分層視圖</div>
+            </div>
+
+            <!-- 標籤頁內容 -->
+            <div id="skills" class="tab-content active">
+                <div class="tree-view" id="skillsTree"></div>
+            </div>
+
+            <div id="agents" class="tab-content">
+                <div class="tree-view" id="agentsTree"></div>
+            </div>
+
+            <div id="rules" class="tab-content">
+                <div class="tree-view" id="rulesTree"></div>
+            </div>
+
+            <div id="commands" class="tab-content">
+                <div class="tree-view" id="commandsTree"></div>
+            </div>
+
+            <div id="layers" class="tab-content">
+                <div class="tree-view" id="layersTree"></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>DopeThingsMan v1.0.0 | Skills Control Center</p>
+            <p style="font-size: 0.9em; margin-top: 8px;">智能環境管理秘書團隊</p>
+        </div>
+    </div>
+
+    <script>
+        let data = null;
+        let filteredData = null;
+
+        // 載入資料
+        async function loadData() {
+            try {
+                const response = await fetch('./control-center-real-data.json');
+                data = await response.json();
+                filteredData = data;
+                renderAll();
+            } catch (error) {
+                console.error('載入資料失敗:', error);
+            }
+        }
+
+        // 渲染所有內容
+        function renderAll() {
+            renderDashboard();
+            renderSkillsTree();
+            renderAgentsTree();
+            renderRulesTree();
+            renderCommandsTree();
+            renderLayersTree();
+            renderFilters();
+
+            // 更新最後掃描時間
+            const lastScan = new Date(data.last_scan);
+            document.getElementById('lastScan').textContent = lastScan.toLocaleString('zh-TW');
+        }
+
+        // 渲染儀表板
+        function renderDashboard() {
+            const dashboard = document.getElementById('dashboard');
+            const cards = [
+                {
+                    icon: '🌍',
+                    title: '全域 Skills',
+                    count: data.categories.global_skills.count,
+                    label: '已安裝的全域技能'
+                },
+                {
+                    icon: '📁',
+                    title: '專案 Skills',
+                    count: data.categories.project_skills.count,
+                    label: '專案特定技能'
+                },
+                {
+                    icon: '🔨',
+                    title: '開發中 Skills',
+                    count: data.categories.dev_skills.count,
+                    label: '有 Git Repo 的技能'
+                },
+                {
+                    icon: '📋',
+                    title: '全域 Rules',
+                    count: data.categories.global_rules.count,
+                    label: '全域規則'
+                },
+                {
+                    icon: '📂',
+                    title: '專案 Rules',
+                    count: data.categories.project_rules.count,
+                    label: '專案規則'
+                },
+                {
+                    icon: '🤖',
+                    title: 'Agents',
+                    count: data.categories.agents.count,
+                    label: 'Coordinators & Workers'
+                },
+                {
+                    icon: '⌨️',
+                    title: 'Commands',
+                    count: data.categories.commands.count,
+                    label: '可用指令'
+                }
+            ];
+
+            dashboard.innerHTML = cards.map(card => `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">${card.icon}</div>
+                        <div class="card-title">${card.title}</div>
+                    </div>
+                    <div class="card-count">${card.count}</div>
+                    <div class="card-label">${card.label}</div>
+                </div>
+            `).join('');
+        }
+
+        // 渲染 Skills 樹狀圖
+        function renderSkillsTree() {
+            const tree = document.getElementById('skillsTree');
+            const globalSkills = data.categories.global_skills.items;
+            const projectSkills = data.categories.project_skills.items;
+            const devSkills = data.categories.dev_skills.items;
+
+            let html = '';
+
+            // 全域 Skills
+            html += `<div class="tree-item">
+                <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                    <span>🌍 全域 Skills</span>
+                    <span class="badge">${globalSkills.length}</span>
+                </div>
+            </div>`;
+
+            globalSkills.slice(0, 20).forEach(skill => {
+                const type = skill.type === 'team' ? 'team' : 'single';
+                html += `<div class="tree-item tree-indent">
+                    <div class="tree-node">
+                        <span class="status-dot status-${type}"></span>
+                        <span>${skill.name}</span>
+                        <span class="badge ${type}">${skill.type}</span>
+                    </div>
+                </div>`;
+            });
+
+            if (globalSkills.length > 20) {
+                html += `<div class="tree-item tree-indent">
+                    <div class="tree-node" style="color: #999;">
+                        ... 還有 ${globalSkills.length - 20} 個
+                    </div>
+                </div>`;
+            }
+
+            // 專案 Skills
+            html += `<div class="tree-item" style="margin-top: 20px;">
+                <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                    <span>📁 專案 Skills</span>
+                    <span class="badge">${projectSkills.length}</span>
+                </div>
+            </div>`;
+
+            const projectGroups = {};
+            projectSkills.forEach(skill => {
+                if (!projectGroups[skill.project_path]) {
+                    projectGroups[skill.project_path] = [];
+                }
+                projectGroups[skill.project_path].push(skill);
+            });
+
+            Object.entries(projectGroups).slice(0, 5).forEach(([project, skills]) => {
+                html += `<div class="tree-item tree-indent">
+                    <div class="tree-node expandable" onclick="toggleExpand(this)">
+                        <span>📂 ${project}</span>
+                        <span class="badge">${skills.length}</span>
+                    </div>
+                </div>`;
+
+                skills.forEach(skill => {
+                    html += `<div class="tree-item collapsed" style="margin-left: 48px;">
+                        <div class="tree-node">
+                            <span class="status-dot status-single"></span>
+                            <span>${skill.skill_name}</span>
+                            ${skill.is_duplicate ? '<span class="badge" style="background: #ef4444;">重複</span>' : ''}
+                        </div>
+                    </div>`;
+                });
+            });
+
+            // 開發中 Skills
+            if (devSkills.length > 0) {
+                html += `<div class="tree-item" style="margin-top: 20px;">
+                    <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                        <span>🔨 開發中 Skills</span>
+                        <span class="badge">${devSkills.length}</span>
+                    </div>
+                </div>`;
+
+                devSkills.forEach(skill => {
+                    html += `<div class="tree-item tree-indent">
+                        <div class="tree-node">
+                            <span class="status-dot status-team"></span>
+                            <span>${skill.name}</span>
+                            ${skill.dirty ? '<span class="badge" style="background: #f59e0b;">未提交</span>' : ''}
+                        </div>
+                    </div>`;
+                });
+            }
+
+            tree.innerHTML = html;
+        }
+
+        // 渲染 Agents 樹狀圖
+        function renderAgentsTree() {
+            const tree = document.getElementById('agentsTree');
+            const agents = data.categories.agents.items;
+
+            const coordinators = agents.filter(a => a.type === 'coordinator');
+            const workers = agents.filter(a => a.type === 'worker');
+
+            let html = '';
+
+            // Coordinators
+            html += `<div class="tree-item">
+                <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                    <span>🎯 Coordinators</span>
+                    <span class="badge coordinator">${coordinators.length}</span>
+                </div>
+            </div>`;
+
+            coordinators.forEach(coord => {
+                html += `<div class="tree-item tree-indent">
+                    <div class="tree-node">
+                        <span class="status-dot status-coordinator"></span>
+                        <span>${coord.name}</span>
+                        <span style="color: #999; font-size: 0.85em; margin-left: 8px;">
+                            → ${coord.belongs_to_project}
+                        </span>
+                    </div>
+                </div>`;
+            });
+
+            // Workers
+            html += `<div class="tree-item" style="margin-top: 20px;">
+                <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                    <span>👷 Workers</span>
+                    <span class="badge worker">${workers.length}</span>
+                </div>
+            </div>`;
+
+            const workerGroups = {};
+            workers.forEach(worker => {
+                if (!workerGroups[worker.group]) {
+                    workerGroups[worker.group] = [];
+                }
+                workerGroups[worker.group].push(worker);
+            });
+
+            Object.entries(workerGroups).forEach(([group, groupWorkers]) => {
+                html += `<div class="tree-item tree-indent">
+                    <div class="tree-node expandable" onclick="toggleExpand(this)">
+                        <span>📁 ${group}</span>
+                        <span class="badge">${groupWorkers.length}</span>
+                    </div>
+                </div>`;
+
+                groupWorkers.forEach(worker => {
+                    html += `<div class="tree-item collapsed" style="margin-left: 48px;">
+                        <div class="tree-node">
+                            <span class="status-dot status-worker"></span>
+                            <span>${worker.name}</span>
+                        </div>
+                    </div>`;
+                });
+            });
+
+            tree.innerHTML = html;
+        }
+
+        // 渲染 Rules 樹狀圖
+        function renderRulesTree() {
+            const tree = document.getElementById('rulesTree');
+            const globalRules = data.categories.global_rules.items;
+            const projectRules = data.categories.project_rules.items;
+
+            let html = '';
+
+            // 全域 Rules
+            html += `<div class="tree-item">
+                <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                    <span>🌍 全域 Rules</span>
+                    <span class="badge">${globalRules.length}</span>
+                </div>
+            </div>`;
+
+            globalRules.forEach(rule => {
+                html += `<div class="tree-item tree-indent">
+                    <div class="tree-node">
+                        <span>📋 ${rule.name}</span>
+                        ${rule.applicability.length > 0 ?
+                            `<span style="color: #999; font-size: 0.85em; margin-left: 8px;">
+                                → ${rule.applicability.join(', ')}
+                            </span>` : ''}
+                    </div>
+                </div>`;
+            });
+
+            // 專案 Rules
+            html += `<div class="tree-item" style="margin-top: 20px;">
+                <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                    <span>📁 專案 Rules</span>
+                    <span class="badge">${projectRules.length}</span>
+                </div>
+            </div>`;
+
+            const ruleGroups = {};
+            projectRules.forEach(rule => {
+                if (!ruleGroups[rule.project_path]) {
+                    ruleGroups[rule.project_path] = [];
+                }
+                ruleGroups[rule.project_path].push(rule);
+            });
+
+            Object.entries(ruleGroups).forEach(([project, rules]) => {
+                html += `<div class="tree-item tree-indent">
+                    <div class="tree-node expandable" onclick="toggleExpand(this)">
+                        <span>📂 ${project}</span>
+                        <span class="badge">${rules.length}</span>
+                    </div>
+                </div>`;
+
+                rules.forEach(rule => {
+                    html += `<div class="tree-item collapsed" style="margin-left: 48px;">
+                        <div class="tree-node">
+                            <span>📋 ${rule.name}</span>
+                        </div>
+                    </div>`;
+                });
+            });
+
+            tree.innerHTML = html;
+        }
+
+        // 渲染 Commands 樹狀圖
+        function renderCommandsTree() {
+            const tree = document.getElementById('commandsTree');
+            const commands = data.categories.commands.items;
+
+            let html = '';
+
+            commands.forEach(cmd => {
+                html += `<div class="tree-item">
+                    <div class="tree-node">
+                        <span style="font-weight: 600; color: #667eea;">${cmd.full_command}</span>
+                    </div>
+                    <div class="tree-node tree-indent" style="color: #666;">
+                        ${cmd.description}
+                    </div>
+                </div>`;
+            });
+
+            tree.innerHTML = html;
+        }
+
+        // 渲染分層視圖
+        function renderLayersTree() {
+            const tree = document.getElementById('layersTree');
+            const layers = data.layers;
+
+            let html = '';
+
+            // Entry Layer
+            html += `<div class="tree-item">
+                <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                    <span>📍 Entry Layer (入口層)</span>
+                </div>
+            </div>`;
+
+            html += `<div class="tree-item tree-indent">
+                <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                    <span>⌨️ Commands</span>
+                    <span class="badge">${layers.entry.commands.length}</span>
+                </div>
+            </div>`;
+
+            layers.entry.commands.forEach(cmd => {
+                html += `<div class="tree-item" style="margin-left: 48px;">
+                    <div class="tree-node">
+                        <span>${cmd}</span>
+                    </div>
+                </div>`;
+            });
+
+            // Coordination Layer
+            html += `<div class="tree-item" style="margin-top: 20px;">
+                <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                    <span>📍 Coordination Layer (協調層)</span>
+                </div>
+            </div>`;
+
+            html += `<div class="tree-item tree-indent">
+                <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                    <span>🎯 Coordinators</span>
+                    <span class="badge coordinator">${layers.coordination.coordinators.length}</span>
+                </div>
+            </div>`;
+
+            layers.coordination.coordinators.forEach(coord => {
+                html += `<div class="tree-item" style="margin-left: 48px;">
+                    <div class="tree-node">
+                        <span class="status-dot status-coordinator"></span>
+                        <span>${coord}</span>
+                    </div>
+                </div>`;
+            });
+
+            // Execution Layer
+            html += `<div class="tree-item" style="margin-top: 20px;">
+                <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                    <span>📍 Execution Layer (執行層)</span>
+                </div>
+            </div>`;
+
+            html += `<div class="tree-item tree-indent">
+                <div class="tree-node expandable expanded" onclick="toggleExpand(this)">
+                    <span>👷 Workers</span>
+                    <span class="badge worker">${layers.execution.workers.length}</span>
+                </div>
+            </div>`;
+
+            layers.execution.workers.forEach(worker => {
+                html += `<div class="tree-item" style="margin-left: 48px;">
+                    <div class="tree-node">
+                        <span class="status-dot status-worker"></span>
+                        <span>${worker}</span>
+                    </div>
+                </div>`;
+            });
+
+            tree.innerHTML = html;
+        }
+
+        // 渲染過濾按鈕
+        function renderFilters() {
+            const filters = document.getElementById('filterButtons');
+            // 暫時留空，之後可以加入過濾功能
+        }
+
+        // 切換展開/摺疊
+        function toggleExpand(element) {
+            element.classList.toggle('expanded');
+            let sibling = element.parentElement.nextElementSibling;
+            while (sibling && sibling.classList.contains('tree-indent') ||
+                   (sibling && sibling.classList.contains('collapsed'))) {
+                sibling.classList.toggle('collapsed');
+                sibling = sibling.nextElementSibling;
+            }
+        }
+
+        // 標籤頁切換
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // 移除所有 active
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+                // 啟用當前標籤
+                tab.classList.add('active');
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // 搜尋功能
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            // TODO: 實作搜尋過濾
+        });
+
+        // 初始化
+        loadData();
+    </script>
+</body>
+</html>
