@@ -2,7 +2,7 @@
 
 ## 概述
 
-Skills Control Center 是 DopeThingsMan 的核心管理介面，提供完整的技能掃描、分類、整合與優化功能。
+Skills Control Center 是 DopeMAN 的核心管理介面，提供完整的技能掃描、分類、整合與優化功能。
 
 ---
 
@@ -34,9 +34,9 @@ Skills Control Center 是 DopeThingsMan 的核心管理介面，提供完整的�
       "count": 3,
       "items": [
         {
-          "name": "dopethingsman",
-          "path": "~/DEV/projects/dopethingsman",
-          "repo": "https://github.com/user/dopethingsman",
+          "name": "dopeman",
+          "path": "~/DEV/projects/dopeman",
+          "repo": "https://github.com/user/dopeman",
           "branch": "main",
           "dirty": false,
           "stars": 156
@@ -188,11 +188,11 @@ Total Score =
 ├─ ~/DEV/MAYO-Report-Master
 │  ├─ team001-mayo-coding-standard (forked from global)
 │  └─ mayo-specific-skill (unique)
-└─ ~/DEV/projects/dopethingsman
-   └─ dopethingsman-coordinator
+└─ ~/DEV/projects/dopeman
+   └─ dopeman-coordinator
 
 🔨 Development Skills (3)
-├─ dopethingsman (github.com/user/repo, 156⭐)
+├─ dopeman (github.com/user/repo, 156⭐)
 ├─ my-custom-skill (local, dirty)
 └─ research-skill (no remote)
 
@@ -386,10 +386,10 @@ team001
 
 ## 🔨 開發中 Skills
 
-### dopethingsman
+### dopeman
 
-- **位置**：`~/DEV/projects/dopethingsman`
-- **Repo**：github.com/user/dopethingsman
+- **位置**：`~/DEV/projects/dopeman`
+- **Repo**：github.com/user/dopeman
 - **Branch**：main
 - **Status**：Clean (無未 commit 變更)
 - **GitHub**：156 ⭐, 12 forks
@@ -446,7 +446,7 @@ slide-consult
 
 ---
 
-生成工具：DopeThingsMan v1.0.0
+生成工具：DopeMAN v1.0.0
 ```
 
 #### HTML 報告
@@ -614,13 +614,13 @@ slide-consult
 ### 主命令
 
 ```bash
-/dopethingsman control-center
+/dopeman control-center
 ```
 
 **啟動互動式 UI**：
 ```
 ┌─────────────────────────────────────────┐
-│  DopeThingsMan - Skills Control Center │
+│  DopeMAN - Skills Control Center │
 ├─────────────────────────────────────────┤
 │                                         │
 │  [1] 🔍 掃描所有 Skills                 │
@@ -641,26 +641,26 @@ slide-consult
 
 ```bash
 # 掃描
-/dopethingsman control-center scan
-/dopethingsman control-center scan --type=global
-/dopethingsman control-center scan --type=projects
-/dopethingsman control-center scan --type=dev
+/dopeman control-center scan
+/dopeman control-center scan --type=global
+/dopeman control-center scan --type=projects
+/dopeman control-center scan --type=dev
 
 # 檢視
-/dopethingsman control-center view hierarchy
-/dopethingsman control-center view dependencies
+/dopeman control-center view hierarchy
+/dopeman control-center view dependencies
 
 # 整合
-/dopethingsman control-center consolidate --dry-run
-/dopethingsman control-center consolidate --confirm
+/dopeman control-center consolidate --dry-run
+/dopeman control-center consolidate --confirm
 
 # 報告
-/dopethingsman control-center report --format=markdown
-/dopethingsman control-center report --format=html
+/dopeman control-center report --format=markdown
+/dopeman control-center report --format=html
 
 # 檢查
-/dopethingsman control-center check safety
-/dopethingsman control-center check conflicts
+/dopeman control-center check safety
+/dopeman control-center check conflicts
 ```
 
 ---
@@ -668,7 +668,7 @@ slide-consult
 ## 資料位置
 
 ```
-~/.claude/memory/dopethingsman/
+~/.claude/memory/dopeman/
 ├── control-center-data.json       ← 主要資料檔案
 ├── dependency-graph.json          ← 依賴圖譜
 ├── scan-cache.json                ← 掃描快取
@@ -748,4 +748,4 @@ slide-consult
 
 **版本**：v1.0.0
 **建立日期**：2026-02-08
-**維護者**：DopeThingsMan Team
+**維護者**：DopeMAN Team

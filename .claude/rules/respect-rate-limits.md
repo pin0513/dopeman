@@ -32,7 +32,7 @@ gh api repos/{owner}/{repo} --header "Authorization: token $GITHUB_TOKEN"
 - 快取 releases 列表：有效期 6 小時
 - 快取 stars/forks 數：有效期 24 小時
 
-快取位置：`~/.claude/memory/dopethingsman/github-cache.json`
+快取位置：`~/.claude/memory/dopeman/github-cache.json`
 
 **3. 批次請求**
 - 收集需要檢查的 repos

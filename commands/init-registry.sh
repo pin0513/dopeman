@@ -1,5 +1,5 @@
 #!/bin/bash
-# DopeThingsMan - 初始化 Registry
+# DopeMAN - 初始化 Registry
 # 用途：第一次使用時初始化資料結構
 
 set -e  # 遇到錯誤立即停止
@@ -10,12 +10,12 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-echo "🚀 DopeThingsMan Registry 初始化"
+echo "🚀 DopeMAN Registry 初始化"
 echo "================================"
 echo ""
 
 # 設定路徑
-MEMORY_DIR="$HOME/.claude/memory/dopethingsman"
+MEMORY_DIR="$HOME/.claude/memory/dopeman"
 SKILLS_DIR="$HOME/.claude/skills"
 
 # 1. 創建目錄結構
@@ -127,7 +127,7 @@ EOF
 
 # operation.log
 touch "$MEMORY_DIR/operation.log"
-echo "[$(date -Iseconds)] [init] DopeThingsMan registry initialized" >> "$MEMORY_DIR/operation.log"
+echo "[$(date -Iseconds)] [init] DopeMAN registry initialized" >> "$MEMORY_DIR/operation.log"
 
 # 5. 完成報告
 echo ""

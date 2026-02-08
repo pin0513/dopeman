@@ -14,7 +14,7 @@ description: All errors must be explicitly logged and notified to ensure visibil
 ### 所有錯誤必須明確記錄與通知
 
 任何執行失敗、異常、警告都必須：
-1. 記錄到 `~/.claude/memory/dopethingsman/operation.log`
+1. 記錄到 `~/.claude/memory/dopeman/operation.log`
 2. 包含時間戳、錯誤類型、錯誤訊息、堆疊追蹤
 3. 立即通知 coordinator（透過 `SendMessage`）
 4. 若為關鍵錯誤，發送 Teams 通知給用戶

@@ -1,13 +1,13 @@
 ---
-name: DopeThingsMan
+name: DopeMAN
 description: 智能環境管理秘書團隊，負責 skills 管理、目錄整理、使用分析與跨電腦同步
 ---
 
-# DopeThingsMan
+# DopeMAN
 
 ## 功能
 
-DopeThingsMan 是一個智能環境管理團隊，提供：
+DopeMAN 是一個智能環境管理團隊，提供：
 - **環境整理** - 自動分類目錄、識別專案狀態
 - **Skills 生命週期管理** - 追蹤來源、檢測更新、管理繼承鏈
 - **Skills 市場探索** - 發現熱門新 skills、評估品質、推薦引入
@@ -19,26 +19,26 @@ DopeThingsMan 是一個智能環境管理團隊，提供：
 ### 基本語法
 
 ```bash
-/dopethingsman [command] [options]
+/dopeman [command] [options]
 ```
 
 ### 可用命令
 
 | 命令 | 說明 | 範例 |
 |------|------|------|
-| `check-updates` | 檢查 skills 更新 | `/dopethingsman check-updates` |
-| `organize <path>` | 整理指定目錄 | `/dopethingsman organize ~/DEV` |
-| `export-config` | 匯出環境配置 | `/dopethingsman export-config` |
-| `import-config` | 匯入環境配置 | `/dopethingsman import-config` |
-| `usage-report` | 產生使用報告 | `/dopethingsman usage-report --period=30days` |
-| `discover-skills` | 搜尋推薦的新 skills | `/dopethingsman discover-skills` |
-| `health-check` | 完整環境健檢 | `/dopethingsman health-check` |
-| `control-center` (別名: `cc`) | 開啟 Skills 總控台 Dashboard | `/dopethingsman cc` |
-| `stop-dashboard` (別名: `scc`) | 停止 Dashboard 伺服器 | `/dopethingsman scc` |
+| `check-updates` | 檢查 skills 更新 | `/dopeman check-updates` |
+| `organize <path>` | 整理指定目錄 | `/dopeman organize ~/DEV` |
+| `export-config` | 匯出環境配置 | `/dopeman export-config` |
+| `import-config` | 匯入環境配置 | `/dopeman import-config` |
+| `usage-report` | 產生使用報告 | `/dopeman usage-report --period=30days` |
+| `discover-skills` | 搜尋推薦的新 skills | `/dopeman discover-skills` |
+| `health-check` | 完整環境健檢 | `/dopeman health-check` |
+| `control-center` (別名: `cc`) | 開啟 Skills 總控台 Dashboard | `/dopeman cc` |
+| `stop-dashboard` (別名: `scc`) | 停止 Dashboard 伺服器 | `/dopeman scc` |
 
 ### 自動啟動模式
 
-啟動 DopeThingsMan 時自動執行：
+啟動 DopeMAN 時自動執行：
 - 掃描目錄結構
 - 檢查 skills 更新
 - 搜尋新推薦
@@ -49,7 +49,7 @@ DopeThingsMan 是一個智能環境管理團隊，提供：
 ### 檢查更新
 
 ```bash
-/dopethingsman check-updates
+/dopeman check-updates
 ```
 
 輸出：
@@ -67,7 +67,7 @@ DopeThingsMan 是一個智能環境管理團隊，提供：
 ### 整理目錄
 
 ```bash
-/dopethingsman organize ~/DEV
+/dopeman organize ~/DEV
 ```
 
 輸出：
@@ -87,7 +87,7 @@ DopeThingsMan 是一個智能環境管理團隊，提供：
 ### 使用報告
 
 ```bash
-/dopethingsman usage-report --period=30days
+/dopeman usage-report --period=30days
 ```
 
 輸出：
@@ -108,7 +108,7 @@ Skills 使用頻率：
 ### Control Center
 
 ```bash
-/dopethingsman control-center
+/dopeman control-center
 ```
 
 自動執行：
@@ -122,18 +122,18 @@ Skills 使用頻率：
 
 輸出：
 ```
-🎛️  DopeThingsMan - Control Center Dashboard
+🎛️  DopeMAN - Control Center Dashboard
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 🚀 啟動 HTTP 伺服器...
-   目錄: ~/DEV/projects/dopethingsman/commands
+   目錄: ~/DEV/projects/dopeman/commands
    端口: 8891
 
 ✅ 伺服器已啟動 (PID: 12345)
 
 📍 Dashboard URL: http://localhost:8891/control-center-real.html
-📋 日誌位置: /tmp/dopethingsman-dashboard.log
-🔧 PID 檔案: /tmp/dopethingsman-dashboard.pid
+📋 日誌位置: /tmp/dopeman-dashboard.log
+🔧 PID 檔案: /tmp/dopeman-dashboard.pid
 
 ✅ 已開啟瀏覽器
 
@@ -142,32 +142,32 @@ Skills 使用頻率：
 💡 提示：
    - 伺服器將持續運行在背景
    - 關閉瀏覽器不會停止伺服器
-   - 使用 /dopethingsman scc 停止伺服器
+   - 使用 /dopeman scc 停止伺服器
 ```
 
 ### 停止 Dashboard
 
 ```bash
-/dopethingsman stop-dashboard
+/dopeman stop-dashboard
 ```
 
 輸出：
 ```
-🛑 停止 DopeThingsMan Dashboard
+🛑 停止 DopeMAN Dashboard
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 正在停止伺服器 (PID: 12345)...
 ✅ 伺服器已停止
 
-📋 日誌位置: /tmp/dopethingsman-dashboard.log
+📋 日誌位置: /tmp/dopeman-dashboard.log
 ```
 
 ## 技術細節
 
 ### 團隊架構
 
-DopeThingsMan 使用 **Subagent 模式**：
-- `dopethingsman-coordinator` - 總調度者
+DopeMAN 使用 **Subagent 模式**：
+- `dopeman-coordinator` - 總調度者
 - `file-organizer` - 目錄整理專家
 - `skill-tracker` - Skills 更新追蹤
 - `skill-scout` - Skills 市場探索
@@ -177,7 +177,7 @@ DopeThingsMan 使用 **Subagent 模式**：
 ### 資料位置
 
 ```
-~/.claude/memory/dopethingsman/
+~/.claude/memory/dopeman/
 ├── skills-registry.json         ← Skill 來源與版本記錄
 ├── skill-recommendations.json   ← 推薦的新 skills
 ├── usage-report.json            ← 使用統計報告
@@ -188,7 +188,7 @@ DopeThingsMan 使用 **Subagent 模式**：
 ### 專案位置
 
 ```
-~/DEV/projects/dopethingsman/
+~/DEV/projects/dopeman/
 ├── CLAUDE.md
 └── .claude/
     ├── agents/
@@ -206,11 +206,11 @@ DopeThingsMan 使用 **Subagent 模式**：
 
 ## 相關資源
 
-- **專案文件**: `~/DEV/projects/dopethingsman/CLAUDE.md`
-- **操作日誌**: `~/.claude/memory/dopethingsman/operation.log`
-- **Registry**: `~/.claude/memory/dopethingsman/skills-registry.json`
+- **專案文件**: `~/DEV/projects/dopeman/CLAUDE.md`
+- **操作日誌**: `~/.claude/memory/dopeman/operation.log`
+- **Registry**: `~/.claude/memory/dopeman/skills-registry.json`
 
 ---
 
 **版本**: v1.0.0
-**專案位置**: `/Users/paul_huang/DEV/projects/dopethingsman`
+**專案位置**: `/Users/paul_huang/DEV/projects/dopeman`

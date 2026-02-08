@@ -7,7 +7,7 @@ description: 同步 skills/agents 到不同環境（~/DEV 與 ~/teams）
 
 ## 描述
 
-管理 .claude 目錄在不同環境間的同步，包括 ~/DEV 與 ~/teams/dopethingsman，確保 skills 與 agents 版本一致。
+管理 .claude 目錄在不同環境間的同步，包括 ~/DEV 與 ~/teams/dopeman，確保 skills 與 agents 版本一致。
 
 ## 使用者
 
@@ -45,7 +45,7 @@ description: 同步 skills/agents 到不同環境（~/DEV 與 ~/teams）
 
 ```bash
 scan_environments() {
-  local team_dir="$HOME/teams/dopethingsman/.claude"
+  local team_dir="$HOME/teams/dopeman/.claude"
   local project_dir="$HOME/DEV/MAYO-Report-Master/.claude"
 
   echo "🔍 Scanning environments..."
@@ -103,7 +103,7 @@ scan_environments
 sync_skill() {
   local skill_name="$1"
   local direction="$2"  # team-to-project 或 project-to-team
-  local team_dir="$HOME/teams/dopethingsman/.claude"
+  local team_dir="$HOME/teams/dopeman/.claude"
   local project_dir="$HOME/DEV/MAYO-Report-Master/.claude"
 
   case "$direction" in
@@ -172,7 +172,7 @@ sync_skill "github-api-operations" "team-to-project"
 ```bash
 batch_sync() {
   local direction="$1"
-  local team_dir="$HOME/teams/dopethingsman/.claude"
+  local team_dir="$HOME/teams/dopeman/.claude"
   local project_dir="$HOME/DEV/MAYO-Report-Master/.claude"
 
   case "$direction" in
@@ -228,7 +228,7 @@ batch_sync "team-to-project"
 
 ```bash
 detect_conflicts() {
-  local team_dir="$HOME/teams/dopethingsman/.claude"
+  local team_dir="$HOME/teams/dopeman/.claude"
   local project_dir="$HOME/DEV/MAYO-Report-Master/.claude"
 
   echo "🔍 Detecting conflicts..."
@@ -277,7 +277,7 @@ detect_conflicts
 
 ```bash
 merge_registries() {
-  local team_registry="$HOME/teams/dopethingsman/.claude/skills_registry.json"
+  local team_registry="$HOME/teams/dopeman/.claude/skills_registry.json"
   local project_registry="$HOME/DEV/MAYO-Report-Master/.claude/skills_registry.json"
   local merged_registry="/tmp/merged_registry.json"
 

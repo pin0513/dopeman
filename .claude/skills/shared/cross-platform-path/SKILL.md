@@ -237,7 +237,7 @@ detect_platform() { ... }
 
 # 使用方式
 source ~/.claude/skills/shared/cross-platform-path/path_utils.sh
-path=$(normalize_path "~/teams/dopethingsman/.claude")
+path=$(normalize_path "~/teams/dopeman/.claude")
 ```
 
 ## 相關規則

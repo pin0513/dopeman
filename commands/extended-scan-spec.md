@@ -48,8 +48,8 @@ Skill Y → used by → Agent B  🤔 關係發散
 ```typescript
 interface Command {
   name: string;                    // 指令名稱 (如 "check-updates")
-  entry_point: string;             // 入口 skill (如 "dopethingsman")
-  syntax: string;                  // 語法 (如 "/dopethingsman check-updates")
+  entry_point: string;             // 入口 skill (如 "dopeman")
+  syntax: string;                  // 語法 (如 "/dopeman check-updates")
   description: string;             // 功能描述
   delegates_to: string[];          // 委派給哪些 agents
   uses_skills: string[];           // 使用哪些 skills
@@ -75,7 +75,7 @@ interface Command {
 
 **語法**：
 ```bash
-/dopethingsman check-updates
+/dopeman check-updates
 ```
 
 **流程**：
@@ -86,7 +86,7 @@ interface Command {
 
 **範例**：
 ```bash
-/dopethingsman check-updates
+/dopeman check-updates
 ```
 ```
 
@@ -94,9 +94,9 @@ interface Command {
 ```json
 {
   "name": "check-updates",
-  "full_command": "/dopethingsman check-updates",
-  "entry_skill": "dopethingsman",
-  "coordinator": "dopethingsman-coordinator",
+  "full_command": "/dopeman check-updates",
+  "entry_skill": "dopeman",
+  "coordinator": "dopeman-coordinator",
   "delegates_to": ["skill-tracker"],
   "uses_skills": ["github-api-operations"],
   "applies_rules": ["respect-rate-limits", "log-all-actions"],
@@ -110,7 +110,7 @@ interface Command {
 ```
 📍 Entry Commands
 
-/dopethingsman
+/dopeman
   ├─ check-updates → skill-tracker
   ├─ organize → file-organizer
   ├─ export-config → sync-manager
@@ -170,7 +170,7 @@ applicability: all agents
   "applicability": ["all agents"],
   "description": "所有錯誤必須明確記錄與通知",
   "used_by_agents": ["coordinator", "file-organizer", "skill-tracker"],
-  "used_by_skills": ["dopethingsman"],
+  "used_by_skills": ["dopeman"],
   "violation_count": 0
 }
 ```
@@ -203,7 +203,7 @@ applicability: all agents
 
 **按使用者反向查詢**：
 ```
-dopethingsman skill
+dopeman skill
   ├─ Uses rules:
   │   ├─ no-silent-failures (global)
   │   ├─ backup-before-modify (global)
@@ -253,10 +253,10 @@ interface Agent {
 **輸出資料**：
 ```json
 {
-  "name": "dopethingsman-coordinator",
-  "path": "~/DEV/projects/dopethingsman/.claude/agents/coordinator.md",
+  "name": "dopeman-coordinator",
+  "path": "~/DEV/projects/dopeman/.claude/agents/coordinator.md",
   "type": "coordinator",
-  "belongs_to_skill": "dopethingsman",
+  "belongs_to_skill": "dopeman",
   "uses_skills": [],
   "applies_rules": ["no-silent-failures", "log-all-actions"],
   "delegates_to": [
@@ -276,7 +276,7 @@ interface Agent {
 **協調者視角（Coordinator View）**：
 
 ```
-📍 dopethingsman (Coordinator)
+📍 dopeman (Coordinator)
   │
   ├─ 🎯 Delegates to:
   │   ├─ file-organizer
@@ -339,12 +339,12 @@ interface Agent {
 ├─────────────────────────────────────────────────────────┤
 │                                                          │
 │  Commands:                                              │
-│  ├─ /dopethingsman check-updates                        │
+│  ├─ /dopeman check-updates                        │
 │  ├─ /team001 dev-workflow                               │
 │  └─ /slide-consult create                               │
 │                                                          │
 │  Root Skills:                                           │
-│  ├─ dopethingsman                                       │
+│  ├─ dopeman                                       │
 │  ├─ team001                                             │
 │  └─ slide-consult                                       │
 │                                                          │
@@ -354,8 +354,8 @@ interface Agent {
 │             📍 Coordination Layer (協調層)               │
 ├─────────────────────────────────────────────────────────┤
 │                                                          │
-│  dopethingsman                                          │
-│  └─ dopethingsman-coordinator                           │
+│  dopeman                                          │
+│  └─ dopeman-coordinator                           │
 │      ├─ Applies: no-silent-failures, log-all-actions   │
 │      └─ Delegates to: ↓                                │
 │                                                          │
@@ -370,7 +370,7 @@ interface Agent {
 │              📍 Execution Layer (執行層)                 │
 ├─────────────────────────────────────────────────────────┤
 │                                                          │
-│  dopethingsman Workers:                                 │
+│  dopeman Workers:                                 │
 │  ├─ file-organizer                                      │
 │  │   └─ Applies: backup-before-modify                  │
 │  ├─ skill-tracker                                       │
@@ -406,17 +406,17 @@ interface Agent {
 
 ```
 用戶輸入：
-  /dopethingsman check-updates
+  /dopeman check-updates
 
 ↓ 入口
 
 Entry Skill:
-  dopethingsman
+  dopeman
 
 ↓ 協調
 
 Coordinator:
-  dopethingsman-coordinator
+  dopeman-coordinator
   └─ Applies rules:
       ├─ no-silent-failures
       └─ log-all-actions
@@ -529,7 +529,7 @@ Entry Skill (depth 0)
 ```
 ⚠️  Dependency Depth Exceeded:
 
-  Path: dopethingsman → coordinator → skill-tracker
+  Path: dopeman → coordinator → skill-tracker
         → github-api-operations → http-client
         → retry-logic → backoff-strategy
 
@@ -598,7 +598,7 @@ interface ControlCenterData {
 ### 6.2 儲存位置
 
 ```
-~/.claude/memory/dopethingsman/
+~/.claude/memory/dopeman/
 ├── control-center-data.json       ← 主要資料
 ├── commands-index.json            ← Commands 索引
 ├── rules-index.json               ← Rules 索引
@@ -726,13 +726,13 @@ tree.setData(data);
 
 <script>
   const nodes = [
-    { id: 'dopethingsman', layer: 'entry' },
+    { id: 'dopeman', layer: 'entry' },
     { id: 'coordinator', layer: 'coordination' },
     { id: 'skill-tracker', layer: 'execution' }
   ];
 
   const links = [
-    { source: 'dopethingsman', target: 'coordinator' },
+    { source: 'dopeman', target: 'coordinator' },
     { source: 'coordinator', target: 'skill-tracker' }
   ];
 
@@ -752,33 +752,33 @@ tree.setData(data);
 
 ```bash
 # 掃描所有（包含 commands, rules, agents）
-/dopethingsman control-center scan --all
+/dopeman control-center scan --all
 
 # 只掃描特定類型
-/dopethingsman control-center scan --type=commands
-/dopethingsman control-center scan --type=rules
-/dopethingsman control-center scan --type=agents
+/dopeman control-center scan --type=commands
+/dopeman control-center scan --type=rules
+/dopeman control-center scan --type=agents
 
 # 檢視分層結構
-/dopethingsman control-center view layers
-/dopethingsman control-center view --layer=entry
-/dopethingsman control-center view --layer=coordination
+/dopeman control-center view layers
+/dopeman control-center view --layer=entry
+/dopeman control-center view --layer=coordination
 
 # 追蹤路徑
-/dopethingsman control-center trace "/dopethingsman check-updates"
-/dopethingsman control-center trace --from=command --to=execution
+/dopeman control-center trace "/dopeman check-updates"
+/dopeman control-center trace --from=command --to=execution
 
 # 偵測問題
-/dopethingsman control-center check cycles
-/dopethingsman control-center check depth
-/dopethingsman control-center check orphans
+/dopeman control-center check cycles
+/dopeman control-center check depth
+/dopeman control-center check orphans
 ```
 
 ### 9.2 互動式視圖
 
 ```
 ┌─────────────────────────────────────────────┐
-│  DopeThingsMan - Extended Control Center   │
+│  DopeMAN - Extended Control Center   │
 ├─────────────────────────────────────────────┤
 │                                             │
 │  掃描類型：                                  │
@@ -798,4 +798,4 @@ tree.setData(data);
 
 **版本**：v1.0.0
 **建立日期**：2026-02-08
-**維護者**：DopeThingsMan Team
+**維護者**：DopeMAN Team

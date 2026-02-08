@@ -1,8 +1,8 @@
-# DopeThingsMan - 環境管理秘書團隊
+# DopeMAN - 環境管理秘書團隊
 
 ## 團隊定位
 
-DopeThingsMan 是一個智能環境管理團隊，專注於：
+DopeMAN 是一個智能環境管理團隊，專注於：
 - **環境整理** - 自動分類目錄、識別專案狀態
 - **Skills 生命週期管理** - 追蹤來源、檢測更新、管理繼承鏈
 - **Skills 市場探索** - 發現熱門新 skills、評估品質、推薦引入
@@ -15,7 +15,7 @@ DopeThingsMan 是一個智能環境管理團隊，專注於：
 
 ### Subagent 模式（預設）
 
-DopeThingsMan 使用 **Subagent 模式**運作：
+DopeMAN 使用 **Subagent 模式**運作：
 - **coordinator** 作為總調度者，負責任務分派與結果整合
 - 所有 worker agents 透過 `Task` tool 被調用
 - 適合順序性工作流程，清晰的交接關係
@@ -26,7 +26,7 @@ DopeThingsMan 使用 **Subagent 模式**運作：
 
 ### 自動檢查（啟動時）
 
-每次啟動 DopeThingsMan，自動執行：
+每次啟動 DopeMAN，自動執行：
 ```
 🔍 自動檢查中...
 
@@ -45,11 +45,11 @@ DopeThingsMan 使用 **Subagent 模式**運作：
 ### 手動觸發
 
 ```bash
-/dopethingsman check-updates       # 檢查更新
-/dopethingsman organize ~/DEV      # 整理目錄
-/dopethingsman export-config       # 匯出配置
-/dopethingsman import-config       # 匯入配置
-/dopethingsman usage-report        # 使用報告
+/dopeman check-updates       # 檢查更新
+/dopeman organize ~/DEV      # 整理目錄
+/dopeman export-config       # 匯出配置
+/dopeman import-config       # 匯入配置
+/dopeman usage-report        # 使用報告
 ```
 
 ---
@@ -90,7 +90,7 @@ DopeThingsMan 使用 **Subagent 模式**運作：
 ### 資料位置
 
 ```
-~/.claude/memory/dopethingsman/
+~/.claude/memory/dopeman/
 ├── skills-registry.json         ← Skill 來源與版本記錄
 ├── skill-recommendations.json   ← 推薦的新 skills
 ├── usage-report.json            ← 使用統計報告
@@ -141,7 +141,7 @@ DopeThingsMan 使用 **Subagent 模式**運作：
 
 ### 追蹤機制
 
-當你基於某個 skill 創建客製化版本時，DopeThingsMan 會記錄：
+當你基於某個 skill 創建客製化版本時，DopeMAN 會記錄：
 ```
 base-skill (upstream)
     ↓ forked_from
@@ -237,14 +237,14 @@ playwright-helper (GitHub: 1.2k ⭐, Score: 78/100)
 
 ### 雙版本架構
 
-DopeThingsMan 同時存在於兩個位置：
+DopeMAN 同時存在於兩個位置：
 
-**全域 Skill** (`~/.claude/skills/dopethingsman/`)：
+**全域 Skill** (`~/.claude/skills/dopeman/`)：
 - 用途：在任何目錄都可呼叫
 - 內容：僅 `SKILL.md`
 - 更新：從專案 push
 
-**開發專案** (`~/DEV/projects/dopethingsman/`)：
+**開發專案** (`~/DEV/projects/dopeman/`)：
 - 用途：獨立開發、版本控制、功能擴展
 - 內容：完整團隊結構（agents/skills/rules/commands）
 - 更新：git 版本控制
@@ -254,7 +254,7 @@ DopeThingsMan 同時存在於兩個位置：
 使用 `commands/sync-global-skill.sh` 管理雙向同步：
 
 ```bash
-cd ~/DEV/projects/dopethingsman/commands
+cd ~/DEV/projects/dopeman/commands
 ./sync-global-skill.sh
 
 # 選項
@@ -268,8 +268,8 @@ cd ~/DEV/projects/dopethingsman/commands
 
 **修改專案版本**：
 ```bash
-cd ~/DEV/projects/dopethingsman
-# 編輯 .claude/skills/dopethingsman/SKILL.md
+cd ~/DEV/projects/dopeman
+# 編輯 .claude/skills/dopeman/SKILL.md
 git add .
 git commit -m "feat: add new feature"
 ```
@@ -306,7 +306,7 @@ git commit -m "feat: add new feature"
 ### 匯出內容
 
 ```
-dopethingsman-config.zip
+dopeman-config.zip
 ├── skills-registry.json          ← Skill 清單與來源
 ├── skills-export/                ← 實際 skill 檔案
 │   ├── shared/
@@ -349,32 +349,32 @@ dopethingsman-config.zip
 
 ```bash
 # 檢查更新
-/dopethingsman check-updates
+/dopeman check-updates
 
 # 整理目錄
-/dopethingsman organize ~/DEV
+/dopeman organize ~/DEV
 
 # 匯出環境
-/dopethingsman export --target=usb
+/dopeman export --target=usb
 
 # 使用報告
-/dopethingsman usage-report --period=30days
+/dopeman usage-report --period=30days
 
 # 推薦新 skills
-/dopethingsman discover-skills
+/dopeman discover-skills
 ```
 
 ### Registry 查詢
 
 ```bash
 # 列出所有 skills
-cat ~/.claude/memory/dopethingsman/skills-registry.json | jq '.skills[].name'
+cat ~/.claude/memory/dopeman/skills-registry.json | jq '.skills[].name'
 
 # 檢查有更新的 skills
-cat ~/.claude/memory/dopethingsman/skills-registry.json | jq '.skills[] | select(.has_update == true)'
+cat ~/.claude/memory/dopeman/skills-registry.json | jq '.skills[] | select(.has_update == true)'
 
 # 查詢某個 skill 的來源
-cat ~/.claude/memory/dopethingsman/skills-registry.json | jq '.skills[] | select(.name == "github-api-operations")'
+cat ~/.claude/memory/dopeman/skills-registry.json | jq '.skills[] | select(.name == "github-api-operations")'
 ```
 
 ---
@@ -384,11 +384,11 @@ cat ~/.claude/memory/dopethingsman/skills-registry.json | jq '.skills[] | select
 - **Agent 檔案**：`.claude/agents/`
 - **Skill 檔案**：`.claude/skills/`
 - **Rule 檔案**：`.claude/rules/`
-- **Memory 資料**：`~/.claude/memory/dopethingsman/`
-- **操作日誌**：`~/.claude/memory/dopethingsman/operation.log`
+- **Memory 資料**：`~/.claude/memory/dopeman/`
+- **操作日誌**：`~/.claude/memory/dopeman/operation.log`
 
 ---
 
 **版本**：v1.0.0
 **建立日期**：2026-02-07
-**維護者**：DopeThingsMan Team
+**維護者**：DopeMAN Team

@@ -8,7 +8,7 @@ model: sonnet
 
 ## 身份
 
-你是 DopeThingsMan 團隊的使用分析專家，負責：
+你是 DopeMAN 團隊的使用分析專家，負責：
 - 統計每個 skill 的使用次數與頻率
 - 識別熱門與冷門 skills
 - 分析 agent 對 skills 的依賴關係
@@ -250,7 +250,7 @@ Skill: user-confirmation
 ### 完整報告（Markdown）
 
 ```markdown
-# DopeThingsMan Usage Report
+# DopeMAN Usage Report
 
 生成時間: 2026-02-08 16:00:00
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# DopeThingsMan - Global Skill Sync
+# DopeMAN - Global Skill Sync
 # 同步全域 skill 與專案版本
 #
 
@@ -14,11 +14,11 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # 路徑定義
-GLOBAL_SKILL="$HOME/.claude/skills/dopethingsman/SKILL.md"
-PROJECT_SKILL="$HOME/DEV/projects/dopethingsman/.claude/skills/dopethingsman/SKILL.md"
+GLOBAL_SKILL="$HOME/.claude/skills/dopeman/SKILL.md"
+PROJECT_SKILL="$HOME/DEV/projects/dopeman/.claude/skills/dopeman/SKILL.md"
 
 echo ""
-echo "🔄 DopeThingsMan - Global Skill Sync"
+echo "🔄 DopeMAN - Global Skill Sync"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 

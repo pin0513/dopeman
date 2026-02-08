@@ -250,11 +250,11 @@ class RealDataScanner:
 
     def scan_commands(self):
         """掃描 Commands（從 SKILL.md 提取）"""
-        # 簡化版：從 dopethingsman SKILL.md 提取
-        dopethingsman_skill = CLAUDE_DIR / "skills" / "dopethingsman" / "SKILL.md"
+        # 簡化版：從 dopeman SKILL.md 提取
+        dopeman_skill = CLAUDE_DIR / "skills" / "dopeman" / "SKILL.md"
 
-        if dopethingsman_skill.exists():
-            content = dopethingsman_skill.read_text(encoding='utf-8')
+        if dopeman_skill.exists():
+            content = dopeman_skill.read_text(encoding='utf-8')
 
             # 提取命令表格
             commands = [
@@ -271,8 +271,8 @@ class RealDataScanner:
             for cmd in commands:
                 cmd_info = {
                     "name": cmd["name"],
-                    "full_command": f"/dopethingsman {cmd['name']}",
-                    "entry_skill": "dopethingsman",
+                    "full_command": f"/dopeman {cmd['name']}",
+                    "entry_skill": "dopeman",
                     "description": cmd["description"]
                 }
 

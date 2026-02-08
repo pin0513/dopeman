@@ -1,6 +1,6 @@
-# DopeThingsMan Commands
+# DopeMAN Commands
 
-這個目錄包含 DopeThingsMan 團隊的常用指令腳本。
+這個目錄包含 DopeMAN 團隊的常用指令腳本。
 
 ---
 
@@ -54,7 +54,7 @@
 
 **範例**：
 ```bash
-./export-config.sh --target=usb --output=/Volumes/USB/dopethingsman-backup.zip
+./export-config.sh --target=usb --output=/Volumes/USB/dopeman-backup.zip
 ./export-config.sh --target=local --output=~/Dropbox/
 ```
 
@@ -75,8 +75,8 @@
 
 **範例**：
 ```bash
-./import-config.sh ~/Downloads/dopethingsman-backup.zip
-./import-config.sh /Volumes/USB/dopethingsman-backup.zip
+./import-config.sh ~/Downloads/dopeman-backup.zip
+./import-config.sh /Volumes/USB/dopeman-backup.zip
 ```
 
 ---
@@ -126,15 +126,15 @@
 ```bash
 ./init-registry.sh
 ```
-初始化 DopeThingsMan 的資料結構。
+初始化 DopeMAN 的資料結構。
 
 **功能**：
-- 創建 `~/.claude/memory/dopethingsman/` 目錄
+- 創建 `~/.claude/memory/dopeman/` 目錄
 - 初始化 `skills-registry.json`
 - 掃描現有 skills 並記錄
 - 生成初始配置檔
 
-**使用時機**：第一次使用 DopeThingsMan 時執行。
+**使用時機**：第一次使用 DopeMAN 時執行。
 
 ---
 
@@ -142,7 +142,7 @@
 ```bash
 ./validate-structure.sh
 ```
-驗證 DopeThingsMan 團隊結構的完整性。
+驗證 DopeMAN 團隊結構的完整性。
 
 **功能**：
 - 檢查所有 agents 檔案是否存在
@@ -157,14 +157,14 @@
 
 ### 1. 設定執行權限
 ```bash
-cd ~/teams/dopethingsman/commands
+cd ~/teams/dopeman/commands
 chmod +x *.sh
 ```
 
 ### 2. 加入 PATH（可選）
 ```bash
 # 在 ~/.zshrc 或 ~/.bashrc 中加入
-export PATH="$HOME/teams/dopethingsman/commands:$PATH"
+export PATH="$HOME/teams/dopeman/commands:$PATH"
 
 # 重新載入
 source ~/.zshrc
@@ -225,8 +225,8 @@ organize-directory.sh ~/DEV
 crontab -e
 
 # 加入定期任務
-0 9 * * 1 ~/teams/dopethingsman/commands/check-updates.sh  # 每週一早上 9 點
-0 22 * * * ~/teams/dopethingsman/commands/organize-directory.sh ~/DEV  # 每天晚上 10 點
+0 9 * * 1 ~/teams/dopeman/commands/check-updates.sh  # 每週一早上 9 點
+0 22 * * * ~/teams/dopeman/commands/organize-directory.sh ~/DEV  # 每天晚上 10 點
 ```
 
 ### 整合到 Git Hooks
@@ -235,7 +235,7 @@ crontab -e
 ```bash
 # .git/hooks/post-merge
 #!/bin/bash
-~/teams/dopethingsman/commands/check-updates.sh
+~/teams/dopeman/commands/check-updates.sh
 ```
 
 ---
@@ -245,7 +245,7 @@ crontab -e
 ### 問題 1：權限不足
 ```bash
 # 解決方式：設定執行權限
-chmod +x ~/teams/dopethingsman/commands/*.sh
+chmod +x ~/teams/dopeman/commands/*.sh
 ```
 
 ### 問題 2：找不到 registry

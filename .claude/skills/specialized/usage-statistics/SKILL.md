@@ -230,7 +230,7 @@ generate_full_report() {
   local report_file="$HOME/.claude/usage_report_$(date +%Y%m%d).md"
 
   cat << EOF > "$report_file"
-# DopeThingsMan Usage Report
+# DopeMAN Usage Report
 
 Generated: $(date)
 

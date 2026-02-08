@@ -1,5 +1,5 @@
 #!/bin/bash
-# DopeThingsMan - 檢查 Skills 更新
+# DopeMAN - 檢查 Skills 更新
 # 用途：檢查所有 skills 是否有新版本可用
 
 set -e
@@ -11,7 +11,7 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
-echo "🔍 DopeThingsMan - 檢查 Skills 更新"
+echo "🔍 DopeMAN - 檢查 Skills 更新"
 echo "===================================="
 echo ""
 
@@ -23,7 +23,7 @@ if ! command -v gh &> /dev/null; then
 fi
 
 # 路徑設定
-REGISTRY_FILE="$HOME/.claude/memory/dopethingsman/skills-registry.json"
+REGISTRY_FILE="$HOME/.claude/memory/dopeman/skills-registry.json"
 
 if [ ! -f "$REGISTRY_FILE" ]; then
     echo -e "${RED}❌ Registry 不存在${NC}"

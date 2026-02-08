@@ -1,13 +1,13 @@
 #!/bin/bash
 #
-# DopeThingsMan - Control Center Dashboard Stopper
+# DopeMAN - Control Center Dashboard Stopper
 # 停止 Dashboard 伺服器
 #
 
 set -e
 
-PID_FILE="/tmp/dopethingsman-dashboard.pid"
-LOG_FILE="/tmp/dopethingsman-dashboard.log"
+PID_FILE="/tmp/dopeman-dashboard.pid"
+LOG_FILE="/tmp/dopeman-dashboard.log"
 
 # 顏色輸出
 GREEN='\033[0;32m'
@@ -16,7 +16,7 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 echo ""
-echo "🛑 停止 DopeThingsMan Dashboard"
+echo "🛑 停止 DopeMAN Dashboard"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 

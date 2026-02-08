@@ -1,14 +1,14 @@
-# DopeThingsMan
+# DopeMAN
 
 智能環境管理秘書團隊，負責 skills 管理、目錄整理、使用分析與跨電腦同步。
 
 ## 專案結構
 
 ```
-dopethingsman/
+dopeman/
 ├── .claude/                      ← 團隊結構
 │   ├── agents/                   ← 6 個 agent
-│   │   ├── dopethingsman-coordinator.md
+│   │   ├── dopeman-coordinator.md
 │   │   ├── analytics/
 │   │   │   └── usage-analyst.md
 │   │   ├── environment/
@@ -24,7 +24,7 @@ dopethingsman/
 │   │   ├── no-silent-failures.md
 │   │   └── respect-rate-limits.md
 │   └── skills/                   ← 技能庫
-│       ├── dopethingsman/        ← 主 skill (同步到全域)
+│       ├── dopeman/        ← 主 skill (同步到全域)
 │       │   └── SKILL.md
 │       ├── shared/               ← 6 個共用 skill
 │       └── specialized/          ← 6 個專用 skill
@@ -44,21 +44,21 @@ dopethingsman/
 └── .gitignore
 
 全域位置:
-~/.claude/skills/dopethingsman/SKILL.md  ← 全域 skill (從專案同步)
+~/.claude/skills/dopeman/SKILL.md  ← 全域 skill (從專案同步)
 ```
 
 ## 雙版本架構
 
 ### 全域 Skill
 
-**位置**：`~/.claude/skills/dopethingsman/`
+**位置**：`~/.claude/skills/dopeman/`
 - 包含：`SKILL.md` (主 skill 定義)
-- 用途：在任何目錄都可呼叫 `/dopethingsman`
+- 用途：在任何目錄都可呼叫 `/dopeman`
 - 更新方式：從專案 push
 
 ### 開發專案
 
-**位置**：`~/DEV/projects/dopethingsman/`
+**位置**：`~/DEV/projects/dopeman/`
 - 包含：完整團隊結構 (agents/skills/rules/commands)
 - 用途：獨立開發、版本控制、功能擴展
 - 更新方式：git 版本控制
@@ -68,18 +68,18 @@ dopethingsman/
 ### 1. 啟動 Control Center Dashboard
 
 ```bash
-cd ~/DEV/projects/dopethingsman
+cd ~/DEV/projects/dopeman
 
 # 啟動 Dashboard (自動掃描並開啟瀏覽器)
 ./commands/start-dashboard.sh
 
 # 或使用全域指令 (需先同步到全域)
-/dopethingsman cc
+/dopeman cc
 
 # 停止 Dashboard
 ./commands/stop-dashboard.sh
 # 或
-/dopethingsman scc
+/dopeman scc
 ```
 
 Dashboard URL: http://localhost:8891/control-center-real.html
@@ -87,7 +87,7 @@ Dashboard URL: http://localhost:8891/control-center-real.html
 ### 2. 同步全域 Skill
 
 ```bash
-cd ~/DEV/projects/dopethingsman/commands
+cd ~/DEV/projects/dopeman/commands
 
 # 執行同步腳本
 ./sync-global-skill.sh
@@ -103,8 +103,8 @@ cd ~/DEV/projects/dopethingsman/commands
 
 ```bash
 # 1. 修改專案版本
-cd ~/DEV/projects/dopethingsman
-vim .claude/skills/dopethingsman/SKILL.md
+cd ~/DEV/projects/dopeman
+vim .claude/skills/dopeman/SKILL.md
 
 # 2. Commit 變更
 git add .
@@ -114,7 +114,7 @@ git commit -m "feat: add new command"
 ./commands/sync-global-skill.sh  # 選擇 2) Push
 
 # 4. 測試全域 skill
-/dopethingsman <command>
+/dopeman <command>
 ```
 
 ## 主要功能
@@ -156,8 +156,8 @@ git commit -m "feat: add new command"
 | `stop-dashboard` | `scc` | 停止 Dashboard 伺服器 |
 
 ```bash
-/dopethingsman cc    # 快速開啟 Dashboard
-/dopethingsman scc   # 快速停止 Dashboard
+/dopeman cc    # 快速開啟 Dashboard
+/dopeman scc   # 快速停止 Dashboard
 ```
 
 ## 技術棧
@@ -171,7 +171,7 @@ git commit -m "feat: add new command"
 ## 資料位置
 
 ```
-~/.claude/memory/dopethingsman/
+~/.claude/memory/dopeman/
 ├── skills-registry.json         ← Skill 來源與版本記錄
 ├── skill-recommendations.json   ← 推薦的新 skills
 ├── usage-report.json            ← 使用統計報告
@@ -179,8 +179,8 @@ git commit -m "feat: add new command"
 └── github-cache.json            ← GitHub API 快取
 
 /tmp/
-├── dopethingsman-dashboard.pid  ← Dashboard 伺服器 PID
-└── dopethingsman-dashboard.log  ← Dashboard 伺服器日誌
+├── dopeman-dashboard.pid  ← Dashboard 伺服器 PID
+└── dopeman-dashboard.log  ← Dashboard 伺服器日誌
 ```
 
 ## 開發指南
@@ -189,7 +189,7 @@ git commit -m "feat: add new command"
 
 ```bash
 # 編輯專案版本
-vim .claude/skills/dopethingsman/SKILL.md
+vim .claude/skills/dopeman/SKILL.md
 
 # 推送到全域
 ./commands/sync-global-skill.sh  # 選擇 2) Push
@@ -229,10 +229,10 @@ MIT License
 
 ## 維護者
 
-DopeThingsMan Team
+DopeMAN Team
 
 ---
 
 **版本**: v1.0.0
 **建立日期**: 2026-02-08
-**專案位置**: `/Users/paul_huang/DEV/projects/dopethingsman`
+**專案位置**: `/Users/paul_huang/DEV/projects/dopeman`

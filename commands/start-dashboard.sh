@@ -1,17 +1,17 @@
 #!/bin/bash
 #
-# DopeThingsMan - Control Center Dashboard Launcher
+# DopeMAN - Control Center Dashboard Launcher
 # 啟動後端伺服器並開啟 Dashboard
 #
 
 set -e
 
 # 配置
-COMMANDS_DIR="/Users/paul_huang/DEV/projects/dopethingsman/commands"
+COMMANDS_DIR="/Users/paul_huang/DEV/projects/dopeman/commands"
 PORT=8891
 URL="http://localhost:${PORT}/control-center-real.html"
-PID_FILE="/tmp/dopethingsman-dashboard.pid"
-LOG_FILE="/tmp/dopethingsman-dashboard.log"
+PID_FILE="/tmp/dopeman-dashboard.pid"
+LOG_FILE="/tmp/dopeman-dashboard.log"
 
 # 顏色輸出
 GREEN='\033[0;32m'
@@ -20,7 +20,7 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 echo ""
-echo "🎛️  DopeThingsMan - Control Center Dashboard"
+echo "🎛️  DopeMAN - Control Center Dashboard"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
@@ -126,6 +126,6 @@ echo ""
 echo "💡 提示："
 echo "   - 伺服器將持續運行在背景"
 echo "   - 關閉瀏覽器不會停止伺服器"
-echo "   - 使用 /dopethingsman stop-dashboard 停止伺服器"
+echo "   - 使用 /dopeman stop-dashboard 停止伺服器"
 echo "   - 或手動停止: kill $SERVER_PID"
 echo ""

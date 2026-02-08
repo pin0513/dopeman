@@ -1,5 +1,5 @@
 #!/bin/bash
-# DopeThingsMan - 驗證團隊結構
+# DopeMAN - 驗證團隊結構
 # 用途：檢查團隊結構的完整性與正確性
 
 set -e
@@ -10,11 +10,11 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-echo "🔍 DopeThingsMan - 結構驗證"
+echo "🔍 DopeMAN - 結構驗證"
 echo "============================"
 echo ""
 
-TEAM_DIR="$HOME/DEV/Projects/dopethingsman"
+TEAM_DIR="$HOME/DEV/Projects/dopeman"
 ERRORS=0
 WARNINGS=0
 
@@ -53,7 +53,7 @@ echo ""
 
 # 2. 檢查 Agents (6個)
 echo "🤖 檢查 Agents..."
-check_file "$TEAM_DIR/.claude/agents/dopethingsman-coordinator.md" "Coordinator (根目錄)"
+check_file "$TEAM_DIR/.claude/agents/dopeman-coordinator.md" "Coordinator (根目錄)"
 check_file "$TEAM_DIR/.claude/agents/environment/file-organizer.md" "File Organizer"
 check_file "$TEAM_DIR/.claude/agents/environment/sync-manager.md" "Sync Manager"
 check_file "$TEAM_DIR/.claude/agents/skills-management/skill-tracker.md" "Skill Tracker"
@@ -73,7 +73,7 @@ echo ""
 
 # 4. 檢查 Specialized Skills (6個)
 echo "⚙️  檢查 Specialized Skills..."
-check_file "$TEAM_DIR/.claude/skills/specialized/dopethingsman-orchestration/SKILL.md" "DopeThingsMan Orchestration"
+check_file "$TEAM_DIR/.claude/skills/specialized/dopeman-orchestration/SKILL.md" "DopeMAN Orchestration"
 check_file "$TEAM_DIR/.claude/skills/specialized/file-system-operations/SKILL.md" "File System Operations"
 check_file "$TEAM_DIR/.claude/skills/specialized/skill-lineage-tracking/SKILL.md" "Skill Lineage Tracking"
 check_file "$TEAM_DIR/.claude/skills/specialized/skill-discovery/SKILL.md" "Skill Discovery"

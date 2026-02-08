@@ -1,17 +1,17 @@
 ---
-name: DopeThingsMan Orchestration
-description: 協調 DopeThingsMan 團隊的任務派工與狀態追蹤
+name: DopeMAN Orchestration
+description: 協調 DopeMAN 團隊的任務派工與狀態追蹤
 ---
 
-# DopeThingsMan Orchestration
+# DopeMAN Orchestration
 
 ## 描述
 
-專屬於 dopethingsman-coordinator 的調度核心技能，負責解析使用者意圖、決定派工策略、追蹤任務狀態、整合各 agent 回報。
+專屬於 dopeman-coordinator 的調度核心技能，負責解析使用者意圖、決定派工策略、追蹤任務狀態、整合各 agent 回報。
 
 ## 使用者
 
-- **dopethingsman-coordinator**：唯一使用者，團隊調度中樞
+- **dopeman-coordinator**：唯一使用者，團隊調度中樞
 
 ## 核心知識
 
@@ -194,7 +194,7 @@ generate_health_report() {
 
   cat << EOF
 ╔════════════════════════════════════════╗
-║   DopeThingsMan Health Report          ║
+║   DopeMAN Health Report          ║
 ╚════════════════════════════════════════╝
 
 Task ID: $task_id
