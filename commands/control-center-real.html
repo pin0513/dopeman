@@ -293,6 +293,124 @@
         .collapsed {
             display: none;
         }
+
+        /* Dev Projects Styles */
+        .project-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 8px 0;
+            transition: all 0.2s;
+        }
+
+        .project-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .project-name {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .project-type-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .project-type-work {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .project-type-own-dev {
+            background: #10b981;
+            color: white;
+        }
+
+        .project-type-github-ref {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .project-type-other {
+            background: #6b7280;
+            color: white;
+        }
+
+        .project-meta {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .project-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .tech-stack {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+
+        .tech-badge {
+            padding: 2px 8px;
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 0.8em;
+            color: #4b5563;
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            background: #5568d3;
+        }
+
+        .action-btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 1px solid #667eea;
+        }
+
+        .action-btn-secondary:hover {
+            background: #f5f5f5;
+        }
     </style>
 </head>
 <body>
@@ -332,6 +450,7 @@
                 <div class="tab" data-tab="agents">Agents</div>
                 <div class="tab" data-tab="rules">Rules</div>
                 <div class="tab" data-tab="commands">Commands</div>
+                <div class="tab" data-tab="dev-projects">Dev Projects</div>
                 <div class="tab" data-tab="layers">分層視圖</div>
             </div>
 
@@ -350,6 +469,10 @@
 
             <div id="commands" class="tab-content">
                 <div class="tree-view" id="commandsTree"></div>
+            </div>
+
+            <div id="dev-projects" class="tab-content">
+                <div class="tree-view" id="devProjectsTree"></div>
             </div>
 
             <div id="layers" class="tab-content">
@@ -386,6 +509,7 @@
             renderAgentsTree();
             renderRulesTree();
             renderCommandsTree();
+            renderDevProjectsTree();
             renderLayersTree();
             renderFilters();
 
@@ -439,6 +563,12 @@
                     title: 'Commands',
                     count: data.categories.commands.count,
                     label: '可用指令'
+                },
+                {
+                    icon: '💻',
+                    title: 'Dev Projects',
+                    count: data.categories.dev_projects.count,
+                    label: '開發專案'
                 }
             ];
 
@@ -695,6 +825,109 @@
                         ${cmd.description}
                     </div>
                 </div>`;
+            });
+
+            tree.innerHTML = html;
+        }
+
+        // 渲染 Dev Projects 卡片
+        function renderDevProjectsTree() {
+            const tree = document.getElementById('devProjectsTree');
+            const projects = data.categories.dev_projects.items;
+
+            if (projects.length === 0) {
+                tree.innerHTML = '<div style="text-align: center; color: #999; padding: 40px;">尚無開發專案</div>';
+                return;
+            }
+
+            let html = '';
+
+            projects.forEach(project => {
+                // 專案類型標籤
+                const typeClass = `project-type-${project.type}`;
+                const typeLabel = {
+                    'work': '工作專案',
+                    'own-dev': '個人開發',
+                    'github-ref': 'GitHub 參考',
+                    'other': '其他'
+                }[project.type] || project.type;
+
+                // 技術棧標籤
+                const techStackHtml = project.tech_stack.length > 0
+                    ? project.tech_stack.map(tech => `<span class="tech-badge">${tech}</span>`).join('')
+                    : '<span style="color: #999; font-size: 0.85em;">未偵測到技術棧</span>';
+
+                // Git 狀態
+                const gitStatus = project.is_dirty
+                    ? '<span style="color: #f59e0b;">● 未提交</span>'
+                    : '<span style="color: #10b981;">✓ 乾淨</span>';
+
+                // Claude Team 狀態
+                const claudeTeam = project.has_claude_team
+                    ? '<span style="color: #667eea;">✓ Claude Team</span>'
+                    : '<span style="color: #999;">－</span>';
+
+                // 最後 commit 資訊
+                const lastCommit = project.last_commit_date
+                    ? `${new Date(project.last_commit_date).toLocaleDateString('zh-TW')}`
+                    : '無';
+
+                const commitMsg = project.last_commit_message
+                    ? project.last_commit_message.substring(0, 60) + (project.last_commit_message.length > 60 ? '...' : '')
+                    : '';
+
+                html += `
+                    <div class="project-card">
+                        <div class="project-header">
+                            <div class="project-name">💻 ${project.name}</div>
+                            <div class="project-type-badge ${typeClass}">${typeLabel}</div>
+                        </div>
+
+                        <div class="project-meta">
+                            <div class="project-meta-item">
+                                <span>📁</span>
+                                <span>${project.path}</span>
+                            </div>
+                        </div>
+
+                        <div class="tech-stack">
+                            <span style="font-weight: 600; color: #666; font-size: 0.85em;">技術棧:</span>
+                            ${techStackHtml}
+                        </div>
+
+                        <div class="project-meta">
+                            <div class="project-meta-item">
+                                <span>🔀 Git:</span>
+                                ${gitStatus}
+                            </div>
+                            <div class="project-meta-item">
+                                <span>🤖</span>
+                                ${claudeTeam}
+                            </div>
+                            <div class="project-meta-item">
+                                <span>📅 最後提交:</span>
+                                <span>${lastCommit}</span>
+                            </div>
+                        </div>
+
+                        ${commitMsg ? `
+                        <div style="font-size: 0.85em; color: #666; margin-top: 8px; font-style: italic;">
+                            "${commitMsg}"
+                        </div>
+                        ` : ''}
+
+                        <div class="project-actions">
+                            <a href="vscode://file${project.path}" class="action-btn">
+                                📂 Open in VS Code
+                            </a>
+                            ${project.remote_url && !project.remote_url.includes('D12CuS8TyU456') ? `
+                            <a href="${project.remote_url}" target="_blank" class="action-btn action-btn-secondary">
+                                🔗 Git Remote
+                            </a>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
             });
 
             tree.innerHTML = html;
