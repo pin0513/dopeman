@@ -7,7 +7,7 @@
 set -e
 
 # 配置
-COMMANDS_DIR="/Users/paul_huang/DEV/projects/dopeman/commands"
+COMMANDS_DIR="/Users/paul_huang/AgentProjects/dopeman/commands"
 PORT=8891
 URL="http://localhost:${PORT}/control-center-real.html"
 PID_FILE="/tmp/dopeman-dashboard.pid"

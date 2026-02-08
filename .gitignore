@@ -26,3 +26,4 @@ github-cache.json
 
 # Generated files
 control-center-real-data.json
+*.backup
