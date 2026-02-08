@@ -1036,11 +1036,53 @@
             const tree = document.getElementById('commandsTree');
             const commands = data.categories.commands.items;
 
+            // 取得所有協調者對應的 skills
+            const coordinatorSkills = new Set();
+            data.categories.agents.items
+                .filter(agent => agent.type === 'coordinator')
+                .forEach(agent => {
+                    // 從 agent 路徑提取專案名稱（例如從 "DEV/.claude/agents/team001-xxx.md" 提取 "team001"）
+                    const pathParts = agent.path.split('/');
+                    const fileName = agent.name;
+
+                    // 檢查是否有對應的 skill（同名或相同前綴）
+                    const matchingSkills = commands.filter(cmd =>
+                        cmd.name === fileName ||
+                        fileName.startsWith(cmd.name + '-') ||
+                        cmd.name.startsWith(fileName.split('-')[0])
+                    );
+                    matchingSkills.forEach(cmd => coordinatorSkills.add(cmd.name));
+
+                    // 額外檢查：team001, dopeman, dev-team-* 等團隊型 skills
+                    if (agent.name.includes('team001')) coordinatorSkills.add('team001');
+                    if (agent.name.includes('dopeman')) coordinatorSkills.add('dopeman');
+                    if (agent.name.includes('team002')) coordinatorSkills.add('team002');
+                });
+
+            // 排序：協調者相關的 skills 優先
+            const sortedCommands = [...commands].sort((a, b) => {
+                const aIsCoordinator = coordinatorSkills.has(a.name) ||
+                    a.name.includes('team') ||
+                    a.name === 'dopeman';
+                const bIsCoordinator = coordinatorSkills.has(b.name) ||
+                    b.name.includes('team') ||
+                    b.name === 'dopeman';
+
+                if (aIsCoordinator && !bIsCoordinator) return -1;
+                if (!aIsCoordinator && bIsCoordinator) return 1;
+                return a.name.localeCompare(b.name);
+            });
+
             let html = '';
 
-            commands.forEach(cmd => {
+            sortedCommands.forEach(cmd => {
+                const isCoordinator = coordinatorSkills.has(cmd.name) ||
+                    cmd.name.includes('team') ||
+                    cmd.name === 'dopeman';
+
                 html += `<div class="tree-item">
                     <div class="tree-node">
+                        ${isCoordinator ? '<span class="badge coordinator" style="margin-right: 8px;">協調者</span>' : ''}
                         <span style="font-weight: 600; color: #667eea;">${cmd.full_command}</span>
                     </div>
                     <div class="tree-node tree-indent" style="color: #666;">
