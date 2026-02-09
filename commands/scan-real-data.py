@@ -186,32 +186,88 @@ class RealDataScanner:
         )
 
     def scan_dev_skills(self):
-        """掃描開發中 Skills (有 .git 的)"""
-        projects_dir = DEV_DIR / "projects"
-        if not projects_dir.exists():
-            return
+        """掃描開發中 Skills（有未 commit 或未 push 變更的）
 
-        for project_dir in projects_dir.iterdir():
-            if not project_dir.is_dir():
+        不限制目錄位置，掃描所有符合以下條件的 skills：
+        1. 有 SKILL.md（根目錄或 .claude/skills/ 下）
+        2. 有 .git（版本控制）
+        3. 有變更（uncommitted changes 或 unpushed commits）
+        """
+        processed_projects = set()  # 避免重複處理
+
+        # 掃描所有 SKILL.md（全域搜尋）
+        for skill_md in HOME.rglob("SKILL.md"):
+            # 排除 node_modules
+            if "node_modules" in str(skill_md):
                 continue
 
-            git_dir = project_dir / ".git"
-            if not git_dir.exists():
+            # 判斷 skill 類型和專案根目錄
+            skill_dir = skill_md.parent
+
+            # 先判斷是否為 Team skill（避免誤判為根目錄型）
+            # 情況 1: Team skill ({project}/.claude/skills/{skill-name}/SKILL.md)
+            if ".claude" in str(skill_md) and "skills" in str(skill_md):
+                # 往上找到 .claude 目錄
+                current = skill_dir
+                while current != HOME and current.name != ".claude":
+                    current = current.parent
+
+                if current.name == ".claude":
+                    project_dir = current.parent
+                    skill_name = skill_dir.name
+                    skill_type = "team"
+                else:
+                    continue  # 找不到 .claude 目錄，跳過
+
+            # 情況 2: 根目錄型 skill ({project}/SKILL.md)
+            elif skill_md.name == "SKILL.md" and skill_dir.parent != skill_dir:
+                project_dir = skill_dir
+                skill_name = skill_dir.name
+                skill_type = "root"
+
+            else:
                 continue
 
-            # 檢查是否有 SKILL.md（只有 SKILL.md 才算是開發中的 skill）
-            # .claude/ 目錄只是 Claude Code 專案設定，不代表是 skill
-            has_skill = (project_dir / "SKILL.md").exists()
+            # 排除全域 skills 目錄（~/.claude/skills/）
+            if str(project_dir).startswith(str(CLAUDE_DIR / "skills")):
+                continue
 
-            if has_skill:
+            # 避免重複處理同一個專案
+            project_key = str(project_dir)
+            if project_key in processed_projects:
+                continue
+
+            # 檢查是否有 .git
+            if not (project_dir / ".git").exists():
+                continue
+
+            # 檢查 git 狀態
+            is_dirty = self.check_git_dirty(project_dir)
+            unpushed_count = self.check_unpushed_commits(project_dir)
+
+            # 只有「有變更」的才算「開發中」
+            if is_dirty or unpushed_count > 0:
+                # 決定狀態描述
+                if is_dirty and unpushed_count > 0:
+                    status = f"modified + {unpushed_count} unpushed"
+                elif is_dirty:
+                    status = "modified"
+                else:
+                    status = f"{unpushed_count} unpushed"
+
                 dev_info = {
-                    "name": project_dir.name,
+                    "name": skill_name,
+                    "project_name": project_dir.name,
                     "path": str(project_dir.relative_to(HOME)),
+                    "skill_type": skill_type,
                     "has_git": True,
-                    "dirty": self.check_git_dirty(project_dir)
+                    "dirty": is_dirty,
+                    "unpushed_commits": unpushed_count,
+                    "status": status
                 }
 
                 self.data["categories"]["dev_skills"]["items"].append(dev_info)
+                processed_projects.add(project_key)
 
         self.data["categories"]["dev_skills"]["count"] = len(
             self.data["categories"]["dev_skills"]["items"]
@@ -702,6 +758,33 @@ class RealDataScanner:
             return bool(result.stdout.strip())
         except:
             return False
+
+    def check_unpushed_commits(self, repo_path: Path) -> int:
+        """檢查是否有未推送的 commits，回傳未推送的數量"""
+        import subprocess
+        try:
+            # 檢查是否有 remote
+            result = subprocess.run(
+                ["git", "remote"],
+                cwd=repo_path,
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            if not result.stdout.strip():
+                return 0  # 沒有 remote，不算 unpushed
+
+            # 檢查 local 是否領先 remote
+            result = subprocess.run(
+                ["git", "rev-list", "--count", "@{u}..HEAD"],
+                cwd=repo_path,
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            return int(result.stdout.strip())
+        except:
+            return 0
 
     def run_scan(self):
         """執行完整掃描"""
