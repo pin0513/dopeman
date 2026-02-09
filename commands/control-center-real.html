@@ -1588,7 +1588,24 @@
             btnText.textContent = '掃描中...';
 
             try {
-                // 重新載入資料（加上時間戳避免快取）
+                // 第一步：呼叫 API 執行 Python 掃描腳本
+                console.log('正在執行 Python 掃描腳本...');
+                const scanResponse = await fetch('/api/rescan', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const scanResult = await scanResponse.json();
+
+                if (!scanResult.success) {
+                    throw new Error(scanResult.message || '掃描失敗');
+                }
+
+                console.log('Python 掃描完成！');
+
+                // 第二步：重新載入更新後的 JSON 資料
                 const timestamp = new Date().getTime();
                 const response = await fetch(`./control-center-real-data.json?t=${timestamp}`);
                 data = await response.json();
@@ -1605,6 +1622,7 @@
             } catch (error) {
                 console.error('重新掃描失敗:', error);
                 btnText.textContent = '✗ 失敗';
+                alert(`重新掃描失敗：${error.message}\n\n請確認 control-center-server.py 正在運行`);
                 setTimeout(() => {
                     btnText.textContent = '重新 Scan';
                 }, 2000);
