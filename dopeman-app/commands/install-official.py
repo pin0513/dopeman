@@ -131,19 +131,61 @@ def install_item(item):
         print_info(f"備份現有版本到: {backup_path}")
         subprocess.run(['mv', str(target_path), str(backup_path)], check=True)
 
-    # Clone 倉庫
-    try:
-        print_info(f"正在 clone {item['repo']}...")
-        result = subprocess.run(
-            ['git', 'clone', item['repo'], str(target_path)],
-            capture_output=True,
-            text=True,
-            check=True
-        )
-        print_success(f"Clone 完成")
-    except subprocess.CalledProcessError as e:
-        print_error(f"Clone 失敗: {e.stderr}")
-        return False
+    # 檢查是否有 subpath（Anthropic skills 的特殊處理）
+    if 'subpath' in item:
+        # 使用 sparse-checkout 只下載特定子目錄
+        try:
+            print_info(f"正在下載 {item['repo']} 的 {item['subpath']}...")
+
+            # 初始化 git repo
+            target_path.mkdir(parents=True, exist_ok=True)
+            subprocess.run(['git', 'init'], cwd=target_path, check=True, capture_output=True)
+            subprocess.run(['git', 'remote', 'add', 'origin', item['repo']], cwd=target_path, check=True, capture_output=True)
+
+            # 啟用 sparse-checkout
+            subprocess.run(['git', 'config', 'core.sparseCheckout', 'true'], cwd=target_path, check=True, capture_output=True)
+
+            # 設定要下載的路徑
+            sparse_checkout_file = target_path / '.git' / 'info' / 'sparse-checkout'
+            sparse_checkout_file.parent.mkdir(parents=True, exist_ok=True)
+            with open(sparse_checkout_file, 'w') as f:
+                f.write(f"{item['subpath']}/*\n")
+
+            # Pull 內容
+            subprocess.run(['git', 'pull', 'origin', 'main'], cwd=target_path, check=True, capture_output=True)
+
+            # 將子目錄內容移到根目錄
+            subpath_dir = target_path / item['subpath']
+            if subpath_dir.exists():
+                for item_file in subpath_dir.iterdir():
+                    item_file.rename(target_path / item_file.name)
+
+                # 清理空目錄
+                import shutil
+                shutil.rmtree(target_path / item['subpath'].split('/')[0])
+
+            print_success(f"下載完成")
+
+        except subprocess.CalledProcessError as e:
+            print_error(f"下載失敗: {e.stderr if e.stderr else str(e)}")
+            return False
+        except Exception as e:
+            print_error(f"處理失敗: {e}")
+            return False
+    else:
+        # 標準 clone（完整 repo）
+        try:
+            print_info(f"正在 clone {item['repo']}...")
+            result = subprocess.run(
+                ['git', 'clone', item['repo'], str(target_path)],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            print_success(f"Clone 完成")
+        except subprocess.CalledProcessError as e:
+            print_error(f"Clone 失敗: {e.stderr}")
+            return False
 
     # 如果是 global_link 類型，建立 commands 連結
     if item['install_type'] == 'global_link':

@@ -1,11 +1,195 @@
 {
-  "version": "1.0.0",
-  "last_updated": "2026-02-08",
+  "version": "1.1.0",
+  "last_updated": "2026-02-10",
   "categories": {
-    "official": {
-      "name": "官方專案",
-      "description": "DopeMAN 官方維護的核心專案",
+    "anthropic": {
+      "name": "Anthropic 官方 Skills",
+      "description": "Anthropic 官方維護的生產級 Skills",
       "priority": 1,
+      "repo_base": "https://github.com/anthropics/skills",
+      "items": [
+        {
+          "id": "docx",
+          "name": "Word 文件處理",
+          "repo": "https://github.com/anthropics/skills",
+          "subpath": "skills/docx",
+          "type": "skill",
+          "description": "建立和編輯 Word 文件 (.docx)",
+          "install_type": "global_link",
+          "auto_update": true,
+          "category": "document"
+        },
+        {
+          "id": "pdf",
+          "name": "PDF 處理",
+          "repo": "https://github.com/anthropics/skills",
+          "subpath": "skills/pdf",
+          "type": "skill",
+          "description": "PDF 操作與表單欄位提取",
+          "install_type": "global_link",
+          "auto_update": true,
+          "category": "document"
+        },
+        {
+          "id": "pptx",
+          "name": "PowerPoint 處理",
+          "repo": "https://github.com/anthropics/skills",
+          "subpath": "skills/pptx",
+          "type": "skill",
+          "description": "建立和編輯 PowerPoint 簡報",
+          "install_type": "global_link",
+          "auto_update": true,
+          "category": "document"
+        },
+        {
+          "id": "xlsx",
+          "name": "Excel 處理",
+          "repo": "https://github.com/anthropics/skills",
+          "subpath": "skills/xlsx",
+          "type": "skill",
+          "description": "建立和編輯 Excel 試算表",
+          "install_type": "global_link",
+          "auto_update": true,
+          "category": "document"
+        },
+        {
+          "id": "algorithmic-art",
+          "name": "演算法藝術",
+          "repo": "https://github.com/anthropics/skills",
+          "subpath": "skills/algorithmic-art",
+          "type": "skill",
+          "description": "生成式藝術與創意視覺化",
+          "install_type": "global_link",
+          "auto_update": true,
+          "category": "creative"
+        },
+        {
+          "id": "canvas-design",
+          "name": "Canvas 設計",
+          "repo": "https://github.com/anthropics/skills",
+          "subpath": "skills/canvas-design",
+          "type": "skill",
+          "description": "Canvas 視覺設計工具",
+          "install_type": "global_link",
+          "auto_update": true,
+          "category": "creative"
+        },
+        {
+          "id": "frontend-design",
+          "name": "前端設計",
+          "repo": "https://github.com/anthropics/skills",
+          "subpath": "skills/frontend-design",
+          "type": "skill",
+          "description": "前端 UI/UX 設計",
+          "install_type": "global_link",
+          "auto_update": true,
+          "category": "development"
+        },
+        {
+          "id": "mcp-builder",
+          "name": "MCP 建構器",
+          "repo": "https://github.com/anthropics/skills",
+          "subpath": "skills/mcp-builder",
+          "type": "skill",
+          "description": "建立 Model Context Protocol 伺服器",
+          "install_type": "global_link",
+          "auto_update": true,
+          "category": "development"
+        },
+        {
+          "id": "skill-creator",
+          "name": "Skill 建立器",
+          "repo": "https://github.com/anthropics/skills",
+          "subpath": "skills/skill-creator",
+          "type": "skill",
+          "description": "協助建立新的 Claude Skills",
+          "install_type": "global_link",
+          "auto_update": true,
+          "category": "development"
+        },
+        {
+          "id": "webapp-testing",
+          "name": "Web App 測試",
+          "repo": "https://github.com/anthropics/skills",
+          "subpath": "skills/webapp-testing",
+          "type": "skill",
+          "description": "自動化網頁應用測試",
+          "install_type": "global_link",
+          "auto_update": true,
+          "category": "development"
+        },
+        {
+          "id": "web-artifacts-builder",
+          "name": "Web Artifacts 建構器",
+          "repo": "https://github.com/anthropics/skills",
+          "subpath": "skills/web-artifacts-builder",
+          "type": "skill",
+          "description": "建立網頁 artifacts",
+          "install_type": "global_link",
+          "auto_update": true,
+          "category": "development"
+        },
+        {
+          "id": "brand-guidelines",
+          "name": "品牌指南",
+          "repo": "https://github.com/anthropics/skills",
+          "subpath": "skills/brand-guidelines",
+          "type": "skill",
+          "description": "品牌視覺規範管理",
+          "install_type": "global_link",
+          "auto_update": true,
+          "category": "enterprise"
+        },
+        {
+          "id": "doc-coauthoring",
+          "name": "文件協作",
+          "repo": "https://github.com/anthropics/skills",
+          "subpath": "skills/doc-coauthoring",
+          "type": "skill",
+          "description": "文件協作與共同編輯",
+          "install_type": "global_link",
+          "auto_update": true,
+          "category": "enterprise"
+        },
+        {
+          "id": "internal-comms",
+          "name": "內部溝通",
+          "repo": "https://github.com/anthropics/skills",
+          "subpath": "skills/internal-comms",
+          "type": "skill",
+          "description": "企業內部溝通管理",
+          "install_type": "global_link",
+          "auto_update": true,
+          "category": "enterprise"
+        },
+        {
+          "id": "slack-gif-creator",
+          "name": "Slack GIF 建立器",
+          "repo": "https://github.com/anthropics/skills",
+          "subpath": "skills/slack-gif-creator",
+          "type": "skill",
+          "description": "為 Slack 建立 GIF 動畫",
+          "install_type": "global_link",
+          "auto_update": true,
+          "category": "enterprise"
+        },
+        {
+          "id": "theme-factory",
+          "name": "主題工廠",
+          "repo": "https://github.com/anthropics/skills",
+          "subpath": "skills/theme-factory",
+          "type": "skill",
+          "description": "主題與樣式生成器",
+          "install_type": "global_link",
+          "auto_update": true,
+          "category": "creative"
+        }
+      ]
+    },
+    "official": {
+      "name": "DopeMAN 官方專案",
+      "description": "DopeMAN 官方維護的核心專案",
+      "priority": 2,
       "items": [
         {
           "id": "dopeman",
@@ -39,7 +223,7 @@
     "professional": {
       "name": "專業級 Skills",
       "description": "高品質、可直接使用的專業技能",
-      "priority": 2,
+      "priority": 3,
       "items": [
         {
           "id": "product-strategy-coach",
@@ -91,7 +275,7 @@
     "tools": {
       "name": "工具性 Skills",
       "description": "實用工具與整合",
-      "priority": 3,
+      "priority": 4,
       "items": [
         {
           "id": "ai-tools",
@@ -116,7 +300,7 @@
     "teams": {
       "name": "專業團隊",
       "description": "完整的多 Agent 團隊",
-      "priority": 4,
+      "priority": 5,
       "items": [
         {
           "id": "fullstack-react-dotnet",
