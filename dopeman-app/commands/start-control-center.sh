@@ -95,13 +95,13 @@ fi
 
 echo ""
 
-# 啟動 HTTP Server（背景）
-echo -e "${BLUE}🌐 啟動 HTTP Server (port 8891)...${NC}"
-nohup python3 -m http.server 8891 > "$HTTP_LOG_FILE" 2>&1 &
+# 啟動 API Server（背景，支援 POST 請求）
+echo -e "${BLUE}🌐 啟動 API Server (port 8891)...${NC}"
+nohup python3 api-server.py > "$HTTP_LOG_FILE" 2>&1 &
 HTTP_PID=$!
 echo $HTTP_PID > "$HTTP_PID_FILE"
 sleep 1  # 等待伺服器啟動
-echo -e "${GREEN}✅ HTTP Server 已啟動 (PID: $HTTP_PID)${NC}"
+echo -e "${GREEN}✅ API Server 已啟動 (PID: $HTTP_PID)${NC}"
 
 # 啟動 WebSocket 伺服器（背景）
 echo -e "${BLUE}📡 啟動 WebSocket Server (port 8892)...${NC}"

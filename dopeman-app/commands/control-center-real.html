@@ -603,6 +603,166 @@
         .toggle-switch.enabled::after {
             left: 22px;
         }
+
+        /* 官方市場樣式 */
+        .market-filter-btn, .market-status-btn {
+            padding: 8px 16px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .market-filter-btn:hover, .market-status-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .market-filter-btn.active, .market-status-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .official-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .official-card:hover {
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+
+        .official-card.installed {
+            background: linear-gradient(135deg, #f5f7ff 0%, #e8ecff 100%);
+            border-color: #667eea;
+        }
+
+        .official-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .official-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .official-card-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-skill {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .badge-team {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .badge-installed {
+            background: #c8e6c9;
+            color: #388e3c;
+        }
+
+        .official-card-desc {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .official-card-meta {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: #999;
+        }
+
+        .official-card-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .official-tag {
+            padding: 3px 8px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .official-card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-install, .btn-uninstall, .btn-update {
+            flex: 1;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-install {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-install:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-uninstall {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-uninstall:hover {
+            background: #d32f2f;
+        }
+
+        .btn-update {
+            background: #ff9800;
+            color: white;
+        }
+
+        .btn-update:hover {
+            background: #f57c00;
+        }
+
+        .btn-disabled {
+            opacity: 0.5;
+            cursor: not-allowed !important;
+        }
     </style>
 </head>
 <body>
@@ -655,6 +815,7 @@
                 <div class="tab" data-tab="rules">Rules</div>
                 <div class="tab" data-tab="commands">Commands</div>
                 <div class="tab" data-tab="dev-projects">Dev Projects</div>
+                <div class="tab" data-tab="official-market">🏪 官方市場</div>
                 <div class="tab" data-tab="layers">分層視圖</div>
                 <div class="tab" data-tab="settings">⚙️ 設定</div>
             </div>
@@ -682,6 +843,39 @@
 
             <div id="layers" class="tab-content">
                 <div class="tree-view" id="layersTree"></div>
+            </div>
+
+            <div id="official-market" class="tab-content">
+                <div style="padding: 20px;">
+                    <h2 style="margin-top: 0; color: #667eea;">🏪 官方 Skills & Teams 市場</h2>
+                    <p style="color: #666; margin-bottom: 20px;">
+                        共 <span id="officialTotalCount">0</span> 個官方項目 |
+                        已安裝 <span id="officialInstalledCount">0</span> 個 |
+                        可安裝 <span id="officialAvailableCount">0</span> 個
+                    </p>
+
+                    <!-- 分類過濾按鈕 -->
+                    <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;" id="marketCategoryFilters">
+                        <button class="market-filter-btn active" data-category="all">全部</button>
+                        <button class="market-filter-btn" data-category="anthropic">Anthropic 官方 (16)</button>
+                        <button class="market-filter-btn" data-category="official">DopeMAN 官方 (3)</button>
+                        <button class="market-filter-btn" data-category="professional">專業級 (5)</button>
+                        <button class="market-filter-btn" data-category="tools">工具性 (2)</button>
+                        <button class="market-filter-btn" data-category="teams">專業團隊 (2)</button>
+                    </div>
+
+                    <!-- 狀態過濾 -->
+                    <div style="margin-bottom: 20px; display: flex; gap: 10px;">
+                        <button class="market-status-btn active" data-status="all">全部</button>
+                        <button class="market-status-btn" data-status="available">可安裝</button>
+                        <button class="market-status-btn" data-status="installed">已安裝</button>
+                    </div>
+
+                    <!-- 官方項目列表 -->
+                    <div id="officialMarketList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px;">
+                        <!-- 動態生成 -->
+                    </div>
+                </div>
             </div>
 
             <div id="settings" class="tab-content">
@@ -735,13 +929,24 @@
     <script>
         let data = null;
         let filteredData = null;
+        let officialCatalog = null;
 
         // 載入資料
         async function loadData() {
             try {
+                // 載入掃描資料
                 const response = await fetch('./control-center-real-data.json');
                 data = await response.json();
                 filteredData = data;
+
+                // 載入官方目錄
+                try {
+                    const catalogResponse = await fetch('./official-catalog.json');
+                    officialCatalog = await catalogResponse.json();
+                } catch (err) {
+                    console.warn('載入官方目錄失敗:', err);
+                }
+
                 renderAll();
             } catch (error) {
                 console.error('載入資料失敗:', error);
@@ -757,6 +962,7 @@
             renderCommandsTree();
             renderDevProjectsTree();
             renderLayersTree();
+            renderOfficialMarket();
             renderSettings();
             renderFilters();
 
@@ -1576,6 +1782,280 @@
             const filters = document.getElementById('filterButtons');
             // 暫時留空，之後可以加入過濾功能
         }
+
+        // ============ 官方市場相關函數 ============
+
+        // 渲染官方市場
+        function renderOfficialMarket() {
+            if (!officialCatalog) {
+                document.getElementById('officialMarketList').innerHTML = '<p style="color: #999; text-align: center; padding: 40px;">載入官方目錄失敗</p>';
+                return;
+            }
+
+            // 收集所有官方項目
+            let allItems = [];
+            for (const [categoryKey, category] of Object.entries(officialCatalog.categories)) {
+                category.items.forEach(item => {
+                    allItems.push({
+                        ...item,
+                        categoryKey: categoryKey,
+                        categoryName: category.name,
+                        priority: category.priority || 99
+                    });
+                });
+            }
+
+            // 檢查哪些已安裝
+            allItems.forEach(item => {
+                item.installed = isInstalled(item);
+            });
+
+            // 更新統計數字
+            document.getElementById('officialTotalCount').textContent = allItems.length;
+            document.getElementById('officialInstalledCount').textContent = allItems.filter(i => i.installed).length;
+            document.getElementById('officialAvailableCount').textContent = allItems.filter(i => !i.installed).length;
+
+            // 渲染列表
+            renderOfficialList(allItems);
+
+            // 綁定過濾按鈕事件
+            setupMarketFilters(allItems);
+        }
+
+        // 檢查項目是否已安裝
+        function isInstalled(item) {
+            const skillName = item.id;
+
+            // 檢查全域 Skills
+            if (data.categories.global_skills.items.some(s => s.name === skillName)) {
+                return true;
+            }
+
+            // 檢查專案 Skills
+            if (data.categories.project_skills.items.some(s => s.name === skillName)) {
+                return true;
+            }
+
+            // 檢查開發中 Skills
+            if (data.categories.dev_skills.items.some(s => s.name === skillName)) {
+                return true;
+            }
+
+            // 檢查開發專案（Teams）
+            if (data.categories.dev_projects && data.categories.dev_projects.items.some(p => p.name === skillName)) {
+                return true;
+            }
+
+            return false;
+        }
+
+        // 渲染官方列表
+        function renderOfficialList(items, filter = { category: 'all', status: 'all' }) {
+            const container = document.getElementById('officialMarketList');
+
+            // 過濾項目
+            let filteredItems = items;
+
+            if (filter.category !== 'all') {
+                filteredItems = filteredItems.filter(i => i.categoryKey === filter.category);
+            }
+
+            if (filter.status !== 'all') {
+                if (filter.status === 'installed') {
+                    filteredItems = filteredItems.filter(i => i.installed);
+                } else if (filter.status === 'available') {
+                    filteredItems = filteredItems.filter(i => !i.installed);
+                }
+            }
+
+            // 排序：優先級 > 已安裝狀態 > 名稱
+            filteredItems.sort((a, b) => {
+                if (a.priority !== b.priority) return a.priority - b.priority;
+                if (a.installed !== b.installed) return a.installed ? -1 : 1;
+                return a.name.localeCompare(b.name);
+            });
+
+            // 生成 HTML
+            if (filteredItems.length === 0) {
+                container.innerHTML = '<p style="color: #999; text-align: center; padding: 40px;">沒有符合條件的項目</p>';
+                return;
+            }
+
+            container.innerHTML = filteredItems.map(item => createOfficialCard(item)).join('');
+        }
+
+        // 創建官方卡片
+        function createOfficialCard(item) {
+            const typeLabel = item.type === 'skill' ? 'Skill' : 'Team';
+            const statusLabel = item.installed ? '已安裝' : '';
+
+            // Tags
+            const tagsHtml = item.tags ? item.tags.map(tag =>
+                `<span class="official-tag">${tag}</span>`
+            ).join('') : '';
+
+            // 安裝位置
+            const installPath = item.install_type === 'global_link' ? '~/.claude/skills/' : '~/AgentProjects/';
+
+            // 按鈕
+            let actionButtons = '';
+            if (item.installed) {
+                actionButtons = `
+                    <button class="btn-uninstall" onclick="uninstallOfficial('${item.id}', '${item.type}')">
+                        🗑️ 移除
+                    </button>
+                `;
+                if (item.auto_update) {
+                    actionButtons += `
+                        <button class="btn-update" onclick="updateOfficial('${item.id}')">
+                            🔄 更新
+                        </button>
+                    `;
+                }
+            } else {
+                actionButtons = `
+                    <button class="btn-install" onclick="installOfficial('${item.id}', '${item.type}')">
+                        ⬇️ 安裝
+                    </button>
+                `;
+            }
+
+            return `
+                <div class="official-card ${item.installed ? 'installed' : ''}">
+                    <div class="official-card-header">
+                        <div>
+                            <div class="official-card-title">${item.name}</div>
+                            <div style="display: flex; gap: 6px; margin-top: 6px;">
+                                <span class="official-card-badge badge-${item.type}">${typeLabel}</span>
+                                ${statusLabel ? `<span class="official-card-badge badge-installed">${statusLabel}</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="official-card-desc">${item.description}</div>
+
+                    ${tagsHtml ? `<div class="official-card-tags">${tagsHtml}</div>` : ''}
+
+                    <div class="official-card-meta">
+                        <span>📁 ${installPath}</span>
+                        ${item.auto_update ? '<span>🔄 自動更新</span>' : ''}
+                        ${item.source ? `<span>📦 來源: ${item.source}</span>` : ''}
+                    </div>
+
+                    <div class="official-card-actions">
+                        ${actionButtons}
+                    </div>
+                </div>
+            `;
+        }
+
+        // 設定市場過濾器
+        function setupMarketFilters(allItems) {
+            const categoryButtons = document.querySelectorAll('.market-filter-btn');
+            const statusButtons = document.querySelectorAll('.market-status-btn');
+
+            let currentFilter = { category: 'all', status: 'all' };
+
+            categoryButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    categoryButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter.category = btn.getAttribute('data-category');
+                    renderOfficialList(allItems, currentFilter);
+                });
+            });
+
+            statusButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    statusButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter.status = btn.getAttribute('data-status');
+                    renderOfficialList(allItems, currentFilter);
+                });
+            });
+        }
+
+        // 安裝官方 Skill/Team
+        async function installOfficial(id, type) {
+            const confirmed = confirm(`確定要安裝 ${id} (${type === 'skill' ? 'Skill' : 'Team'}) 嗎？\n\n這將執行安裝腳本並可能需要幾秒鐘時間。`);
+            if (!confirmed) return;
+
+            try {
+                // 呼叫後端 API 或腳本
+                const response = await fetch('/api/install-official', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, type })
+                });
+
+                if (response.ok) {
+                    alert(`✅ ${id} 安裝成功！\n\n請重新 Scan 以查看最新狀態。`);
+                    // 建議重新掃描
+                    if (confirm('是否立即重新掃描？')) {
+                        rescan();
+                    }
+                } else {
+                    throw new Error('安裝失敗');
+                }
+            } catch (error) {
+                console.error('安裝失敗:', error);
+                alert(`❌ 安裝失敗！\n\n錯誤: ${error.message}\n\n請手動執行：\ncd ~/AgentProjects/dopeman/dopeman-app/commands\n./install-official.py`);
+            }
+        }
+
+        // 移除官方 Skill/Team
+        async function uninstallOfficial(id, type) {
+            const confirmed = confirm(`確定要移除 ${id} (${type === 'skill' ? 'Skill' : 'Team'}) 嗎？\n\n這將刪除已安裝的檔案。`);
+            if (!confirmed) return;
+
+            try {
+                const response = await fetch('/api/uninstall-official', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, type })
+                });
+
+                if (response.ok) {
+                    alert(`✅ ${id} 已移除！\n\n請重新 Scan 以查看最新狀態。`);
+                    if (confirm('是否立即重新掃描？')) {
+                        rescan();
+                    }
+                } else {
+                    throw new Error('移除失敗');
+                }
+            } catch (error) {
+                console.error('移除失敗:', error);
+                alert(`❌ 移除失敗！\n\n錯誤: ${error.message}\n\n請手動刪除：\n~/.claude/skills/${id}\n或\n~/AgentProjects/${id}`);
+            }
+        }
+
+        // 更新官方 Skill/Team
+        async function updateOfficial(id) {
+            const confirmed = confirm(`確定要更新 ${id} 嗎？\n\n這將從 upstream 拉取最新版本。`);
+            if (!confirmed) return;
+
+            try {
+                const response = await fetch('/api/update-official', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id })
+                });
+
+                if (response.ok) {
+                    alert(`✅ ${id} 更新成功！`);
+                    if (confirm('是否立即重新掃描？')) {
+                        rescan();
+                    }
+                } else {
+                    throw new Error('更新失敗');
+                }
+            } catch (error) {
+                console.error('更新失敗:', error);
+                alert(`❌ 更新失敗！\n\n錯誤: ${error.message}\n\n請手動執行：\ncd ~/.claude/skills/${id}\ngit pull`);
+            }
+        }
+
+        // ============ 官方市場相關函數結束 ============
 
         // 切換展開/摺疊
         function toggleExpand(element) {
