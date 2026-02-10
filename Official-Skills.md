@@ -31,3 +31,7 @@ https://github.com/pin0513/fullstack-react-dotnet
 
 App開發(from A-Team)
 https://github.com/pin0513/app-team-v1.git
+
+雲端技術方案(from A-Team)
+
+問題解決()

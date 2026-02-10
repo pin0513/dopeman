@@ -35,11 +35,13 @@ PROFESSIONAL_PREFIXES = {
 }
 
 class SkillLinker:
-    def __init__(self):
+    def __init__(self, force: bool = False, category_filter: str = None):
         self.universal = []      # 全域通用能力
         self.professional = {}   # 專業指定能力 {category: [skills]}
         self.exclusive = []      # 專屬能力
         self.existing = set()    # 已存在的 symlinks
+        self.force = force       # 強制重建模式
+        self.category_filter = category_filter  # 分類過濾器
 
     def scan_existing_links(self):
         """掃描已存在的 symlinks"""
@@ -49,7 +51,12 @@ class SkillLinker:
 
         for item in CLAUDE_SKILLS_DIR.iterdir():
             if item.is_symlink():
-                self.existing.add(item.name)
+                if self.force:
+                    # 強制模式：移除舊連結
+                    item.unlink()
+                    print(f"   🗑️  移除舊連結: {item.name}")
+                else:
+                    self.existing.add(item.name)
 
     def classify_skill(self, skill_path: Path) -> str:
         """分類 Skill"""
@@ -102,11 +109,35 @@ class SkillLinker:
         for skill_path in skills:
             skill_name = skill_path.name
 
-            # 跳過已存在的
-            if skill_name in self.existing:
+            # 跳過已存在的（非強制模式）
+            if skill_name in self.existing and not self.force:
                 continue
 
             classification = self.classify_skill(skill_path)
+
+            # 套用分類過濾器
+            if self.category_filter:
+                # 檢查是否符合過濾條件
+                if self.category_filter == "universal":
+                    if classification != "universal":
+                        continue
+                elif self.category_filter == "exclusive":
+                    if classification != "exclusive":
+                        continue
+                else:
+                    # 檢查是否符合專業分類
+                    if not classification.startswith("professional:"):
+                        continue
+                    category = classification.split(":", 1)[1]
+                    # 支援前綴匹配（如 "dev" 可以匹配 "dev-team"）
+                    matched = False
+                    for prefix, cat_name in PROFESSIONAL_PREFIXES.items():
+                        if self.category_filter in prefix or self.category_filter in cat_name:
+                            if prefix in skill_name:
+                                matched = True
+                                break
+                    if not matched:
+                        continue
 
             if classification == "universal":
                 self.universal.append(skill_path)
@@ -180,19 +211,31 @@ class SkillLinker:
         print(f"   \n   總計發現: {total} 個新 Skills")
 
 def main():
-    import sys
+    import argparse
 
-    dry_run = "--dry-run" in sys.argv
+    parser = argparse.ArgumentParser(description='DopeMAN - Skills Auto-Linking Tool')
+    parser.add_argument('--dry-run', action='store_true', help='預覽模式（不實際建立連結）')
+    parser.add_argument('--force', action='store_true', help='強制重建（移除舊連結）')
+    parser.add_argument('--category', type=str, help='只建立指定分類的連結 (universal/exclusive/dev/slide/article/web/mayo/ado)')
+
+    args = parser.parse_args()
 
     print("🔍 DopeMAN - Skills Auto-Linking")
     print("=" * 50)
 
-    linker = SkillLinker()
+    if args.force:
+        print("\n⚠️  強制重建模式：將移除並重建所有連結")
+
+    if args.category:
+        print(f"\n🎯 分類過濾器：只建立 '{args.category}' 相關的連結")
+
+    linker = SkillLinker(force=args.force, category_filter=args.category)
 
     # 1. 掃描已存在的 links
     print("\n⏳ 掃描已存在的連結...")
     linker.scan_existing_links()
-    print(f"   已存在: {len(linker.existing)} 個")
+    if not args.force:
+        print(f"   已存在: {len(linker.existing)} 個")
 
     # 2. 掃描所有 Skills
     print("\n⏳ 掃描所有 Skills...")
@@ -207,13 +250,13 @@ def main():
     linker.generate_report()
 
     # 5. 建立連結
-    if dry_run:
+    if args.dry_run:
         print("\n🔍 Dry-run 模式（不實際建立連結）")
 
-    created = linker.create_links(dry_run=dry_run)
+    created = linker.create_links(dry_run=args.dry_run)
 
     print("\n" + "=" * 50)
-    if dry_run:
+    if args.dry_run:
         print(f"✅ Dry-run 完成！預計建立 {len(created)} 個連結")
         print("\n💡 執行 `python link-skills.py` 來實際建立連結")
     else:

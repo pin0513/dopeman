@@ -1,0 +1,485 @@
+{
+  "metadata": {
+    "generated_at": "2026-02-10T00:30:15.688457",
+    "version": "2.0.0",
+    "source": "yfinance"
+  },
+  "social": {
+    "ptt": {
+      "gossiping": {
+        "trending": [
+          {
+            "title": "[公告] 2025十大娛樂新聞 11/23~12/23推文投票",
+            "board": "Gossiping",
+            "push_count": 94,
+            "author": "August2006",
+            "date": "11/23",
+            "url": "https://www.ptt.cc/bbs/Gossiping/M.1763834415.A.783.html"
+          },
+          {
+            "title": "[公告] 【八卦美學獎】梗圖吐槽，共鳴豹紋笑翻！",
+            "board": "Gossiping",
+            "push_count": 37,
+            "author": "August2006",
+            "date": "11/01",
+            "url": "https://www.ptt.cc/bbs/Gossiping/M.1761980569.A.84C.html"
+          },
+          {
+            "title": "[公告] 八卦板板規(2025.01.21)",
+            "board": "Gossiping",
+            "push_count": 2,
+            "author": "ubcs",
+            "date": "1/21",
+            "url": "https://www.ptt.cc/bbs/Gossiping/M.1737398137.A.644.html"
+          },
+          {
+            "title": "[協尋] 1/10師大分部往公館土地公行車記錄器",
+            "board": "Gossiping",
+            "push_count": 2,
+            "author": "justinku",
+            "date": "1/15",
+            "url": "https://www.ptt.cc/bbs/Gossiping/M.1768471541.A.1A3.html"
+          },
+          {
+            "title": "[問卦] 把一萬個小時定律掛在嘴邊的都是哪些人",
+            "board": "Gossiping",
+            "push_count": 1,
+            "author": "HidekiRyuga",
+            "date": "2/10",
+            "url": "https://www.ptt.cc/bbs/Gossiping/M.1770654231.A.0D3.html"
+          },
+          {
+            "title": "[問卦] 年底再去冰島跟得上極光爆發嗎QQ",
+            "board": "Gossiping",
+            "push_count": 1,
+            "author": "peter891116",
+            "date": "2/10",
+            "url": "https://www.ptt.cc/bbs/Gossiping/M.1770654334.A.333.html"
+          }
+        ],
+        "count": 6
+      }
+    }
+  },
+  "stocks": {
+    "tw": {
+      "top_gainers": [
+        {
+          "symbol": "1326",
+          "name": "Formosa Chemicals & Fibre Corporation",
+          "price": 42.95,
+          "change": 3.9,
+          "change_percent": 9.99,
+          "volume": "44,422張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2344",
+          "name": "Winbond Electronics Corporation",
+          "price": 107.5,
+          "change": 9.7,
+          "change_percent": 9.92,
+          "volume": "155,277張",
+          "type": "stock"
+        },
+        {
+          "symbol": "3711",
+          "name": "ASE Technology Holding Co., Ltd.",
+          "price": 327.0,
+          "change": 22.5,
+          "change_percent": 7.39,
+          "volume": "35,625張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2454",
+          "name": "MediaTek Inc.",
+          "price": 1830.0,
+          "change": 120.0,
+          "change_percent": 7.02,
+          "volume": "12,770張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2360",
+          "name": "Chroma ATE Inc.",
+          "price": 1030.0,
+          "change": 63.0,
+          "change_percent": 6.51,
+          "volume": "2,564張",
+          "type": "stock"
+        },
+        {
+          "symbol": "1303",
+          "name": "Nan Ya Plastics Corporation",
+          "price": 78.0,
+          "change": 4.5,
+          "change_percent": 6.12,
+          "volume": "106,895張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2301",
+          "name": "Lite-On Technology Corporation",
+          "price": 173.5,
+          "change": 9.0,
+          "change_percent": 5.47,
+          "volume": "26,205張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2408",
+          "name": "Nanya Technology Corporation",
+          "price": 274.5,
+          "change": 10.5,
+          "change_percent": 3.98,
+          "volume": "88,411張",
+          "type": "stock"
+        },
+        {
+          "symbol": "6505",
+          "name": "Formosa Petrochemical Corporation",
+          "price": 50.0,
+          "change": 1.4,
+          "change_percent": 2.88,
+          "volume": "6,670張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2354",
+          "name": "Foxconn Technology Co., Ltd.",
+          "price": 57.9,
+          "change": 1.6,
+          "change_percent": 2.84,
+          "volume": "4,136張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2356",
+          "name": "Inventec Corporation",
+          "price": 44.8,
+          "change": 1.0,
+          "change_percent": 2.28,
+          "volume": "15,825張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2882",
+          "name": "Cathay Financial Holding Co., Ltd.",
+          "price": 77.2,
+          "change": 1.5,
+          "change_percent": 1.98,
+          "volume": "25,312張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2330",
+          "name": "Taiwan Semiconductor Manufacturing Company Limited",
+          "price": 1815.0,
+          "change": 35.0,
+          "change_percent": 1.97,
+          "volume": "38,298張",
+          "type": "stock"
+        },
+        {
+          "symbol": "1301",
+          "name": "Formosa Plastics Corporation",
+          "price": 46.65,
+          "change": 0.9,
+          "change_percent": 1.97,
+          "volume": "27,596張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2887",
+          "name": "TS Financial Holding Co., Ltd.",
+          "price": 23.8,
+          "change": 0.45,
+          "change_percent": 1.93,
+          "volume": "98,895張",
+          "type": "stock"
+        },
+        {
+          "symbol": "3034",
+          "name": "Novatek Microelectronics Corp.",
+          "price": 372.0,
+          "change": 7.0,
+          "change_percent": 1.92,
+          "volume": "3,513張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2308",
+          "name": "Delta Electronics, Inc.",
+          "price": 1180.0,
+          "change": 20.0,
+          "change_percent": 1.72,
+          "volume": "9,075張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2890",
+          "name": "SinoPac Financial Holdings Company Limited",
+          "price": 30.0,
+          "change": 0.5,
+          "change_percent": 1.69,
+          "volume": "38,283張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2317",
+          "name": "Hon Hai Precision Industry Co., Ltd.",
+          "price": 218.5,
+          "change": 3.5,
+          "change_percent": 1.63,
+          "volume": "30,709張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2382",
+          "name": "Quanta Computer Inc.",
+          "price": 284.0,
+          "change": 4.5,
+          "change_percent": 1.61,
+          "volume": "12,736張",
+          "type": "stock"
+        },
+        {
+          "symbol": "3231",
+          "name": "Wistron Corporation",
+          "price": 131.0,
+          "change": 2.0,
+          "change_percent": 1.55,
+          "volume": "28,073張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2881",
+          "name": "Fubon Financial Holding Co., Ltd.",
+          "price": 93.8,
+          "change": 1.4,
+          "change_percent": 1.52,
+          "volume": "13,964張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2323",
+          "name": "CMC Magnetics Corporation",
+          "price": 10.1,
+          "change": 0.14,
+          "change_percent": 1.41,
+          "volume": "4,176張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2395",
+          "name": "Advantech Co., Ltd.",
+          "price": 291.0,
+          "change": 3.5,
+          "change_percent": 1.22,
+          "volume": "2,447張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2207",
+          "name": "Hotai Motor Co.,Ltd.",
+          "price": 530.0,
+          "change": 6.0,
+          "change_percent": 1.15,
+          "volume": "186張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2303",
+          "name": "United Microelectronics Corporation",
+          "price": 62.4,
+          "change": 0.5,
+          "change_percent": 0.81,
+          "volume": "140,360張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2891",
+          "name": "CTBC Financial Holding Co., Ltd.",
+          "price": 52.0,
+          "change": 0.4,
+          "change_percent": 0.78,
+          "volume": "23,168張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2347",
+          "name": "Synnex Technology International Corporation",
+          "price": 66.3,
+          "change": 0.5,
+          "change_percent": 0.76,
+          "volume": "2,755張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2327",
+          "name": "Yageo Corporation",
+          "price": 250.0,
+          "change": 1.5,
+          "change_percent": 0.6,
+          "volume": "16,306張",
+          "type": "stock"
+        },
+        {
+          "symbol": "5880",
+          "name": "Taiwan Cooperative Financial Holding Co., Ltd.",
+          "price": 23.75,
+          "change": 0.1,
+          "change_percent": 0.42,
+          "volume": "12,489張",
+          "type": "stock"
+        }
+      ],
+      "top_losers": [
+        {
+          "symbol": "3008",
+          "name": "LARGAN Precision Co.,Ltd",
+          "price": 2290.0,
+          "change": -40.0,
+          "change_percent": -1.72,
+          "volume": "517張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2912",
+          "name": "President Chain Store Corporation",
+          "price": 220.5,
+          "change": -3.5,
+          "change_percent": -1.56,
+          "volume": "1,999張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2376",
+          "name": "Giga-Byte Technology Co., Ltd.",
+          "price": 224.0,
+          "change": -3.5,
+          "change_percent": -1.54,
+          "volume": "5,019張",
+          "type": "stock"
+        },
+        {
+          "symbol": "1216",
+          "name": "Uni-President Enterprises Corp.",
+          "price": 73.2,
+          "change": -1.0,
+          "change_percent": -1.35,
+          "volume": "7,860張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2409",
+          "name": "AUO Corporation",
+          "price": 15.0,
+          "change": -0.2,
+          "change_percent": -1.32,
+          "volume": "155,035張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2357",
+          "name": "ASUSTeK Computer Inc.",
+          "price": 503.0,
+          "change": -5.0,
+          "change_percent": -0.98,
+          "volume": "3,822張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2884",
+          "name": "E.SUN Financial Holding Company, Ltd.",
+          "price": 33.7,
+          "change": -0.3,
+          "change_percent": -0.88,
+          "volume": "29,564張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2412",
+          "name": "Chunghwa Telecom Co., Ltd.",
+          "price": 132.0,
+          "change": -1.0,
+          "change_percent": -0.75,
+          "volume": "13,605張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2603",
+          "name": "Evergreen Marine Corporation (Taiwan) Ltd.",
+          "price": 186.5,
+          "change": -1.0,
+          "change_percent": -0.53,
+          "volume": "4,691張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2892",
+          "name": "First Financial Holding Co., Ltd.",
+          "price": 29.0,
+          "change": -0.15,
+          "change_percent": -0.51,
+          "volume": "18,548張",
+          "type": "stock"
+        },
+        {
+          "symbol": "3045",
+          "name": "Taiwan Mobile Co., Ltd.",
+          "price": 105.0,
+          "change": -0.5,
+          "change_percent": -0.47,
+          "volume": "5,118張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2379",
+          "name": "Realtek Semiconductor Corp.",
+          "price": 470.5,
+          "change": -2.0,
+          "change_percent": -0.42,
+          "volume": "2,888張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2002",
+          "name": "China Steel Corporation",
+          "price": 20.35,
+          "change": -0.05,
+          "change_percent": -0.25,
+          "volume": "37,085張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2353",
+          "name": "Acer Incorporated",
+          "price": 26.5,
+          "change": -0.05,
+          "change_percent": -0.19,
+          "volume": "21,123張",
+          "type": "stock"
+        },
+        {
+          "symbol": "2615",
+          "name": "Wan Hai Lines Ltd.",
+          "price": 73.8,
+          "change": -0.1,
+          "change_percent": -0.14,
+          "volume": "2,779張",
+          "type": "stock"
+        }
+      ],
+      "indices": {
+        "taiex": {
+          "name": "加權指數",
+          "value": 32404.62,
+          "change": 621.7,
+          "change_percent": 1.96
+        }
+      }
+    }
+  }
+}

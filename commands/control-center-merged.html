@@ -61,28 +61,7 @@
             backdrop-filter: blur(10px);
         }
 
-        .info-stream-btn {
-            position: absolute;
-            top: 0;
-            left: 0;
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            text-decoration: none;
-        }
-
-        .rescan-btn:hover,
-        .info-stream-btn:hover {
+        .rescan-btn:hover {
             background: rgba(255, 255, 255, 0.3);
             border-color: rgba(255, 255, 255, 0.8);
             transform: translateY(-2px);
@@ -587,10 +566,6 @@
 <body>
     <div class="container">
         <div class="header">
-            <a href="info-stream.html" class="info-stream-btn">
-                <span>📊</span>
-                <span>個人資訊匯流</span>
-            </a>
             <h1>🎛️ Skills Control Center</h1>
             <p>真實資料視覺化 - 完整環境掃描結果</p>
             <button id="rescanBtn" class="rescan-btn">
