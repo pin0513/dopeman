@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DopeMAN 任務監控中心</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #f0f0f0;
+            font-size: 14px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ccc;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.connected {
+            background: #10b981;
+        }
+
+        .status-dot.disconnected {
+            background: #ef4444;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls h2 {
+            margin-bottom: 16px;
+            color: #333;
+            font-size: 20px;
+        }
+
+        .task-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .task-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .task-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .task-btn:active {
+            transform: translateY(0);
+        }
+
+        .task-btn.scan {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .task-btn.health-check {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .task-btn.fix {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .task-btn.update-info-stream {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+        }
+
+        .task-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .tasks-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .task-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .task-card.completed {
+            border-left: 4px solid #10b981;
+        }
+
+        .task-card.failed {
+            border-left: 4px solid #ef4444;
+        }
+
+        .task-card.running {
+            border-left: 4px solid #667eea;
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .task-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .task-status {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .task-status.running {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .task-status.completed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .task-status.failed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .task-message {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .progress-container {
+            background: #e5e7eb;
+            border-radius: 8px;
+            height: 24px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .progress-bar.completed {
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+        }
+
+        .progress-bar.failed {
+            background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .task-time {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .back-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 16px 24px;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .empty-state h3 {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎛️ 任務監控中心</h1>
+            <div class="connection-status">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">連線中...</span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <h2>執行任務</h2>
+            <div class="task-buttons">
+                <button class="task-btn scan" onclick="startTask('scan')">
+                    <span>🔍</span>
+                    <span>掃描 Skills</span>
+                </button>
+                <button class="task-btn health-check" onclick="startTask('health-check')">
+                    <span>🏥</span>
+                    <span>健康檢查</span>
+                </button>
+                <button class="task-btn fix" onclick="startTask('fix')">
+                    <span>🔧</span>
+                    <span>自動修復</span>
+                </button>
+                <button class="task-btn update-info-stream" onclick="startTask('update-info-stream')">
+                    <span>📊</span>
+                    <span>更新資訊匯流</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="tasks-container" id="tasksContainer">
+            <div class="empty-state">
+                <h3>暫無執行中的任務</h3>
+                <p>點擊上方按鈕開始執行任務</p>
+            </div>
+        </div>
+    </div>
+
+    <button class="back-btn" onclick="window.location.href='control-center-real.html'">
+        <span>←</span>
+        <span>返回 Skills Center</span>
+    </button>
+
+    <script>
+        let ws = null;
+        let tasks = {};
+        let reconnectTimer = null;
+        let notificationPermission = 'default';
+
+        // 請求通知權限
+        if ('Notification' in window) {
+            Notification.requestPermission().then(permission => {
+                notificationPermission = permission;
+                console.log('通知權限:', permission);
+            });
+        }
+
+        function connectWebSocket() {
+            ws = new WebSocket('ws://localhost:8892');
+
+            ws.onopen = () => {
+                console.log('✅ WebSocket 已連線');
+                updateConnectionStatus(true);
+                if (reconnectTimer) {
+                    clearTimeout(reconnectTimer);
+                    reconnectTimer = null;
+                }
+            };
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                console.log('收到訊息:', data);
+                handleMessage(data);
+            };
+
+            ws.onerror = (error) => {
+                console.error('❌ WebSocket 錯誤:', error);
+                updateConnectionStatus(false);
+            };
+
+            ws.onclose = () => {
+                console.log('❌ WebSocket 已斷線');
+                updateConnectionStatus(false);
+                // 5 秒後重新連線
+                reconnectTimer = setTimeout(connectWebSocket, 5000);
+            };
+        }
+
+        function updateConnectionStatus(connected) {
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+
+            if (connected) {
+                statusDot.classList.add('connected');
+                statusDot.classList.remove('disconnected');
+                statusText.textContent = '已連線';
+            } else {
+                statusDot.classList.remove('connected');
+                statusDot.classList.add('disconnected');
+                statusText.textContent = '已斷線';
+            }
+        }
+
+        function handleMessage(data) {
+            const { type, task_id, task_type, progress, message, error, timestamp } = data;
+
+            if (type === 'current_tasks') {
+                // 載入現有任務
+                tasks = data.tasks;
+                renderTasks();
+            } else if (type === 'progress') {
+                // 更新任務進度
+                if (!tasks[task_id]) {
+                    tasks[task_id] = {
+                        type: task_type,
+                        status: 'running',
+                        progress: 0,
+                        message: '',
+                        started_at: timestamp
+                    };
+                }
+                tasks[task_id].progress = progress;
+                tasks[task_id].message = message;
+                tasks[task_id].error = error;
+                tasks[task_id].updated_at = timestamp;
+                renderTasks();
+            } else if (type === 'task_completed') {
+                // 任務完成
+                if (tasks[task_id]) {
+                    tasks[task_id].status = 'completed';
+                    tasks[task_id].progress = 100;
+                    tasks[task_id].completed_at = new Date().toISOString();
+                    renderTasks();
+                    showNotification('任務完成', message, 'success');
+                }
+            } else if (type === 'task_failed') {
+                // 任務失敗
+                if (tasks[task_id]) {
+                    tasks[task_id].status = 'failed';
+                    tasks[task_id].error = data.error;
+                    renderTasks();
+                    showNotification('任務失敗', data.error, 'error');
+                }
+            }
+        }
+
+        function startTask(taskType) {
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                alert('WebSocket 未連線，請稍後再試');
+                return;
+            }
+
+            const command = {
+                command: 'start_task',
+                task_type: taskType
+            };
+
+            ws.send(JSON.stringify(command));
+            console.log('發送命令:', command);
+        }
+
+        function renderTasks() {
+            const container = document.getElementById('tasksContainer');
+            const taskEntries = Object.entries(tasks);
+
+            if (taskEntries.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>暫無執行中的任務</h3>
+                        <p>點擊上方按鈕開始執行任務</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // 按時間排序（最新的在上面）
+            taskEntries.sort((a, b) => {
+                const timeA = new Date(a[1].started_at || 0);
+                const timeB = new Date(b[1].started_at || 0);
+                return timeB - timeA;
+            });
+
+            container.innerHTML = taskEntries.map(([taskId, task]) => {
+                const statusClass = task.status || 'running';
+                const progressClass = task.error ? 'failed' : (task.status === 'completed' ? 'completed' : '');
+                const progress = task.progress || 0;
+
+                const taskTypeNames = {
+                    'scan': '🔍 掃描 Skills',
+                    'health-check': '🏥 健康檢查',
+                    'fix': '🔧 自動修復',
+                    'update-info-stream': '📊 更新資訊匯流'
+                };
+
+                const taskName = taskTypeNames[task.type] || task.type;
+
+                const startTime = task.started_at ? new Date(task.started_at).toLocaleString('zh-TW') : '';
+                const completedTime = task.completed_at ? new Date(task.completed_at).toLocaleString('zh-TW') : '';
+
+                return `
+                    <div class="task-card ${statusClass}">
+                        <div class="task-header">
+                            <div class="task-title">${taskName}</div>
+                            <div class="task-status ${statusClass}">${statusClass}</div>
+                        </div>
+                        <div class="task-message">${task.message || '執行中...'}</div>
+                        <div class="progress-container">
+                            <div class="progress-bar ${progressClass}" style="width: ${progress}%">
+                                ${progress}%
+                            </div>
+                        </div>
+                        <div class="task-time">
+                            ${startTime ? `開始時間: ${startTime}` : ''}
+                            ${completedTime ? ` | 完成時間: ${completedTime}` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function showNotification(title, message, type) {
+            // 網頁通知
+            if (notificationPermission === 'granted') {
+                const icon = type === 'success' ? '✅' : '❌';
+                new Notification(`${icon} ${title}`, {
+                    body: message,
+                    icon: type === 'success' ?
+                        'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="75" font-size="75">✅</text></svg>' :
+                        'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="75" font-size="75">❌</text></svg>',
+                    tag: 'dopeman-task'
+                });
+            }
+
+            // 瀏覽器內通知（備援）
+            console.log(`🔔 ${title}: ${message}`);
+        }
+
+        // 頁面載入時連線
+        document.addEventListener('DOMContentLoaded', () => {
+            connectWebSocket();
+        });
+
+        // 頁面離開時斷線
+        window.addEventListener('beforeunload', () => {
+            if (ws) {
+                ws.close();
+            }
+        });
+    </script>
+</body>
+</html>

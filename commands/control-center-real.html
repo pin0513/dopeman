@@ -81,8 +81,29 @@
             text-decoration: none;
         }
 
+        .task-monitor-btn {
+            position: absolute;
+            top: 60px;
+            left: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            text-decoration: none;
+        }
+
         .rescan-btn:hover,
-        .info-stream-btn:hover {
+        .info-stream-btn:hover,
+        .task-monitor-btn:hover {
             background: rgba(255, 255, 255, 0.3);
             border-color: rgba(255, 255, 255, 0.8);
             transform: translateY(-2px);
@@ -590,6 +611,10 @@
             <a href="info-stream.html" class="info-stream-btn">
                 <span>📊</span>
                 <span>個人資訊匯流</span>
+            </a>
+            <a href="task-monitor.html" class="task-monitor-btn">
+                <span>🎛️</span>
+                <span>任務監控</span>
             </a>
             <h1>🎛️ Skills Control Center</h1>
             <p>真實資料視覺化 - 完整環境掃描結果</p>
@@ -1603,58 +1628,9 @@
 
         // 重新 Scan 功能
         document.getElementById('rescanBtn').addEventListener('click', async () => {
-            const btn = document.getElementById('rescanBtn');
-            const btnText = btn.querySelector('.rescan-text');
-            const btnIcon = btn.querySelector('.rescan-icon');
-
-            // 設定載入中狀態
-            btn.classList.add('loading');
-            btn.disabled = true;
-            btnText.textContent = '掃描中...';
-
-            try {
-                // 第一步：呼叫 API 執行 Python 掃描腳本
-                console.log('正在執行 Python 掃描腳本...');
-                const scanResponse = await fetch('/api/rescan', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                const scanResult = await scanResponse.json();
-
-                if (!scanResult.success) {
-                    throw new Error(scanResult.message || '掃描失敗');
-                }
-
-                console.log('Python 掃描完成！');
-
-                // 第二步：重新載入更新後的 JSON 資料
-                const timestamp = new Date().getTime();
-                const response = await fetch(`./control-center-real-data.json?t=${timestamp}`);
-                data = await response.json();
-                filteredData = data;
-
-                // 重新渲染所有內容
-                renderAll();
-
-                // 顯示成功訊息
-                btnText.textContent = '✓ 完成';
-                setTimeout(() => {
-                    btnText.textContent = '重新 Scan';
-                }, 2000);
-            } catch (error) {
-                console.error('重新掃描失敗:', error);
-                btnText.textContent = '✗ 失敗';
-                alert(`重新掃描失敗：${error.message}\n\n請確認 control-center-server.py 正在運行`);
-                setTimeout(() => {
-                    btnText.textContent = '重新 Scan';
-                }, 2000);
-            } finally {
-                // 移除載入中狀態
-                btn.classList.remove('loading');
-                btn.disabled = false;
+            // 導向任務監控頁面執行掃描
+            if (confirm('重新掃描功能已移至「任務監控」頁面\n\n是否前往任務監控頁面執行掃描？')) {
+                window.location.href = 'task-monitor.html';
             }
         });
 
