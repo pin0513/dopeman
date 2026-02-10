@@ -332,6 +332,7 @@
         let tasks = {};
         let reconnectTimer = null;
         let notificationPermission = 'default';
+        let taskCooldowns = {}; // 追蹤每個任務類型的最後執行時間
 
         // 請求通知權限
         if ('Notification' in window) {
@@ -436,6 +437,28 @@
                 return;
             }
 
+            // 檢查是否有正在執行的任務
+            const runningTasks = Object.values(tasks).filter(t => t.status === 'running');
+            if (runningTasks.length > 0) {
+                alert('還有任務執行中，請稍等...');
+                return;
+            }
+
+            // 檢查冷卻時間（1 分鐘）
+            const now = Date.now();
+            const lastTime = taskCooldowns[taskType] || 0;
+            const cooldownMs = 60 * 1000; // 1 分鐘
+            const timeSinceLast = now - lastTime;
+
+            if (timeSinceLast < cooldownMs) {
+                const remainingSeconds = Math.ceil((cooldownMs - timeSinceLast) / 1000);
+                alert(`此任務需要等待 ${remainingSeconds} 秒後才能再次執行`);
+                return;
+            }
+
+            // 記錄執行時間
+            taskCooldowns[taskType] = now;
+
             const command = {
                 command: 'start_task',
                 task_type: taskType
@@ -468,7 +491,7 @@
 
             container.innerHTML = taskEntries.map(([taskId, task]) => {
                 const statusClass = task.status || 'running';
-                const progressClass = task.error ? 'failed' : (task.status === 'completed' ? 'completed' : '');
+                const progressClass = task.status === 'failed' ? 'failed' : (task.status === 'completed' ? 'completed' : '');
                 const progress = task.progress || 0;
 
                 const taskTypeNames = {
