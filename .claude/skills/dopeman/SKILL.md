@@ -231,40 +231,82 @@ Skills 使用頻率：
 
 ```bash
 /dopeman control-center
+# 或簡寫
+/dopeman cc
 ```
 
 自動執行：
-1. 掃描全域 Skills、專案 Skills、開發中 Skills
-2. 掃描全域 Rules、專案 Rules
-3. 掃描所有 Agents (Coordinators & Workers)
-4. 掃描所有 Commands
-5. 建立分層架構視圖
-6. 啟動 HTTP 伺服器（端口 8891）
-7. 開啟瀏覽器到 Dashboard
+1. **智能快取檢查**：6 小時內使用快取，避免重複掃描
+2. 掃描全域 Skills、專案 Skills、開發中 Skills
+3. 掃描全域 Rules、專案 Rules
+4. 掃描所有 Agents (Coordinators & Workers)
+5. 掃描所有 Commands
+6. 建立分層架構視圖
+7. **啟動雙伺服器**：
+   - HTTP Server（端口 8891）- Dashboard 與靜態檔案
+   - WebSocket Server（端口 8892）- 即時任務監控
+8. 開啟瀏覽器到 Dashboard
 
 輸出：
 ```
-🎛️  DopeMAN - Control Center Dashboard
+🚀 DopeMAN Control Center 啟動中...
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🚀 啟動 HTTP 伺服器...
-   目錄: ~/DEV/projects/dopeman/commands
-   端口: 8891
+✅ 使用快取資料 (0h 15m 前掃描)
+   下次掃描時間: 6 小時後
 
-✅ 伺服器已啟動 (PID: 12345)
+🌐 啟動 HTTP Server (port 8891)...
+✅ HTTP Server 已啟動 (PID: 12345)
+📡 啟動 WebSocket Server (port 8892)...
+✅ WebSocket Server 已啟動 (PID: 12346)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎉 啟動完成！
 
 📍 Dashboard URL: http://localhost:8891/control-center-real.html
-📋 日誌位置: /tmp/dopeman-dashboard.log
-🔧 PID 檔案: /tmp/dopeman-dashboard.pid
+📊 任務監控 URL: http://localhost:8891/task-monitor.html
+📋 HTTP 日誌: /tmp/dopeman-http.log
+📋 WebSocket 日誌: /tmp/dopeman-websocket.log
+
+💡 使用 ./stop-dashboard.sh 停止伺服器
 
 ✅ 已開啟瀏覽器
+```
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**新功能**：
 
-💡 提示：
-   - 伺服器將持續運行在背景
-   - 關閉瀏覽器不會停止伺服器
-   - 使用 /dopeman scc 停止伺服器
+**1. 智能快取機制**
+- 檢查上次掃描時間
+- 6 小時內使用快取，避免重複掃描
+- 顯示下次掃描時間
+
+**2. 任務監控頁面**（http://localhost:8891/task-monitor.html）
+- WebSocket 即時連線狀態顯示
+- 支援 4 種任務：
+  - 🔍 掃描 Skills
+  - 🏥 健康檢查
+  - 🔧 自動修復
+  - 📊 更新資訊匯流
+- 平行進度條即時更新
+- 任務完成時網頁通知
+
+**3. Dashboard 整合**
+- 左上角「🎛️ 任務監控」按鈕
+- 左上角「📊 個人資訊匯流」按鈕
+- 右上角「🔄 重新 Scan」按鈕（導向任務監控）
+
+**4. 健康檢查功能**
+- 檢查 Skills 目錄
+- 檢查 Symlinks 有效性
+- 檢查 Skill 結構（SKILL.md、YAML frontmatter）
+- 生成健康報告（JSON 格式）
+
+**5. 自動修復功能**
+- 備份當前配置
+- 檢查損壞的連結
+- 修復 Symlinks
+- 驗證修復結果
 ```
 
 ### 停止 Dashboard
@@ -325,14 +367,45 @@ DopeMAN 使用 **Subagent 模式**：
 3. **冪等性**：所有操作可重複執行
 4. **日誌記錄**：所有操作記錄到 `operation.log`
 5. **無靜默失敗**：所有錯誤必須明確通知
+6. **智能快取**：6 小時內使用快取，避免重複掃描
+7. **雙伺服器架構**：HTTP (8891) + WebSocket (8892)
 
 ## 相關資源
 
-- **專案文件**: `~/DEV/projects/dopeman/CLAUDE.md`
+- **專案文件**: `~/AgentProjects/dopeman/CLAUDE.md`
 - **操作日誌**: `~/.claude/memory/dopeman/operation.log`
 - **Registry**: `~/.claude/memory/dopeman/skills-registry.json`
+- **健康報告**: `~/.claude/memory/dopeman/health-check-report.json`
 
 ---
 
-**版本**: v1.0.0
-**專案位置**: `/Users/paul_huang/DEV/projects/dopeman`
+## 版本資訊
+
+**版本**: v2.1.0
+**更新日期**: 2026-02-10
+**專案位置**: `/Users/paul_huang/AgentProjects/dopeman`
+
+### 版本歷史
+
+**v2.1.0** (2026-02-10)
+- ✨ 新增 WebSocket 任務監控系統
+- ✨ 新增智能快取機制（6 小時）
+- ✨ 新增任務監控頁面（task-monitor.html）
+- ✨ 新增健康檢查功能（health-check.py）
+- ✨ 新增自動修復功能
+- ✨ 新增 Skills 重載指引（reload-skills.py）
+- 🔧 優化啟動腳本，整合雙伺服器
+- 🔧 修正 WebSocket 訊息格式
+- 📊 Dashboard 整合任務監控與資訊匯流入口
+
+**v2.0.0** (2026-02-09)
+- ✨ 新增完整性檢查功能
+- ✨ 新增 Symlink 管理功能
+- ✨ 新增跨 AI 平台掃描
+- 📦 新增 3 個 subagents
+
+**v1.0.0** (2026-02-07)
+- 🎉 初始版本
+- 基礎環境管理功能
+- Skills 生命週期管理
+- Control Center Dashboard
