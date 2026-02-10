@@ -22,9 +22,6 @@ class DopeMAN_API_Handler(SimpleHTTPRequestHandler):
         parsed_path = urlparse(self.path)
         path = parsed_path.path
 
-        # CORS headers
-        self.send_cors_headers()
-
         if path == '/api/health-check':
             self.handle_health_check()
         elif path == '/api/status':
@@ -37,9 +34,6 @@ class DopeMAN_API_Handler(SimpleHTTPRequestHandler):
         """處理 POST 請求"""
         parsed_path = urlparse(self.path)
         path = parsed_path.path
-
-        # CORS headers
-        self.send_cors_headers()
 
         if path == '/api/fix':
             self.handle_fix()
@@ -60,8 +54,8 @@ class DopeMAN_API_Handler(SimpleHTTPRequestHandler):
 
     def do_OPTIONS(self):
         """處理 OPTIONS 請求（CORS preflight）"""
-        self.send_cors_headers()
         self.send_response(200)
+        self.send_cors_headers()
         self.end_headers()
 
     def send_cors_headers(self):

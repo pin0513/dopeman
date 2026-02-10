@@ -1975,6 +1975,12 @@
             });
         }
 
+        // 重新掃描函數
+        function rescan() {
+            // 導向任務監控頁面執行掃描
+            window.location.href = 'task-monitor.html';
+        }
+
         // 安裝官方 Skill/Team
         async function installOfficial(id, type) {
             const confirmed = confirm(`確定要安裝 ${id} (${type === 'skill' ? 'Skill' : 'Team'}) 嗎？\n\n這將執行安裝腳本並可能需要幾秒鐘時間。`);
