@@ -227,30 +227,33 @@
       "items": [
         {
           "id": "product-strategy-coach",
-          "name": "商業教練",
+          "name": "商業教練 (產品策略)",
           "repo": "https://github.com/pin0513/product-strategy-coach",
           "type": "skill",
           "description": "軟體產品策略教練",
           "install_type": "global_link",
-          "auto_update": true
+          "auto_update": true,
+          "tags": ["strategy", "product", "coach"]
         },
         {
           "id": "article-world",
-          "name": "文案專家",
+          "name": "文案專家 (ArticleWorld)",
           "repo": "https://github.com/pin0513/ArticleWorld",
           "type": "team",
           "description": "完整文章撰寫團隊",
           "install_type": "global_link",
-          "auto_update": true
+          "auto_update": true,
+          "tags": ["writing", "content", "article"]
         },
         {
           "id": "slides-world",
-          "name": "投影片專家",
+          "name": "投影片專家 (SlidesWorld)",
           "repo": "https://github.com/pin0513/SlidesWorld",
           "type": "team",
           "description": "專業簡報製作團隊",
           "install_type": "global_link",
-          "auto_update": true
+          "auto_update": true,
+          "tags": ["presentation", "slides", "design"]
         },
         {
           "id": "powerpoint-expert",
@@ -259,7 +262,8 @@
           "type": "skill",
           "description": "PowerPoint 操作專家",
           "install_type": "global_link",
-          "auto_update": true
+          "auto_update": true,
+          "tags": ["powerpoint", "presentation"]
         },
         {
           "id": "dept-manager-coach",
@@ -268,7 +272,8 @@
           "type": "skill",
           "description": "部門主管教練技能",
           "install_type": "global_link",
-          "auto_update": true
+          "auto_update": true,
+          "tags": ["management", "leadership", "coach"]
         }
       ]
     },
@@ -279,48 +284,52 @@
       "items": [
         {
           "id": "ai-tools",
-          "name": "AI 工具集",
+          "name": "AI 工具集 (AITools)",
           "repo": "https://github.com/pin0513/AITools",
           "type": "skill",
           "description": "AI 相關工具整合",
           "install_type": "global_link",
-          "auto_update": true
+          "auto_update": true,
+          "tags": ["ai", "tools", "integration"]
         },
         {
           "id": "devops-tools",
-          "name": "DevOps 工具集",
+          "name": "DevOps 工具集 (DevOpsTools)",
           "repo": "https://github.com/pin0513/DevOpsTools",
           "type": "skill",
-          "description": "Jira、Azure DevOps 整合",
+          "description": "Jira、Azure DevOps、GitHub、Teams 整合",
           "install_type": "global_link",
-          "auto_update": true
+          "auto_update": true,
+          "tags": ["devops", "jira", "azure", "github", "teams"]
         }
       ]
     },
     "teams": {
-      "name": "專業團隊",
-      "description": "完整的多 Agent 團隊",
+      "name": "專業團隊 (Agent Teams)",
+      "description": "完整的多 Agent 團隊專案",
       "priority": 5,
       "items": [
         {
           "id": "fullstack-react-dotnet",
-          "name": "全端開發團隊",
+          "name": "全端開發團隊 (React + .NET)",
           "repo": "https://github.com/pin0513/fullstack-react-dotnet",
           "type": "team",
           "description": "React + .NET 全端開發團隊",
           "install_type": "project",
           "auto_update": false,
-          "source": "A-Team"
+          "source": "A-Team",
+          "tags": ["fullstack", "react", "dotnet", "development"]
         },
         {
           "id": "app-team-v1",
-          "name": "App 開發團隊",
+          "name": "App 開發團隊 (互動式)",
           "repo": "https://github.com/pin0513/app-team-v1",
           "type": "team",
-          "description": "App 互動開發團隊",
+          "description": "App 互動開發團隊（iOS/Android/跨平台）",
           "install_type": "project",
           "auto_update": false,
-          "source": "A-Team"
+          "source": "A-Team",
+          "tags": ["app", "mobile", "ios", "android", "development"]
         }
       ]
     }
