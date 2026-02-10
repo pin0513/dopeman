@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>個人資訊匯流 - DopeMAN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: transform 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .last-update {
+            margin-top: 15px;
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: transform 0.2s;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h2 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .ptt-article {
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            transition: transform 0.2s;
+        }
+
+        .ptt-article:hover {
+            transform: translateX(5px);
+            background: #e9ecef;
+        }
+
+        .ptt-rank {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .ptt-title {
+            font-size: 1.1em;
+            color: #333;
+            text-decoration: none;
+            display: inline-block;
+            max-width: calc(100% - 100px);
+        }
+
+        .ptt-title:hover {
+            color: #667eea;
+        }
+
+        .ptt-meta {
+            color: #888;
+            font-size: 0.9em;
+            margin-top: 8px;
+        }
+
+        .ptt-push {
+            display: inline-block;
+            background: #ff6b6b;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .stock-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .stock-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .stock-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stock-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .stock-up {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .stock-down {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .index-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .index-name {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .index-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .index-change {
+            font-size: 1.3em;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+            font-size: 1.2em;
+        }
+
+        .error {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="control-center-real.html" class="back-btn">
+                <span>← 返回</span>
+                <span>Skills Center</span>
+            </a>
+            <h1>📊 個人資訊匯流</h1>
+            <p class="subtitle">PTT 熱門文章 & 台股即時資訊</p>
+            <p class="last-update" id="lastUpdate">載入中...</p>
+            <button class="refresh-btn" onclick="refreshData()">🔄 更新資料</button>
+        </header>
+
+        <div class="content-grid">
+            <!-- PTT 熱門文章 -->
+            <div class="card">
+                <h2>🔥 PTT 八卦板熱門</h2>
+                <div id="pttContent" class="loading">載入中...</div>
+            </div>
+
+            <!-- 台股資訊 -->
+            <div class="card">
+                <h2>📈 台股資訊</h2>
+
+                <!-- 加權指數 -->
+                <div id="indexContent" class="loading">載入中...</div>
+
+                <!-- 漲幅榜 -->
+                <h3 style="color: #e74c3c; margin-top: 30px; margin-bottom: 15px;">📈 漲幅排行</h3>
+                <div id="gainersContent" class="loading">載入中...</div>
+
+                <!-- 跌幅榜 -->
+                <h3 style="color: #27ae60; margin-top: 30px; margin-bottom: 15px;">📉 跌幅排行</h3>
+                <div id="losersContent" class="loading">載入中...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadData() {
+            try {
+                const response = await fetch('info-stream-data.json');
+                const data = await response.json();
+
+                // 更新時間
+                const updateTime = new Date(data.metadata.generated_at);
+                document.getElementById('lastUpdate').textContent =
+                    `最後更新：${updateTime.toLocaleString('zh-TW')} | 資料來源：${data.metadata.source}`;
+
+                // 載入 PTT 資料
+                loadPTT(data.social.ptt.gossiping.trending);
+
+                // 載入台股資料
+                loadIndex(data.stocks.tw.indices.taiex);
+                loadGainers(data.stocks.tw.top_gainers);
+                loadLosers(data.stocks.tw.top_losers);
+
+            } catch (error) {
+                console.error('載入失敗:', error);
+                document.getElementById('pttContent').innerHTML =
+                    '<div class="error">⚠️ 資料載入失敗，請確認 info-stream-data.json 是否存在</div>';
+            }
+        }
+
+        function loadPTT(articles) {
+            const container = document.getElementById('pttContent');
+
+            if (!articles || articles.length === 0) {
+                container.innerHTML = '<div class="empty-state">暫無資料</div>';
+                return;
+            }
+
+            let html = '';
+            articles.forEach((article, index) => {
+                html += `
+                    <div class="ptt-article">
+                        <span class="ptt-rank">${index + 1}</span>
+                        <a href="${article.url}" target="_blank" class="ptt-title">${article.title}</a>
+                        <span class="ptt-push">🔥 ${article.push_count}</span>
+                        <div class="ptt-meta">
+                            👤 ${article.author} | 📅 ${article.date}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function loadIndex(index) {
+            const container = document.getElementById('indexContent');
+
+            const changeClass = index.change >= 0 ? 'stock-up' : 'stock-down';
+            const changeSymbol = index.change >= 0 ? '▲' : '▼';
+
+            container.innerHTML = `
+                <div class="index-card">
+                    <div class="index-name">${index.name}</div>
+                    <div class="index-value">${index.value.toLocaleString()}</div>
+                    <div class="index-change ${changeClass}">
+                        ${changeSymbol} ${Math.abs(index.change).toLocaleString()}
+                        (${index.change_percent > 0 ? '+' : ''}${index.change_percent}%)
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadGainers(stocks) {
+            const container = document.getElementById('gainersContent');
+            container.innerHTML = createStockTable(stocks, true);
+        }
+
+        function loadLosers(stocks) {
+            const container = document.getElementById('losersContent');
+            container.innerHTML = createStockTable(stocks, false);
+        }
+
+        function createStockTable(stocks, isGainer) {
+            if (!stocks || stocks.length === 0) {
+                return '<div class="empty-state">暫無資料</div>';
+            }
+
+            let html = `
+                <table class="stock-table">
+                    <thead>
+                        <tr>
+                            <th>排名</th>
+                            <th>股票</th>
+                            <th>價格</th>
+                            <th>漲跌</th>
+                            <th>成交量</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            stocks.slice(0, 10).forEach((stock, index) => {
+                const changeClass = isGainer ? 'stock-up' : 'stock-down';
+                const changeSymbol = isGainer ? '▲' : '▼';
+
+                html += `
+                    <tr>
+                        <td><strong>${index + 1}</strong></td>
+                        <td>
+                            <strong>${stock.symbol}</strong> ${stock.name}
+                        </td>
+                        <td>${stock.price}</td>
+                        <td class="${changeClass}">
+                            ${changeSymbol} ${Math.abs(stock.change)}
+                            (${stock.change_percent > 0 ? '+' : ''}${stock.change_percent}%)
+                        </td>
+                        <td>${stock.volume}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            return html;
+        }
+
+        async function refreshData() {
+            // 顯示載入狀態
+            document.getElementById('pttContent').innerHTML = '<div class="loading">更新中...</div>';
+            document.getElementById('indexContent').innerHTML = '<div class="loading">更新中...</div>';
+            document.getElementById('gainersContent').innerHTML = '<div class="loading">更新中...</div>';
+            document.getElementById('losersContent').innerHTML = '<div class="loading">更新中...</div>';
+
+            // 執行更新腳本
+            try {
+                alert('資料更新已觸發！\n\n請稍候片刻後重新整理頁面查看最新資料。\n\n（實際更新需要在終端機執行 update-all-data.sh）');
+            } catch (error) {
+                console.error('更新失敗:', error);
+            }
+        }
+
+        // 頁面載入時自動載入資料
+        window.addEventListener('DOMContentLoaded', loadData);
+
+        // 每 5 分鐘自動重新載入
+        setInterval(loadData, 5 * 60 * 1000);
+    </script>
+</body>
+</html>

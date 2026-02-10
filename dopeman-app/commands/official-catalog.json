@@ -1,0 +1,154 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-02-08",
+  "categories": {
+    "official": {
+      "name": "官方專案",
+      "description": "DopeMAN 官方維護的核心專案",
+      "priority": 1,
+      "items": [
+        {
+          "id": "dopeman",
+          "name": "DopeMAN",
+          "repo": "https://github.com/pin0513/dopeman",
+          "type": "skill",
+          "description": "智能環境管理秘書團隊",
+          "install_type": "global_link",
+          "auto_update": true
+        },
+        {
+          "id": "claude-punk",
+          "name": "CLAUDE-PUNK",
+          "repo": "https://github.com/chemistrywow31/CLAUDE-PUNK",
+          "type": "team",
+          "description": "Claude 客製化開發框架",
+          "install_type": "project",
+          "auto_update": false
+        },
+        {
+          "id": "a-team",
+          "name": "A-Team",
+          "repo": "https://github.com/chemistrywow31/A-Team",
+          "type": "team",
+          "description": "多功能開發團隊",
+          "install_type": "project",
+          "auto_update": false
+        }
+      ]
+    },
+    "professional": {
+      "name": "專業級 Skills",
+      "description": "高品質、可直接使用的專業技能",
+      "priority": 2,
+      "items": [
+        {
+          "id": "product-strategy-coach",
+          "name": "商業教練",
+          "repo": "https://github.com/pin0513/product-strategy-coach",
+          "type": "skill",
+          "description": "軟體產品策略教練",
+          "install_type": "global_link",
+          "auto_update": true
+        },
+        {
+          "id": "article-world",
+          "name": "文案專家",
+          "repo": "https://github.com/pin0513/ArticleWorld",
+          "type": "team",
+          "description": "完整文章撰寫團隊",
+          "install_type": "global_link",
+          "auto_update": true
+        },
+        {
+          "id": "slides-world",
+          "name": "投影片專家",
+          "repo": "https://github.com/pin0513/SlidesWorld",
+          "type": "team",
+          "description": "專業簡報製作團隊",
+          "install_type": "global_link",
+          "auto_update": true
+        },
+        {
+          "id": "powerpoint-expert",
+          "name": "PowerPoint 專家",
+          "repo": "https://github.com/pin0513/PowerPointExpert",
+          "type": "skill",
+          "description": "PowerPoint 操作專家",
+          "install_type": "global_link",
+          "auto_update": true
+        },
+        {
+          "id": "dept-manager-coach",
+          "name": "部門主管教練",
+          "repo": "https://github.com/pin0513/DeptManagerCoach",
+          "type": "skill",
+          "description": "部門主管教練技能",
+          "install_type": "global_link",
+          "auto_update": true
+        }
+      ]
+    },
+    "tools": {
+      "name": "工具性 Skills",
+      "description": "實用工具與整合",
+      "priority": 3,
+      "items": [
+        {
+          "id": "ai-tools",
+          "name": "AI 工具集",
+          "repo": "https://github.com/pin0513/AITools",
+          "type": "skill",
+          "description": "AI 相關工具整合",
+          "install_type": "global_link",
+          "auto_update": true
+        },
+        {
+          "id": "devops-tools",
+          "name": "DevOps 工具集",
+          "repo": "https://github.com/pin0513/DevOpsTools",
+          "type": "skill",
+          "description": "Jira、Azure DevOps 整合",
+          "install_type": "global_link",
+          "auto_update": true
+        }
+      ]
+    },
+    "teams": {
+      "name": "專業團隊",
+      "description": "完整的多 Agent 團隊",
+      "priority": 4,
+      "items": [
+        {
+          "id": "fullstack-react-dotnet",
+          "name": "全端開發團隊",
+          "repo": "https://github.com/pin0513/fullstack-react-dotnet",
+          "type": "team",
+          "description": "React + .NET 全端開發團隊",
+          "install_type": "project",
+          "auto_update": false,
+          "source": "A-Team"
+        },
+        {
+          "id": "app-team-v1",
+          "name": "App 開發團隊",
+          "repo": "https://github.com/pin0513/app-team-v1",
+          "type": "team",
+          "description": "App 互動開發團隊",
+          "install_type": "project",
+          "auto_update": false,
+          "source": "A-Team"
+        }
+      ]
+    }
+  },
+  "install_types": {
+    "global_link": {
+      "description": "安裝到 ~/.claude/skills 並建立全域連結",
+      "target": "~/.claude/skills/{id}"
+    },
+    "project": {
+      "description": "安裝到 ~/AgentProjects/{id}",
+      "target": "~/AgentProjects/{id}"
+    }
+  }
+}
