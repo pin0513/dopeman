@@ -1,0 +1,5 @@
+# DopeMAN Python Dependencies
+# 安裝方式: pip3 install -r requirements.txt
+
+# WebSocket 支援（即時任務監控）
+websockets>=12.0

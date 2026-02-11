@@ -36,6 +36,9 @@ DopeMAN 是一個智能環境管理團隊，提供：
 | `health-check` | 完整環境健檢 | `/dopeman health-check` |
 | `control-center` (別名: `cc`) | 開啟 Skills 總控台 Dashboard | `/dopeman cc` |
 | `stop-dashboard` (別名: `scc`) | 停止 Dashboard 伺服器 | `/dopeman scc` |
+| `fix` | 自動修復常見問題 | `/dopeman fix` |
+| `restart` | 重啟 Dashboard 伺服器 | `/dopeman restart` |
+| `update` | 從 GitHub 檢查並更新 | `/dopeman update` |
 
 ### 自動啟動模式
 
@@ -326,6 +329,109 @@ Skills 使用頻率：
 📋 日誌位置: /tmp/dopeman-dashboard.log
 ```
 
+### 自動修復
+
+```bash
+/dopeman fix
+```
+
+自動執行：
+1. 執行環境檢查（check-environment.py）
+2. 檢查並修復 SKILL.md symlink
+3. 清理損壞的 symlinks
+4. 同步 SKILL.md
+
+輸出：
+```
+🔧 DopeMAN Fix - 自動修復
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 執行環境檢查與修復...
+✅ .claude/skills 存在
+✅ SKILL.md 存在
+✅ 沒有損壞的 symlinks
+✅ SKILL.md 同步檢查完成
+
+🎉 修復完成！
+```
+
+### 重啟 Dashboard
+
+```bash
+/dopeman restart
+```
+
+自動執行：
+1. 停止現有的 HTTP Server (8891) 和 WebSocket Server (8892)
+2. 啟動新的伺服器實例
+3. 驗證啟動成功
+
+輸出：
+```
+🔄 DopeMAN Restart - 重啟 Dashboard
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 停止現有伺服器...
+✅ 伺服器已停止
+
+📋 啟動新伺服器...
+✅ HTTP Server 已啟動 (PID: 23456)
+✅ WebSocket Server 已啟動 (PID: 23457)
+
+🎉 重啟完成！
+```
+
+### 從 GitHub 更新
+
+```bash
+/dopeman update
+```
+
+自動執行：
+1. 檢查遠端 GitHub 狀態
+2. 比對本地與遠端版本
+3. 若有新版本，顯示變更摘要
+4. 確認後自動更新
+5. 更新 Python 依賴（pip3 install -r requirements.txt）
+6. 同步全域 SKILL.md
+
+輸出：
+```
+🔄 DopeMAN Update - GitHub 更新檢查
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 步驟 1/4: 檢查遠端狀態
+   當前分支: main
+
+📋 步驟 2/4: 比對版本
+⚠️  發現新版本
+
+   變更摘要：
+   a1b2c3d feat: 新增 Python 環境檢查
+   d4e5f6g fix: 修正 API Server 路徑問題
+
+   共有 2 個新 commit
+
+📋 步驟 3/4: 確認更新
+是否要更新到最新版本？ (y/N): y
+
+📋 步驟 4/4: 執行更新
+   Pulling from origin/main...
+✅ 更新完成
+
+📋 檢查 Python 依賴...
+✅ Python 套件已更新
+
+📋 同步全域 SKILL.md...
+✅ SKILL.md 已同步
+
+🎉 更新完成！
+
+💡 提示：
+   • 如果 Dashboard 正在執行，請執行 ./dopeman-restart.sh 重啟
+   • 查看更新日誌: git log -5
+```
+
 ## 技術細節
 
 ### 團隊架構
@@ -369,6 +475,9 @@ DopeMAN 使用 **Subagent 模式**：
 5. **無靜默失敗**：所有錯誤必須明確通知
 6. **智能快取**：6 小時內使用快取，避免重複掃描
 7. **雙伺服器架構**：HTTP (8891) + WebSocket (8892)
+8. **Python 環境依賴**：需要 Python 3.8+ 和 websockets 套件
+9. **自動修復機制**：啟動前自動檢查並修復常見問題
+10. **GitHub 更新整合**：支援從 GitHub 自動檢查和更新
 
 ## 相關資源
 
@@ -381,11 +490,31 @@ DopeMAN 使用 **Subagent 模式**：
 
 ## 版本資訊
 
-**版本**: v2.1.1
+**版本**: v2.2.0
 **更新日期**: 2026-02-11
 **專案位置**: `/Users/paul_huang/AgentProjects/dopeman`
 
 ### 版本歷史
+
+**v2.2.0** (2026-02-11)
+- ✨ 新增 Python 環境檢查與依賴管理（check-python-env.py）
+- ✨ 新增 requirements.txt 管理 Python 套件
+- ✨ 新增啟動優化（start-dashboard-v2.sh）
+  - 自動偵測路徑，不依賴硬編碼
+  - 4 步驟啟動流程：環境檢查、端口檢查、資料準備、伺服器啟動
+  - 資料檔案 6 小時自動刷新機制
+- ✨ 新增 fix 命令（dopeman-fix.sh）
+  - 自動修復 .claude 環境問題
+  - 檢查並修復 SKILL.md symlink
+  - 清理損壞的 symlinks
+- ✨ 新增 restart 命令（dopeman-restart.sh）
+  - 安全重啟 HTTP 和 WebSocket Server
+- ✨ 新增 update 命令（dopeman-update.sh）
+  - 從 GitHub 檢查更新
+  - 自動更新 Python 依賴
+  - 同步全域 SKILL.md
+- 🔧 整合 Python 環境檢查到 check-environment.py
+- 📦 確保打包不會有 Python 環境依賴問題
 
 **v2.1.1** (2026-02-11)
 - 🐛 修正 Dashboard 中 `rescan()` 函數未定義的錯誤
