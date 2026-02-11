@@ -1,0 +1,55 @@
+{
+  "name": "dopeman",
+  "productName": "DopeMAN",
+  "version": "2.1.1",
+  "description": "智能環境管理秘書團隊 - Skills 生命週期管理與環境整理",
+  "author": "DopeMAN Team",
+  "type": "module",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "build:mac": "electron-builder --mac",
+    "build:dmg": "electron-builder --mac dmg"
+  },
+  "build": {
+    "appId": "com.dopeman.app",
+    "productName": "DopeMAN",
+    "files": [
+      "electron/**/*",
+      "!electron/**/*.map"
+    ],
+    "extraResources": [
+      {
+        "from": "../commands",
+        "to": "commands",
+        "filter": [
+          "**/*",
+          "!**/.git",
+          "!**/__pycache__",
+          "!**/*.pyc",
+          "!**/node_modules"
+        ]
+      }
+    ],
+    "mac": {
+      "icon": "build/icon.png",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["x64", "arm64"]
+        }
+      ],
+      "category": "public.app-category.developer-tools",
+      "darkModeSupport": true
+    },
+    "dmg": {
+      "title": "DopeMAN ${version}"
+    }
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "dependencies": {}
+}
