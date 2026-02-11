@@ -127,17 +127,22 @@ class RealDataScanner:
             if "node_modules" in str(real_path):
                 continue
 
-            skill_name = real_path.name
+            # 使用 symlink 名稱作為技術識別符（kebab-case）
+            skill_id = item.name
 
             # 讀取 YAML frontmatter
             content = skill_md_path.read_text(encoding='utf-8')
             frontmatter = self.extract_frontmatter(content)
 
+            # 從 frontmatter 讀取顯示名稱，若無則使用 skill_id
+            display_name = frontmatter.get("name", skill_id)
+
             # 判斷是否為 team skill (有 .claude/agents/)
             has_agents = (real_path / ".claude" / "agents").exists()
 
             skill_info = {
-                "name": skill_name,
+                "id": skill_id,  # 技術識別符（symlink 名稱，kebab-case）
+                "name": display_name,  # 顯示名稱（從 frontmatter）
                 "path": str(real_path.relative_to(HOME)),
                 "type": "team" if has_agents else "single",
                 "description": frontmatter.get("description", ""),
@@ -150,7 +155,7 @@ class RealDataScanner:
 
             # 如果是 team skill，加入 entry layer
             if has_agents:
-                self.data["layers"]["entry"]["skills"].append(skill_name)
+                self.data["layers"]["entry"]["skills"].append(skill_id)
 
         self.data["categories"]["global_skills"]["count"] = len(
             self.data["categories"]["global_skills"]["items"]

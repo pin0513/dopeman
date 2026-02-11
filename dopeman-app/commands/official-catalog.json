@@ -305,6 +305,16 @@
           "install_type": "global_link",
           "auto_update": true,
           "tags": ["devops", "jira", "azure", "github", "teams"]
+        },
+        {
+          "id": "anthropic-sdk",
+          "name": "Anthropic SDK Reference",
+          "repo": "local",
+          "type": "skill",
+          "description": "快速查閱 Anthropic 官方 SDK 文檔（Python, TypeScript, Go, Java）",
+          "install_type": "global_link",
+          "auto_update": false,
+          "tags": ["anthropic", "sdk", "api", "reference", "documentation"]
         }
       ]
     },
@@ -336,6 +346,50 @@
           "has_team_structure": true,
           "source": "A-Team",
           "tags": ["app", "mobile", "ios", "android", "development"]
+        },
+        {
+          "id": "anthropic-sdk-python",
+          "name": "Anthropic SDK (Python)",
+          "repo": "https://github.com/anthropics/anthropic-sdk-python",
+          "type": "github-ref",
+          "description": "Python SDK for Anthropic API - 官方 Python 客戶端庫",
+          "install_type": "project",
+          "auto_update": true,
+          "has_team_structure": false,
+          "tags": ["python", "sdk", "api", "reference", "anthropic"]
+        },
+        {
+          "id": "anthropic-sdk-typescript",
+          "name": "Anthropic SDK (TypeScript)",
+          "repo": "https://github.com/anthropics/anthropic-sdk-typescript",
+          "type": "github-ref",
+          "description": "TypeScript/JavaScript SDK for Anthropic API - 官方 TS/JS 客戶端庫",
+          "install_type": "project",
+          "auto_update": true,
+          "has_team_structure": false,
+          "tags": ["typescript", "javascript", "sdk", "api", "reference", "anthropic"]
+        },
+        {
+          "id": "anthropic-sdk-go",
+          "name": "Anthropic SDK (Go)",
+          "repo": "https://github.com/anthropics/anthropic-sdk-go",
+          "type": "github-ref",
+          "description": "Go SDK for Anthropic API - 官方 Go 客戶端庫",
+          "install_type": "project",
+          "auto_update": true,
+          "has_team_structure": false,
+          "tags": ["go", "golang", "sdk", "api", "reference", "anthropic"]
+        },
+        {
+          "id": "anthropic-sdk-java",
+          "name": "Anthropic SDK (Java)",
+          "repo": "https://github.com/anthropics/anthropic-sdk-java",
+          "type": "github-ref",
+          "description": "Java/Kotlin SDK for Anthropic API - 官方 Java/Kotlin 客戶端庫",
+          "install_type": "project",
+          "auto_update": true,
+          "has_team_structure": false,
+          "tags": ["java", "kotlin", "sdk", "api", "reference", "anthropic"]
         }
       ]
     }
