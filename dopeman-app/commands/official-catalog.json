@@ -204,19 +204,21 @@
           "id": "claude-punk",
           "name": "CLAUDE-PUNK",
           "repo": "https://github.com/chemistrywow31/CLAUDE-PUNK",
-          "type": "team",
+          "type": "project",
           "description": "Claude 客製化開發框架",
           "install_type": "project",
-          "auto_update": false
+          "auto_update": false,
+          "has_team_structure": true
         },
         {
           "id": "a-team",
           "name": "A-Team",
           "repo": "https://github.com/chemistrywow31/A-Team",
-          "type": "team",
+          "type": "project",
           "description": "多功能開發團隊",
           "install_type": "project",
-          "auto_update": false
+          "auto_update": false,
+          "has_team_structure": true
         }
       ]
     },
@@ -239,20 +241,22 @@
           "id": "article-world",
           "name": "文案專家 (ArticleWorld)",
           "repo": "https://github.com/pin0513/ArticleWorld",
-          "type": "team",
-          "description": "完整文章撰寫團隊",
+          "type": "project",
+          "description": "完整文章撰寫專案（含 team 結構）",
           "install_type": "global_link",
           "auto_update": true,
+          "has_team_structure": true,
           "tags": ["writing", "content", "article"]
         },
         {
           "id": "slides-world",
           "name": "投影片專家 (SlidesWorld)",
           "repo": "https://github.com/pin0513/SlidesWorld",
-          "type": "team",
-          "description": "專業簡報製作團隊",
+          "type": "project",
+          "description": "專業簡報製作專案（含 team 結構）",
           "install_type": "global_link",
           "auto_update": true,
+          "has_team_structure": true,
           "tags": ["presentation", "slides", "design"]
         },
         {
@@ -304,30 +308,32 @@
         }
       ]
     },
-    "teams": {
-      "name": "專業團隊 (Agent Teams)",
-      "description": "完整的多 Agent 團隊專案",
+    "reference-projects": {
+      "name": "參考專案",
+      "description": "可下載學習的完整專案範例（含 team 結構）",
       "priority": 5,
       "items": [
         {
           "id": "fullstack-react-dotnet",
-          "name": "全端開發團隊 (React + .NET)",
+          "name": "全端開發專案 (React + .NET)",
           "repo": "https://github.com/pin0513/fullstack-react-dotnet",
-          "type": "team",
-          "description": "React + .NET 全端開發團隊",
+          "type": "project",
+          "description": "React + .NET 全端開發專案範例",
           "install_type": "project",
           "auto_update": false,
+          "has_team_structure": true,
           "source": "A-Team",
           "tags": ["fullstack", "react", "dotnet", "development"]
         },
         {
           "id": "app-team-v1",
-          "name": "App 開發團隊 (互動式)",
+          "name": "App 開發專案 (互動式)",
           "repo": "https://github.com/pin0513/app-team-v1",
-          "type": "team",
-          "description": "App 互動開發團隊（iOS/Android/跨平台）",
+          "type": "project",
+          "description": "App 互動開發專案範例（iOS/Android/跨平台）",
           "install_type": "project",
           "auto_update": false,
+          "has_team_structure": true,
           "source": "A-Team",
           "tags": ["app", "mobile", "ios", "android", "development"]
         }

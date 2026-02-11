@@ -964,8 +964,11 @@ let data = null;
 
         // 創建官方卡片
         function createOfficialCard(item) {
-            const typeLabel = item.type === 'skill' ? 'Skill' : 'Team';
+            const typeLabel = item.type === 'skill' ? 'SKILL' : 'PROJECT';
             const statusLabel = item.installed ? '已安裝' : '';
+
+            // Team 結構標籤
+            const teamStructureLabel = item.has_team_structure ? '<span class="official-card-badge badge-team-structure">🤖 Team 結構</span>' : '';
 
             // Tags
             const tagsHtml = item.tags ? item.tags.map(tag =>
@@ -1003,9 +1006,10 @@ let data = null;
                     <div class="official-card-header">
                         <div>
                             <div class="official-card-title">${item.name}</div>
-                            <div style="display: flex; gap: 6px; margin-top: 6px;">
+                            <div style="display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap;">
                                 <span class="official-card-badge badge-${item.type}">${typeLabel}</span>
                                 ${statusLabel ? `<span class="official-card-badge badge-installed">${statusLabel}</span>` : ''}
+                                ${teamStructureLabel}
                             </div>
                         </div>
                     </div>
