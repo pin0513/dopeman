@@ -121,15 +121,36 @@ def install_item(item):
     # 檢查是否已存在
     if target_path.exists():
         print_warning(f"目標已存在: {target_path}")
-        response = input(f"   要覆蓋嗎？(y/N): ").strip().lower()
-        if response != 'y':
-            print_info("跳過安裝")
-            return False
 
-        # 備份現有版本
-        backup_path = target_path.parent / f"{item['id']}.backup.{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-        print_info(f"備份現有版本到: {backup_path}")
-        subprocess.run(['mv', str(target_path), str(backup_path)], check=True)
+        # 檢查 Registry 是否已有記錄
+        registry_path = home / '.claude' / 'memory' / 'dopeman' / 'skills-registry.json'
+        already_in_registry = False
+
+        if registry_path.exists():
+            with open(registry_path, 'r', encoding='utf-8') as f:
+                registry = json.load(f)
+            already_in_registry = any(s['name'] == item['id'] for s in registry['skills'])
+
+        if already_in_registry:
+            print_info("目錄與 Registry 記錄皆存在，跳過安裝")
+            return False
+        else:
+            # 目錄存在但未在 Registry 中
+            print_info("目錄存在但未在 Registry 中，將補上記錄...")
+            update_registry(item, str(target_path))
+            print_success(f"✨ {item['name']} 已加入 Registry（使用現有目錄）")
+            return True
+
+        # 如果不在 registry，詢問是否覆蓋（此段已被上面的邏輯取代，保留供未來擴展）
+        # response = input(f"   要覆蓋嗎？(y/N): ").strip().lower()
+        # if response != 'y':
+        #     print_info("跳過安裝")
+        #     return False
+        #
+        # # 備份現有版本
+        # backup_path = target_path.parent / f"{item['id']}.backup.{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        # print_info(f"備份現有版本到: {backup_path}")
+        # subprocess.run(['mv', str(target_path), str(backup_path)], check=True)
 
     # 檢查是否有 subpath（Anthropic skills 的特殊處理）
     if 'subpath' in item:
