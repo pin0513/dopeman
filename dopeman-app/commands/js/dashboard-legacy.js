@@ -902,24 +902,25 @@ let data = null;
         // 檢查項目是否已安裝
         function isInstalled(item) {
             const skillName = item.id;
+            const skillNameLower = skillName.toLowerCase();
 
-            // 檢查全域 Skills
-            if (data.categories.global_skills.items.some(s => s.name === skillName)) {
+            // 檢查全域 Skills（不區分大小寫）
+            if (data.categories.global_skills.items.some(s => s.name.toLowerCase() === skillNameLower)) {
                 return true;
             }
 
-            // 檢查專案 Skills
-            if (data.categories.project_skills.items.some(s => s.name === skillName)) {
+            // 檢查專案 Skills（不區分大小寫）
+            if (data.categories.project_skills.items.some(s => s.name.toLowerCase() === skillNameLower)) {
                 return true;
             }
 
-            // 檢查開發中 Skills
-            if (data.categories.dev_skills.items.some(s => s.name === skillName)) {
+            // 檢查開發中 Skills（不區分大小寫）
+            if (data.categories.dev_skills.items.some(s => s.name.toLowerCase() === skillNameLower)) {
                 return true;
             }
 
-            // 檢查開發專案（Teams）
-            if (data.categories.dev_projects && data.categories.dev_projects.items.some(p => p.name === skillName)) {
+            // 檢查開發專案（Teams）（不區分大小寫）
+            if (data.categories.dev_projects && data.categories.dev_projects.items.some(p => p.name.toLowerCase() === skillNameLower)) {
                 return true;
             }
 
