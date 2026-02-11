@@ -15,6 +15,7 @@ from datetime import datetime
 HOME = Path.home()
 CLAUDE_DIR = HOME / ".claude"
 DEV_DIR = HOME / "DEV"
+AGENT_PROJECTS_DIR = HOME / "AgentProjects"
 MEMORY_DIR = CLAUDE_DIR / "memory" / "dopeman"
 
 class RealDataScanner:
@@ -512,22 +513,39 @@ class RealDataScanner:
         """掃描開發專案"""
         import subprocess
 
-        # 掃描 ~/DEV 下所有有 .git 的專案（遞迴搜尋）
+        # 掃描 ~/DEV 和 ~/AgentProjects 下所有有 .git 的專案（遞迴搜尋）
         # 過濾掉不需要的子專案（node_modules, .venv, vendor 等）
         exclude_patterns = ["node_modules", ".venv", "venv", "vendor", ".git/modules"]
 
         all_git_dirs = []
-        for git_dir in DEV_DIR.rglob(".git"):
-            # 跳過非目錄的 .git 檔案
-            if not git_dir.is_dir():
-                continue
 
-            # 檢查路徑是否包含排除的模式
-            path_str = str(git_dir.relative_to(DEV_DIR))
-            if any(exclude in path_str for exclude in exclude_patterns):
-                continue
+        # 掃描 DEV_DIR
+        if DEV_DIR.exists():
+            for git_dir in DEV_DIR.rglob(".git"):
+                # 跳過非目錄的 .git 檔案
+                if not git_dir.is_dir():
+                    continue
 
-            all_git_dirs.append(git_dir)
+                # 檢查路徑是否包含排除的模式
+                path_str = str(git_dir.relative_to(DEV_DIR))
+                if any(exclude in path_str for exclude in exclude_patterns):
+                    continue
+
+                all_git_dirs.append(git_dir)
+
+        # 掃描 AGENT_PROJECTS_DIR
+        if AGENT_PROJECTS_DIR.exists():
+            for git_dir in AGENT_PROJECTS_DIR.rglob(".git"):
+                # 跳過非目錄的 .git 檔案
+                if not git_dir.is_dir():
+                    continue
+
+                # 檢查路徑是否包含排除的模式
+                path_str = str(git_dir.relative_to(AGENT_PROJECTS_DIR))
+                if any(exclude in path_str for exclude in exclude_patterns):
+                    continue
+
+                all_git_dirs.append(git_dir)
 
         # 過濾掉巢狀的 git 專案（只保留最上層）
         top_level_git_dirs = []
