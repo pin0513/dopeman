@@ -137,6 +137,17 @@
           "install_type": "project",
           "auto_update": false,
           "source": "A-Team"
+        },
+        {
+          "id": "supercasecompany",
+          "name": "SuperCaseCompany 業務管理團隊",
+          "repo": "https://github.com/pin0513/TeamProjects",
+          "path": "SuperCaseCompany",
+          "type": "team",
+          "description": "業務管理智囊團 - 報價、合約、CRM、財務、請款、公司治理（9 agents, 29 skills）",
+          "install_type": "project",
+          "auto_update": false,
+          "source": "A-Team"
         }
       ]
     }

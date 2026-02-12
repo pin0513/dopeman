@@ -1,195 +1,11 @@
 {
-  "version": "1.1.0",
-  "last_updated": "2026-02-10",
+  "version": "1.0.0",
+  "last_updated": "2026-02-08",
   "categories": {
-    "anthropic": {
-      "name": "Anthropic 官方 Skills",
-      "description": "Anthropic 官方維護的生產級 Skills",
-      "priority": 1,
-      "repo_base": "https://github.com/anthropics/skills",
-      "items": [
-        {
-          "id": "docx",
-          "name": "Word 文件處理",
-          "repo": "https://github.com/anthropics/skills",
-          "subpath": "skills/docx",
-          "type": "skill",
-          "description": "建立和編輯 Word 文件 (.docx)",
-          "install_type": "global_link",
-          "auto_update": true,
-          "category": "document"
-        },
-        {
-          "id": "pdf",
-          "name": "PDF 處理",
-          "repo": "https://github.com/anthropics/skills",
-          "subpath": "skills/pdf",
-          "type": "skill",
-          "description": "PDF 操作與表單欄位提取",
-          "install_type": "global_link",
-          "auto_update": true,
-          "category": "document"
-        },
-        {
-          "id": "pptx",
-          "name": "PowerPoint 處理",
-          "repo": "https://github.com/anthropics/skills",
-          "subpath": "skills/pptx",
-          "type": "skill",
-          "description": "建立和編輯 PowerPoint 簡報",
-          "install_type": "global_link",
-          "auto_update": true,
-          "category": "document"
-        },
-        {
-          "id": "xlsx",
-          "name": "Excel 處理",
-          "repo": "https://github.com/anthropics/skills",
-          "subpath": "skills/xlsx",
-          "type": "skill",
-          "description": "建立和編輯 Excel 試算表",
-          "install_type": "global_link",
-          "auto_update": true,
-          "category": "document"
-        },
-        {
-          "id": "algorithmic-art",
-          "name": "演算法藝術",
-          "repo": "https://github.com/anthropics/skills",
-          "subpath": "skills/algorithmic-art",
-          "type": "skill",
-          "description": "生成式藝術與創意視覺化",
-          "install_type": "global_link",
-          "auto_update": true,
-          "category": "creative"
-        },
-        {
-          "id": "canvas-design",
-          "name": "Canvas 設計",
-          "repo": "https://github.com/anthropics/skills",
-          "subpath": "skills/canvas-design",
-          "type": "skill",
-          "description": "Canvas 視覺設計工具",
-          "install_type": "global_link",
-          "auto_update": true,
-          "category": "creative"
-        },
-        {
-          "id": "frontend-design",
-          "name": "前端設計",
-          "repo": "https://github.com/anthropics/skills",
-          "subpath": "skills/frontend-design",
-          "type": "skill",
-          "description": "前端 UI/UX 設計",
-          "install_type": "global_link",
-          "auto_update": true,
-          "category": "development"
-        },
-        {
-          "id": "mcp-builder",
-          "name": "MCP 建構器",
-          "repo": "https://github.com/anthropics/skills",
-          "subpath": "skills/mcp-builder",
-          "type": "skill",
-          "description": "建立 Model Context Protocol 伺服器",
-          "install_type": "global_link",
-          "auto_update": true,
-          "category": "development"
-        },
-        {
-          "id": "skill-creator",
-          "name": "Skill 建立器",
-          "repo": "https://github.com/anthropics/skills",
-          "subpath": "skills/skill-creator",
-          "type": "skill",
-          "description": "協助建立新的 Claude Skills",
-          "install_type": "global_link",
-          "auto_update": true,
-          "category": "development"
-        },
-        {
-          "id": "webapp-testing",
-          "name": "Web App 測試",
-          "repo": "https://github.com/anthropics/skills",
-          "subpath": "skills/webapp-testing",
-          "type": "skill",
-          "description": "自動化網頁應用測試",
-          "install_type": "global_link",
-          "auto_update": true,
-          "category": "development"
-        },
-        {
-          "id": "web-artifacts-builder",
-          "name": "Web Artifacts 建構器",
-          "repo": "https://github.com/anthropics/skills",
-          "subpath": "skills/web-artifacts-builder",
-          "type": "skill",
-          "description": "建立網頁 artifacts",
-          "install_type": "global_link",
-          "auto_update": true,
-          "category": "development"
-        },
-        {
-          "id": "brand-guidelines",
-          "name": "品牌指南",
-          "repo": "https://github.com/anthropics/skills",
-          "subpath": "skills/brand-guidelines",
-          "type": "skill",
-          "description": "品牌視覺規範管理",
-          "install_type": "global_link",
-          "auto_update": true,
-          "category": "enterprise"
-        },
-        {
-          "id": "doc-coauthoring",
-          "name": "文件協作",
-          "repo": "https://github.com/anthropics/skills",
-          "subpath": "skills/doc-coauthoring",
-          "type": "skill",
-          "description": "文件協作與共同編輯",
-          "install_type": "global_link",
-          "auto_update": true,
-          "category": "enterprise"
-        },
-        {
-          "id": "internal-comms",
-          "name": "內部溝通",
-          "repo": "https://github.com/anthropics/skills",
-          "subpath": "skills/internal-comms",
-          "type": "skill",
-          "description": "企業內部溝通管理",
-          "install_type": "global_link",
-          "auto_update": true,
-          "category": "enterprise"
-        },
-        {
-          "id": "slack-gif-creator",
-          "name": "Slack GIF 建立器",
-          "repo": "https://github.com/anthropics/skills",
-          "subpath": "skills/slack-gif-creator",
-          "type": "skill",
-          "description": "為 Slack 建立 GIF 動畫",
-          "install_type": "global_link",
-          "auto_update": true,
-          "category": "enterprise"
-        },
-        {
-          "id": "theme-factory",
-          "name": "主題工廠",
-          "repo": "https://github.com/anthropics/skills",
-          "subpath": "skills/theme-factory",
-          "type": "skill",
-          "description": "主題與樣式生成器",
-          "install_type": "global_link",
-          "auto_update": true,
-          "category": "creative"
-        }
-      ]
-    },
     "official": {
-      "name": "DopeMAN 官方專案",
+      "name": "官方專案",
       "description": "DopeMAN 官方維護的核心專案",
-      "priority": 2,
+      "priority": 1,
       "items": [
         {
           "id": "dopeman",
@@ -204,60 +20,53 @@
           "id": "claude-punk",
           "name": "CLAUDE-PUNK",
           "repo": "https://github.com/chemistrywow31/CLAUDE-PUNK",
-          "type": "project",
+          "type": "team",
           "description": "Claude 客製化開發框架",
           "install_type": "project",
-          "auto_update": false,
-          "has_team_structure": true
+          "auto_update": false
         },
         {
           "id": "a-team",
           "name": "A-Team",
           "repo": "https://github.com/chemistrywow31/A-Team",
-          "type": "project",
+          "type": "team",
           "description": "多功能開發團隊",
           "install_type": "project",
-          "auto_update": false,
-          "has_team_structure": true
+          "auto_update": false
         }
       ]
     },
     "professional": {
       "name": "專業級 Skills",
       "description": "高品質、可直接使用的專業技能",
-      "priority": 3,
+      "priority": 2,
       "items": [
         {
           "id": "product-strategy-coach",
-          "name": "商業教練 (產品策略)",
+          "name": "商業教練",
           "repo": "https://github.com/pin0513/product-strategy-coach",
           "type": "skill",
           "description": "軟體產品策略教練",
           "install_type": "global_link",
-          "auto_update": true,
-          "tags": ["strategy", "product", "coach"]
+          "auto_update": true
         },
         {
           "id": "article-world",
-          "name": "文案專家 (ArticleWorld)",
+          "name": "文案專家",
           "repo": "https://github.com/pin0513/ArticleWorld",
-          "type": "project",
-          "description": "完整文章撰寫專案（含 team 結構）",
+          "type": "team",
+          "description": "完整文章撰寫團隊",
           "install_type": "global_link",
-          "auto_update": true,
-          "has_team_structure": true,
-          "tags": ["writing", "content", "article"]
+          "auto_update": true
         },
         {
           "id": "slides-world",
-          "name": "投影片專家 (SlidesWorld)",
+          "name": "投影片專家",
           "repo": "https://github.com/pin0513/SlidesWorld",
-          "type": "project",
-          "description": "專業簡報製作專案（含 team 結構）",
+          "type": "team",
+          "description": "專業簡報製作團隊",
           "install_type": "global_link",
-          "auto_update": true,
-          "has_team_structure": true,
-          "tags": ["presentation", "slides", "design"]
+          "auto_update": true
         },
         {
           "id": "powerpoint-expert",
@@ -266,8 +75,7 @@
           "type": "skill",
           "description": "PowerPoint 操作專家",
           "install_type": "global_link",
-          "auto_update": true,
-          "tags": ["powerpoint", "presentation"]
+          "auto_update": true
         },
         {
           "id": "dept-manager-coach",
@@ -276,120 +84,70 @@
           "type": "skill",
           "description": "部門主管教練技能",
           "install_type": "global_link",
-          "auto_update": true,
-          "tags": ["management", "leadership", "coach"]
+          "auto_update": true
         }
       ]
     },
     "tools": {
       "name": "工具性 Skills",
       "description": "實用工具與整合",
-      "priority": 4,
+      "priority": 3,
       "items": [
         {
           "id": "ai-tools",
-          "name": "AI 工具集 (AITools)",
+          "name": "AI 工具集",
           "repo": "https://github.com/pin0513/AITools",
           "type": "skill",
           "description": "AI 相關工具整合",
           "install_type": "global_link",
-          "auto_update": true,
-          "tags": ["ai", "tools", "integration"]
+          "auto_update": true
         },
         {
           "id": "devops-tools",
-          "name": "DevOps 工具集 (DevOpsTools)",
+          "name": "DevOps 工具集",
           "repo": "https://github.com/pin0513/DevOpsTools",
           "type": "skill",
-          "description": "Jira、Azure DevOps、GitHub、Teams 整合",
+          "description": "Jira、Azure DevOps 整合",
           "install_type": "global_link",
-          "auto_update": true,
-          "tags": ["devops", "jira", "azure", "github", "teams"]
-        },
-        {
-          "id": "anthropic-sdk",
-          "name": "Anthropic SDK Reference",
-          "repo": "local",
-          "type": "skill",
-          "description": "快速查閱 Anthropic 官方 SDK 文檔（Python, TypeScript, Go, Java）",
-          "install_type": "global_link",
-          "auto_update": false,
-          "tags": ["anthropic", "sdk", "api", "reference", "documentation"]
+          "auto_update": true
         }
       ]
     },
-    "reference-projects": {
-      "name": "參考專案",
-      "description": "可下載學習的完整專案範例（含 team 結構）",
-      "priority": 5,
+    "teams": {
+      "name": "專業團隊",
+      "description": "完整的多 Agent 團隊",
+      "priority": 4,
       "items": [
         {
           "id": "fullstack-react-dotnet",
-          "name": "全端開發專案 (React + .NET)",
+          "name": "全端開發團隊",
           "repo": "https://github.com/pin0513/fullstack-react-dotnet",
-          "type": "project",
-          "description": "React + .NET 全端開發專案範例",
+          "type": "team",
+          "description": "React + .NET 全端開發團隊",
           "install_type": "project",
           "auto_update": false,
-          "has_team_structure": true,
-          "source": "A-Team",
-          "tags": ["fullstack", "react", "dotnet", "development"]
+          "source": "A-Team"
         },
         {
           "id": "app-team-v1",
-          "name": "App 開發專案 (互動式)",
+          "name": "App 開發團隊",
           "repo": "https://github.com/pin0513/app-team-v1",
-          "type": "project",
-          "description": "App 互動開發專案範例（iOS/Android/跨平台）",
+          "type": "team",
+          "description": "App 互動開發團隊",
           "install_type": "project",
           "auto_update": false,
-          "has_team_structure": true,
-          "source": "A-Team",
-          "tags": ["app", "mobile", "ios", "android", "development"]
+          "source": "A-Team"
         },
         {
-          "id": "anthropic-sdk-python",
-          "name": "Anthropic SDK (Python)",
-          "repo": "https://github.com/anthropics/anthropic-sdk-python",
-          "type": "github-ref",
-          "description": "Python SDK for Anthropic API - 官方 Python 客戶端庫",
+          "id": "supercasecompany",
+          "name": "SuperCaseCompany 業務管理團隊",
+          "repo": "https://github.com/pin0513/TeamProjects",
+          "path": "SuperCaseCompany",
+          "type": "team",
+          "description": "業務管理智囊團 - 報價、合約、CRM、財務、請款、公司治理（9 agents, 29 skills）",
           "install_type": "project",
-          "auto_update": true,
-          "has_team_structure": false,
-          "tags": ["python", "sdk", "api", "reference", "anthropic"]
-        },
-        {
-          "id": "anthropic-sdk-typescript",
-          "name": "Anthropic SDK (TypeScript)",
-          "repo": "https://github.com/anthropics/anthropic-sdk-typescript",
-          "type": "github-ref",
-          "description": "TypeScript/JavaScript SDK for Anthropic API - 官方 TS/JS 客戶端庫",
-          "install_type": "project",
-          "auto_update": true,
-          "has_team_structure": false,
-          "tags": ["typescript", "javascript", "sdk", "api", "reference", "anthropic"]
-        },
-        {
-          "id": "anthropic-sdk-go",
-          "name": "Anthropic SDK (Go)",
-          "repo": "https://github.com/anthropics/anthropic-sdk-go",
-          "type": "github-ref",
-          "description": "Go SDK for Anthropic API - 官方 Go 客戶端庫",
-          "install_type": "project",
-          "auto_update": true,
-          "has_team_structure": false,
-          "tags": ["go", "golang", "sdk", "api", "reference", "anthropic"]
-        },
-        {
-          "id": "anthropic-sdk-java",
-          "name": "Anthropic SDK (Java)",
-          "repo": "https://github.com/anthropics/anthropic-sdk-java",
-          "type": "github-ref",
-          "description": "Java/Kotlin SDK for Anthropic API - 官方 Java/Kotlin 客戶端庫",
-          "install_type": "project",
-          "auto_update": true,
-          "has_team_structure": false,
-          "tags": ["java", "kotlin", "sdk", "api", "reference", "anthropic"]
+          "auto_update": false,
+          "source": "A-Team"
         }
       ]
     }
